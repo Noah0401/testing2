@@ -3,10 +3,8 @@ from torch_geometric.data import Data, Batch
 
 class BatchFinetune(Data):
     r"""Inherited from :class:`torch_geometric.data.Data`,
-        it can create a :obj:`batch` for fine-tuning.
-        A :obj:`batch` is a combination of several graphs in a dataset, and is
-        represented by a tensor which maps each node to its respective graph.
-        :obj:`Fine-tune` is a process after pre-train, and completing fine-tuning process with the help of batches could
+        it can create a :obj:`batch` for fine-tuning. A :obj:`batch` is a combination of several graphs in a dataset, and is
+        represented by a tensor which maps each node to its respective graph. :obj:`Fine-tune` is a process after pre-train, and completing fine-tuning process with the help of batches could
         enhance the efficiency.
 
         Args:
@@ -67,8 +65,7 @@ class BatchFinetune(Data):
 
 class BatchMasking(Data):
     r"""Inherited from :class:`torch_geometric.data.Data`, it can create a
-        :obj:`batch` for masking.
-        And :obj:`masking` for both nodes and edges means hiding partial feature information, which
+        :obj:`batch` for masking. And :obj:`masking` for both nodes and edges means hiding partial feature information, which
         controls a model's access to and processing of different elements in the graph.
 
         Args:
@@ -141,11 +138,8 @@ class BatchMasking(Data):
 
 class BatchAE(Data):
     r"""Inherited from :class:`torch_geometric.data.Data`, it can create a
-        :obj:`batch` for data with different autoencoders.
-        :obj:`AE` stands for "Autoencoder".
-        Autoencoders are unsupervised learning algorithms used to learn efficient data
-        representations, typically for dimensionality reduction or feature learning.
-        While :obj:`BatchAE` is a graph embedding method based on autoencoder.
+        :obj:`batch` for data with different autoencoders. :obj:`AE` stands for "Autoencoder". Autoencoders are unsupervised learning algorithms used to learn efficient data
+        representations, typically for dimensionality reduction or feature learning. While :obj:`BatchAE` is a graph embedding method based on autoencoder.
 
         Args:
             batch (torch.Tensor): The created batch matrix.
@@ -159,8 +153,7 @@ class BatchAE(Data):
     @staticmethod
     def from_data_list(data_list: list[any])->torch.Tensor:
         r"""Constructs a batch object from a python list holding
-        :class:`torch_geometric.data.Data` objects.
-        The assignment vector :obj:`batch` is created on the fly."""
+        :class:`torch_geometric.data.Data` objects. The assignment vector :obj:`batch` is created on the fly."""
         keys = [set(data.keys) for data in data_list]
         keys = list(set.union(*keys))
         assert 'batch' not in keys
