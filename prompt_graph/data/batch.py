@@ -2,12 +2,16 @@ import torch
 from torch_geometric.data import Data, Batch
 
 class BatchFinetune(Data):
-    r"""Inherited from :class:`torch_geometric.data.Data`, it can create a
-        :obj:`batch` for fine-tuning.
+    r"""Inherited from :class:`torch_geometric.data.Data`,
+        it can create a :obj:`batch` for fine-tuning.
+        A :obj:`batch` is a combination of several graphs in a dataset, and is
+        represented by a tensor which maps each node to its respective graph.
+        :obj:`Fine-tune` is a process after pre-train, and completing fine-tuning process with the help of batches could
+        enhance the efficiency.
 
         Args:
-            batch (torch.Tensor): The created batch matrix.
-            **kwargs (dict): Additional attributes.
+            batch (torch.Tensor): The created batch tensor.
+            **kwargs (dict): Additional attributes of :class:`torch_geometric.data.Data`.
         """
 
     def __init__(self, batch=None, **kwargs):
@@ -15,10 +19,15 @@ class BatchFinetune(Data):
         self.batch = batch
 
     @staticmethod
-    def from_data_list(data_list):
-        r"""Constructs a batch object from a python list holding
-        :class:`torch_geometric.data.Data` objects.
-        The assignment vector :obj:`batch` is created on the fly."""
+    def from_data_list(data_list: list[any])->torch.Tensor:
+        r"""Constructs a :obj:`batch` object from a python list holding
+            :class:`torch_geometric.data.Data` objects.
+            The assignment vector :obj:`batch` is created on the fly.
+
+            Args:
+                data_list (list[any]): The objects to be created into a batch.
+            """
+
         keys = [set(data.keys) for data in data_list]
         keys = list(set.union(*keys))
         assert 'batch' not in keys
@@ -51,28 +60,34 @@ class BatchFinetune(Data):
         return batch.contiguous()
 
     @property
-    def num_graphs(self):
-        r"""Returns the number of graphs in the batch."""
+    def num_graphs(self)->int:
+        r"""Returns the number of graphs in a batch."""
         return self.batch[-1].item() + 1
 
 
 class BatchMasking(Data):
     r"""Inherited from :class:`torch_geometric.data.Data`, it can create a
-            :obj:`batch` for masking.
+        :obj:`batch` for masking.
+        And :obj:`masking` for both nodes and edges means hiding partial feature information, which
+        controls a model's access to and processing of different elements in the graph.
 
         Args:
             batch (torch.Tensor): The created batch matrix.
-            **kwargs (dict): Additional attributes.
+            **kwargs (dict): Additional attributes of :class:`torch_geometric.data.Data`.
         """
     def __init__(self, batch=None, **kwargs):
         super(BatchMasking, self).__init__(**kwargs)
         self.batch = batch
 
     @staticmethod
-    def from_data_list(data_list):
+    def from_data_list(data_list: list[any])->torch.Tensor:
         r"""Constructs a batch object from a python list holding
-        :class:`torch_geometric.data.Data` objects.
-        The assignment vector :obj:`batch` is created on the fly."""
+            :class:`torch_geometric.data.Data` objects.
+            The assignment tensor :obj:`batch` is created on the fly.
+
+            Args:
+                data_list (list[any]): The objects to be created into a batch.
+            """
         keys = [set(data.keys) for data in data_list]
         keys = list(set.union(*keys))
         assert 'batch' not in keys
@@ -106,28 +121,35 @@ class BatchMasking(Data):
         batch.batch = torch.cat(batch.batch, dim=-1)
         return batch.contiguous()
 
-    def cumsum(self, key, item):
-        r"""If :obj:`True`, the attribute :obj:`key` with content :obj:`item`
-        should be added up cumulatively before concatenated together.
+    def cumsum(self, key:str, item)->bool:
+        r"""This is a prompt function, If it returns :obj:`True`, the attribute :obj:`key` with content :obj:`item`
+            should be added up cumulatively before concatenated together.
         .. note::
             This method is for internal use only, and should only be overridden
             if the batch concatenation process is corrupted for a specific data
             attribute.
+
+        Args:
+            key (str): Keywords used for judgement.
         """
         return key in ['edge_index', 'face', 'masked_atom_indices', 'connected_edge_indices']
 
     @property
-    def num_graphs(self):
+    def num_graphs(self)->int:
         r"""Returns the number of graphs in the batch."""
         return self.batch[-1].item() + 1
 
 class BatchAE(Data):
     r"""Inherited from :class:`torch_geometric.data.Data`, it can create a
         :obj:`batch` for data with different autoencoders.
+        :obj:`AE` stands for "Autoencoder".
+        Autoencoders are unsupervised learning algorithms used to learn efficient data
+        representations, typically for dimensionality reduction or feature learning.
+        While :obj:`BatchAE` is a graph embedding method based on autoencoder.
 
         Args:
             batch (torch.Tensor): The created batch matrix.
-            **kwargs (dict): Additional attributes.
+            **kwargs (dict): Additional attributes of :class:`torch_geometric.data.Data`.
         """
 
     def __init__(self, batch=None, **kwargs):
@@ -135,7 +157,7 @@ class BatchAE(Data):
         self.batch = batch
 
     @staticmethod
-    def from_data_list(data_list):
+    def from_data_list(data_list: list[any])->torch.Tensor:
         r"""Constructs a batch object from a python list holding
         :class:`torch_geometric.data.Data` objects.
         The assignment vector :obj:`batch` is created on the fly."""
@@ -169,13 +191,13 @@ class BatchAE(Data):
         return batch.contiguous()
 
     @property
-    def num_graphs(self):
+    def num_graphs(self)->int:
         r"""Returns the number of graphs in the batch."""
         return self.batch[-1].item() + 1
 
-    def cat_dim(self, key):
+    def cat_dim(self, key:str)->int:
         r"""Determines the concatenation dimension when using the :obj:`torch.cat`
-        function for tensor concatenation"""
+            function for tensor concatenation. """
 
         return -1 if key in ["edge_index", "negative_edge_index"] else 0
 
@@ -187,7 +209,7 @@ class BatchSubstructContext(Data):
 
     Args:
         batch (torch.Tensor): The created batch matrix.
-        **kwargs (dict): Additional attributes.
+        **kwargs (dict): Additional attributes of :class:`torch_geometric.data.Data`.
         """
 
     def __init__(self, batch=None, **kwargs):
@@ -195,7 +217,7 @@ class BatchSubstructContext(Data):
         self.batch = batch
 
     @staticmethod
-    def from_data_list(data_list):
+    def from_data_list(data_list: list[any])->torch.Tensor:
         r"""Constructs a batch object from a python list holding
         :class:`torch_geometric.data.Data` objects.
         The assignment vector :obj:`batch` is created on the fly."""
@@ -266,13 +288,13 @@ class BatchSubstructContext(Data):
 
         return batch.contiguous()
 
-    def cat_dim(self, key):
+    def cat_dim(self, key:str)->int:
         r"""Determines the concatenation dimension when using the :obj:`torch.cat`
         function for tensor concatenation"""
         return -1 if key in ["edge_index", "edge_index_substruct", "edge_index_context"] else 0
 
-    def cumsum(self, key, item):
-        r"""If :obj:`True`, the attribute :obj:`key` with content :obj:`item`
+    def cumsum(self, key:str, item)->bool:
+        r"""If the function returns :obj:`True`, the attribute :obj:`key` with content :obj:`item`
         should be added up cumulatively before concatenated together.
         .. note::
             This method is for internal use only, and should only be overridden
@@ -282,6 +304,6 @@ class BatchSubstructContext(Data):
         return key in ["edge_index", "edge_index_substruct", "edge_index_context", "overlap_context_substruct_idx", "center_substruct_idx"]
 
     @property
-    def num_graphs(self):
+    def num_graphs(self)->int:
         r"""Returns the number of graphs in the batch."""
         return self.batch[-1].item() + 1
