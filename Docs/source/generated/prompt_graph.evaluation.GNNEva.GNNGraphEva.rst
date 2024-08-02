@@ -1,6 +1,12 @@
-﻿prompt\_graph.evaluation.GNNEva.GNNGraphEva
-===========================================
+﻿GNNGraphEva
+===========
 
+.. autoclass:: prompt_graph.evaluation.GNNEva.GNNGraphEva
+   :members:
 .. currentmodule:: prompt_graph.evaluation.GNNEva
 
-.. autofunction:: GNNGraphEva
+.. autoclass:: GNNGraphEva
+   :show-inheritance:
+   :members:
+   :inherited-members:
+   :special-members: __cat_dim__, __inc__

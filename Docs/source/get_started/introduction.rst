@@ -1,37 +1,101 @@
-introduction
+============
+Introduction
 ============
 
-proG is mainly composed of modules such as
+
+Components
+============
+
+- ProG is composed of the following modules:
 ::
-    - data
-    - model
-    - pre-training
-    - prompt
-    - task
-    - evaluation
 
-- Our goal is to implement prompt's **tedious** code framework in *a few lines of command*
+    - Data
+    - Model
+    - Pre-training
+    - Prompt
+    - Tasker
+    - Evaluation
+    - Utility
 
-- So as to facilitate the pipelines for prompting research
+
+
+Explanation
+============
+
+- Our goal is to implement prompt's **tedious** code framework in *a few lines of command*, so as to facilitate the pipelines for prompting research
 
 .. image:: https://github.com/sheldonresearch/ProG/blob/main/ProG_pipeline.jpg?raw=true
     :alt: pipline for ProG
 
-In this way, we can enable cross-comparison and further exploration of different prompts.
+Data
+>>>>>>>>>
 
-- we summarized and unified Prompt Class
+Provides basic methods for working with graph data or data sets
 
-+-----------+-------------+
-| Graphs    | Task (N/E/G)|
-+===========+=============+
-| GPF       |    N , G    |
-+-----------+-------------+
-| GPPTPrompt|      N      |
-+-----------+-------------+
-| GPrompt   |   N, E, G   |
-+-----------+-------------+
-| ProGPrompt|   N,    G   |
-+-----------+-------------+
+Model
+>>>>>>>>>
+
+Provides several models such as **GAT**, **GCN** for supervised training.
+
+Pretrain
+>>>>>>>>>
+
+Provides several pre-train methods which covers **node level**, **edge level**, and **graph level** pre-training.
+
++-----------------+-------------------+
+| Pre-train       | Task (N/E/G)      |
++=================+===================+
+| DGI             | N                 |
++-----------------+-------------------+
+| GraphMAE        | N                 |
++-----------------+-------------------+
+| Edgepred_GPPT   | E                 |
++-----------------+-------------------+
+| Edgepred_Gprompt| E                 |
++-----------------+-------------------+
+| GraphCL         | G                 |
++-----------------+-------------------+
+| SimGRACE        | G                 |
++-----------------+-------------------+
+
+Prompt
+>>>>>>>>>
+
+Provides several prompt methods. The generated prompts can be classified as **token** and **graph**.
+
++-----------------+-------------------+
+| Prompt          | (Prompt as) T/G   |
++=================+===================+
+| All-in-one      | G                 |
++-----------------+-------------------+
+| GPPT            | T                 |
++-----------------+-------------------+
+| GPrompt         | T                 |
++-----------------+-------------------+
+| GPF             | T                 |
++-----------------+-------------------+
+| GPF-plus        | T                 |
++-----------------+-------------------+
+
+Tasker
+>>>>>>>>>
+
+Provides node, edge and graph task implementation.
+
+Evaluation
+>>>>>>>>>>>
+
+Provides evaluation methods for different tasks corresponding to different Prompts.
+
+Utils
+>>>>>>>>>>>
+
+Provides basic utilities of the methods which can deal with repetitive tasks.
+
+
+
+Datasets
+============
 
 - we also summarized various kind of datasets in prompt research:
 

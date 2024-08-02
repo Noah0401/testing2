@@ -10,31 +10,45 @@ from copy import deepcopy
 from.base import PreTrain
 import os
 
-class SimGRACE(PreTrain):
 
-    def __init__(self, *args, **kwargs):    # hid_dim=16
+class SimGRACE(PreTrain):
+    r"""
+        Inherited from PreTrain, forming the SimGRACE pre-train method.
+        By using different graph encoders as comparison view generators,
+        the semantic similarity between the views obtained from two different encoders is compared.
+        By narrowing the vector representation of the same semantics in vector space,
+        contrast learning is carried out.
+        See `here <https://arxiv.org/abs/2202.03104>`__ for more information.
+
+        Args:
+            *args (tuple): Additional attributes.
+            **kwargs (dict): Additional attributes.
+        """
+
+    def __init__(self, *args, **kwargs):  # hid_dim=16
         super().__init__(*args, **kwargs)
         self.load_graph_data()
-        self.initialize_gnn(self.input_dim, self.hid_dim)   
+        self.initialize_gnn(self.input_dim, self.hid_dim)
         self.projection_head = torch.nn.Sequential(torch.nn.Linear(self.hid_dim, self.hid_dim),
                                                    torch.nn.ReLU(inplace=True),
                                                    torch.nn.Linear(self.hid_dim, self.hid_dim)).to(self.device)
-        
-    def load_graph_data(self):
-        if self.dataset_name in ['PubMed', 'CiteSeer', 'Cora','Computers', 'Photo', 'Reddit', 'WikiCS', 'Flickr']:
-            self.graph_list, self.input_dim = NodePretrain(dataname = self.dataset_name, num_parts=200)
-        else:
-            self.input_dim, self.out_dim, self.graph_list= load4graph(self.dataset_name,pretrained=True)
-        
-    def get_loader(self, graph_list, batch_size):
 
+    def load_graph_data(self):
+        r"""data loading"""
+        if self.dataset_name in ['PubMed', 'CiteSeer', 'Cora', 'Computers', 'Photo', 'Reddit', 'WikiCS', 'Flickr']:
+            self.graph_list, self.input_dim = NodePretrain(dataname=self.dataset_name, num_parts=200)
+        else:
+            self.input_dim, self.out_dim, self.graph_list = load4graph(self.dataset_name, pretrained=True)
+
+    def get_loader(self, graph_list, batch_size):
+        r"""Get the data loader"""
         if len(graph_list) % batch_size == 1:
             raise KeyError(
                 "batch_size {} makes the last batch only contain 1 graph, \n which will trigger a zero bug in SimGRACE!")
 
         loader = DataLoader(graph_list, batch_size=batch_size, shuffle=False, num_workers=1)
         return loader
-    
+
     def forward_cl(self, x, edge_index, batch):
         x = self.gnn(x, edge_index, batch)
         x = self.projection_head(x)
@@ -50,10 +64,11 @@ class SimGRACE(PreTrain):
         pos_sim = sim_matrix[range(batch_size), range(batch_size)]
         loss = - torch.log(pos_sim / (sim_matrix.sum(dim=1) + 1e-4)).mean()
         # loss = pos_sim / ((sim_matrix.sum(dim=1) - pos_sim) + 1e-4)
-        # loss = - torch.log(loss).mean() 
+        # loss = - torch.log(loss).mean()
         return loss
 
     def perturbate_gnn(self, data):
+        r"""Perturbation of GNN model parameters"""
         vice_model = deepcopy(self).to(self.device)
 
         for (vice_name, vice_model_param) in vice_model.named_parameters():
@@ -63,15 +78,17 @@ class SimGRACE(PreTrain):
                 vice_model_param.data += noise
         z2 = vice_model.forward_cl(data.x, data.edge_index, data.batch)
         return z2
-    
+
     def train_simgrace(self, loader, optimizer):
+        r"""train one time,
+            return the average(of batch) loss for the training"""
         self.train()
         train_loss_accum = 0
         total_step = 0
         for step, data in enumerate(loader):
             optimizer.zero_grad()
             data = data.to(self.device)
-            x2 = self.perturbate_gnn(data) 
+            x2 = self.perturbate_gnn(data)
             x1 = self.forward_cl(data.x, data.edge_index, data.batch)
             x2 = Variable(x2.detach().data.to(self.device), requires_grad=False)
             loss = self.loss_cl(x1, x2)
@@ -82,7 +99,13 @@ class SimGRACE(PreTrain):
 
         return train_loss_accum / total_step
 
-    def pretrain(self, batch_size=10, lr=0.01,decay=0.0001, epochs=100):
+    def pretrain(self, batch_size=10, lr=0.01, decay=0.0001, epochs=100):
+
+        r"""Perform multiple rounds of pre-training
+            and save the model with the least training loss at the end of each round.
+            The pre-training effect of the model is gradually optimized through iterative loops
+            and saved in the specified folder
+            """
 
         loader = self.get_loader(self.graph_list, batch_size)
         print('start training {} | {} | {}...'.format(self.dataset_name, 'SimGRACE', self.gnn_type))
@@ -100,5 +123,8 @@ class SimGRACE(PreTrain):
                 if not os.path.exists(folder_path):
                     os.makedirs(folder_path)
                 torch.save(self.gnn.state_dict(),
-                           "./Experiment/pre_trained_model/{}/{}.{}.{}.pth".format(self.dataset_name, 'SimGRACE', self.gnn_type, str(self.hid_dim) + 'hidden_dim'))
-                print("+++model saved ! {}.{}.{}.{}.pth".format(self.dataset_name, 'SimGRACE', self.gnn_type, str(self.hid_dim) + 'hidden_dim'))
+                           "./Experiment/pre_trained_model/{}/{}.{}.{}.pth".format(self.dataset_name, 'SimGRACE',
+                                                                                   self.gnn_type,
+                                                                                   str(self.hid_dim) + 'hidden_dim'))
+                print("+++model saved ! {}.{}.{}.{}.pth".format(self.dataset_name, 'SimGRACE', self.gnn_type,
+                                                                str(self.hid_dim) + 'hidden_dim'))

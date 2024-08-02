@@ -15,9 +15,15 @@ from torch_geometric.data import Data
 import numpy as np
 import pickle
 
-def induced_graphs(data, smallest_size=10, largest_size=30):
-    r"""Generate an appropriately sized (between smallest size and largest size) induce graph 
-    and add it to the induced graph list to return this list"""
+def induced_graphs(data:Data, smallest_size:int=10, largest_size:int=30)->list:
+    r"""Generate an appropriately sized (between smallest size and largest size) induce graph
+    and add it to the induced graph list and return this list
+
+    Args:
+        data (Data): The original graph.
+        smallest_size (int): The smallest size of the induced graph (default: :obj:`10`).
+        largest_size (int): The largest size of the induced graph (default: :obj:`30`).
+    """
     induced_graph_list = []
 
     for index in range(data.x.size(0)):
@@ -54,11 +60,17 @@ def induced_graphs(data, smallest_size=10, largest_size=30):
 
 
 
-def split_induced_graphs(name, data, smallest_size=10, largest_size=30):
-    r"""Generate an appropriately sized (between smallest size and largest size) induce graph 
-    and add it to the induced graph list to return this list.
-    The resulting induced graph is stored in a specific directory"""
+def split_induced_graphs(name:str, data:Data, smallest_size:int=10, largest_size:int=30):
+    r"""Generate an appropriately sized (between smallest size and largest size) induce graph
+    and add it to the induced graph list.
+    The resulting induced graph is stored in a specific directory
 
+    Args:
+        name (str): The name which can construct the directory path.
+        data (Data): The original graph.
+        smallest_size (int): The smallest size of the induced graph (default: :obj:`10`).
+        largest_size (int): The largest size of the induced graph (default: :obj:`30`).
+    """
     induced_graph_list = []
     
     for index in range(data.x.size(0)):

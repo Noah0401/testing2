@@ -5,12 +5,9 @@
 :github_url: https://github.com/WANGkevinCUHK/ProGTut
 ProG Tutorial
 =================
-.. image:: https://github.com/sheldonresearch/ProG/blob/main/Logo.jpg?raw=true
-   :alt: ProG logo
 
 - **ProG** *(prompt Graph)* is a library built upon `PyTorch <https://pytorch.org>`_  easily conduct single or multi-task prompting for pre-trained Graph Neural Networks (GNNs).
-- The idea is derived from the paper: Xiangguo Sun, Hong Cheng, Jia Li, etc. `"All in one Multi-task Prompting for Graph Neural Networks"(Sun et. al. , 2023) <https://arxiv.org/abs/2307.01504>`_ KDD2023 (**Best Research Paper Award**, *which is the first time for Hong Kong and Mainland China*)
-- in which they released their `raw codes <https://anonymous.4open.science/r/mpg/README.md>`_.
+- The idea is derived from the paper: Xiangguo Sun, Hong Cheng, Jia Li, etc. `"All in one Multi-task Prompting for Graph Neural Networks"(Sun et. al. , 2023) <https://arxiv.org/abs/2307.01504>`_ KDD2023 (**Best Research Paper Award**, *which is the first time for Hong Kong and Mainland China*), in which they released their `raw codes <https://anonymous.4open.science/r/mpg/README.md>`_.
 
 ^^^^^^^^^^^^^^^^^^^^
 
@@ -50,7 +47,7 @@ ProG Tutorial
 
 .. toctree::
    :maxdepth: 1
-   :caption: Main Package
+   :caption: Main Packages
 
    modules/data
    modules/evaluation

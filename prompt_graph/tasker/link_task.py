@@ -6,7 +6,16 @@ from torch_geometric.datasets import Planetoid
 from torch_geometric.utils import negative_sampling
 from .task import BaseTask
 
+
 class LinkTask(BaseTask):
+    r"""
+        Inherit from :obj:`BaseTask`, realize the link task implementation.
+
+        Args:
+            *args: Additional attributes.
+            **kwargs: Additional attributes.
+        """
+
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.load_data()
@@ -15,18 +24,27 @@ class LinkTask(BaseTask):
         self.criterion = torch.nn.CrossEntropyLoss()
 
     def load_data(self):
+        r"""
+        Load the data(Cora) and then split the dataset into test data, validate data and train data.
+        """
         transform = T.Compose([
             T.NormalizeFeatures(),
             T.ToDevice(self.device),
             T.RandomLinkSplit(num_val=0.05, num_test=0.1, is_undirected=True,
-                            add_negative_train_samples=False),
+                              add_negative_train_samples=False),
         ])
-        self.dataset = Planetoid(root = 'data/Planetoid', name='Cora', transform=transform)
+        self.dataset = Planetoid(root='data/Planetoid', name='Cora', transform=transform)
         # After applying the `RandomLinkSplit` transform, the data is transformed from
         # a data object to a list of tuples (train_data, val_data, test_data), with
         # each element representing the corresponding split.
-        
+
     def train(self, train_data):
+        r"""
+        Perform a new round of negative sampling for every training epoch,
+        The cross entropy loss (loss) between the predicted result and the true label is calculated,
+        and backpropagation and parameter updating are performed.
+        Finally, the loss value is returned.
+        """
         self.gnn.train()
         self.optimizer.zero_grad()
         node_emb = self.gnn(train_data.x, train_data.edge_index)
@@ -51,18 +69,23 @@ class LinkTask(BaseTask):
         self.optimizer.step()
         return loss
 
-
     @torch.no_grad()
     def test(self, data):
+        r"""
+        Return the ROC AUC level.
+        """
         self.gnn.eval()
         z = self.gnn(data.x, data.edge_index)
         out = self.gnn.decode(z, data.edge_label_index).view(-1).sigmoid()
         return roc_auc_score(data.edge_label.cpu().numpy(), out.cpu().numpy())
 
-
     def run(self):
+        r"""
+        Perform 100 training epochs.
+        Return the final test set ROC AUC score.
+        """
 
-        train_data, val_data, test_data = self. dataset[0]
+        train_data, val_data, test_data = self.dataset[0]
 
         best_val_auc = final_test_auc = 0
         for epoch in range(1, 101):
@@ -73,7 +96,7 @@ class LinkTask(BaseTask):
                 best_val_auc = val_auc
                 final_test_auc = test_auc
             print(f'Epoch: {epoch:03d}, Loss: {loss:.4f}, Val: {val_auc:.4f}, '
-                f'Test: {test_auc:.4f}')
+                  f'Test: {test_auc:.4f}')
 
         print(f'Final Test: {final_test_auc:.4f}')
 

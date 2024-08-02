@@ -6,18 +6,24 @@ from deprecated.sphinx import deprecated
 from sklearn.cluster import KMeans
 from torch_geometric.nn.inits import glorot
 
+
 class LightPrompt(torch.nn.Module):
     def __init__(self, token_dim, token_num_per_group, group_num=1, inner_prune=None):
-        """
-        :param token_dim:
-        :param token_num_per_group:
-        :param group_num:   the total token number = token_num_per_group*group_num, in most cases, we let group_num=1.
-                            In prompt_w_o_h mode for classification, we can let each class correspond to one group.
-                            You can also assign each group as a prompt batch in some cases.
+        r"""
+        Inherit from :class:`torch.nn.Module`,
+        Initialize all the tokens and
+        generate the initial prompt graph by combining all the tokens.
 
-        :param prune_thre: if inner_prune is None, then all inner and cross prune will adopt this prune_thre
-        :param isolate_tokens: if Trure, then inner tokens have no connection.
-        :param inner_prune: if inner_prune is not None, then cross prune adopt prune_thre whereas inner prune adopt inner_prune
+        Args:
+            token_dim (int): The dimension of the token.
+            token_num_per_group (int): The number of tokens in one group.
+            group_num (int):  The total token number = token_num_per_group*group_num, in most cases, we let group_num=:obj:`1`.
+                        In :obj:`prompt_w_o_h` mode for classification, we can let each class correspond to one group.
+                        You can also assign each group as a prompt batch in some cases.
+                        (default: :obj:`1`)
+            inner_prune (int/float): The threshold of pruning operations to determine which connections should be cut.
+            If :obj:`inner_prune` is not :obj:`None`, then cross prune adopt :obj:`prune_thre` whereas inner prune adopt :obj:`inner_prune`.
+            (default: :obj:`None`)
         """
         super(LightPrompt, self).__init__()
 
@@ -29,20 +35,21 @@ class LightPrompt(torch.nn.Module):
         self.token_init(init_method="kaiming_uniform")
 
     def token_init(self, init_method="kaiming_uniform"):
+        r"""Use :obj:`Kaiming uniform` method to initialize token"""
         if init_method == "kaiming_uniform":
             for token in self.token_list:
                 torch.nn.init.kaiming_uniform_(token, nonlinearity='leaky_relu', mode='fan_in', a=0.01)
         else:
             raise ValueError("only support kaiming_uniform init, more init methods will be included soon")
 
-    def inner_structure_update(self):
+    def inner_structure_update(self) -> Batch:
+        r"""Return the batch of prompt graphs"""
         return self.token_view()
 
-    def token_view(self, ):
-        """
-        each token group is viewed as a prompt sub-graph.
+    def token_view(self, ) -> Batch:
+        r"""
+        Each token group is viewed as a prompt sub-graph.
         turn the all groups of tokens as a batch of prompt graphs.
-        :return:
         """
         pg_list = []
         for i, tokens in enumerate(self.token_list):
@@ -58,18 +65,26 @@ class LightPrompt(torch.nn.Module):
         pg_batch = Batch.from_data_list(pg_list)
         return pg_batch
 
+
 class HeavyPrompt(LightPrompt):
+    r"""
+    Inherit from :class:`LightPrompt`, forming Prompt from tokens
+    using Cross-group pruning and internal pruning methods.
+
+    Args:
+        token_dim (int): The dimension of the tokne.
+        token_num (int): The number of the tokens.
+        cross_prune (float): The threshold of pruning operations to determine which crossing connections should be cut.
+        (default: :obj:`0.1`)
+        inner_prone (float): The threshold of pruning operations to determine which inner connections should be cut.
+        (default: :obj:`0.01`)
+    """
+
     def __init__(self, token_dim, token_num, cross_prune=0.1, inner_prune=0.01):
         super(HeavyPrompt, self).__init__(token_dim, token_num, 1, inner_prune)  # only has one prompt graph.
         self.cross_prune = cross_prune
 
     def forward(self, graph_batch: Batch):
-        """
-        TODO: although it recieves graph batch, currently we only implement one-by-one computing instead of batch computing
-        TODO: we will implement batch computing once we figure out the memory sharing mechanism within PyG
-        :param graph_batch:
-        :return:
-        """
 
         pg = self.inner_structure_update()  # batch of prompt graph (currently only 1 prompt graph in the batch)
 
@@ -79,14 +94,14 @@ class HeavyPrompt(LightPrompt):
         re_graph_list = []
         for g in Batch.to_data_list(graph_batch):
             g_edge_index = g.edge_index + token_num
-            
+
             cross_dot = torch.mm(pg.x, torch.transpose(g.x, 0, 1))
             cross_sim = torch.sigmoid(cross_dot)  # 0-1 from prompt to input graph
             cross_adj = torch.where(cross_sim < self.cross_prune, 0, cross_sim)
-            
+
             cross_edge_index = cross_adj.nonzero().t().contiguous()
             cross_edge_index[1] = cross_edge_index[1] + token_num
-            
+
             x = torch.cat([pg.x, g.x], dim=0)
             y = g.y
 
@@ -96,11 +111,13 @@ class HeavyPrompt(LightPrompt):
 
         graphp_batch = Batch.from_data_list(re_graph_list)
         return graphp_batch
-    
 
     def Tune(self, train_loader, gnn, answering, lossfn, opi, device):
+        r"""
+        Doing fine-tune of the Prompt. Using :obj:`answering` to calculate the loss.
+        """
         running_loss = 0.
-        for batch_id, train_batch in enumerate(train_loader):  
+        for batch_id, train_batch in enumerate(train_loader):
             # print(train_batch)
             train_batch = train_batch.to(device)
             prompted_graph = self.forward(train_batch)
@@ -116,9 +133,12 @@ class HeavyPrompt(LightPrompt):
             running_loss += train_loss.item()
 
         return running_loss / len(train_loader)
-    
+
     def TuneWithoutAnswering(self, train_loader, gnn, answering, lossfn, opi, device):
-        total_loss = 0.0 
+        r"""
+            Doing fine-tune of the Prompt. Without Using :obj:`answering` to calculate the loss.
+        """
+        total_loss = 0.0
         for batch in train_loader:
             self.optimizer.zero_grad()
             batch = batch.to(self.device)
@@ -132,10 +152,31 @@ class HeavyPrompt(LightPrompt):
             loss = lossfn(sim, batch.y)
             loss.backward()
             self.optimizer.step()
-            total_loss += loss.item()  
-        return total_loss / len(train_loader) 
+            total_loss += loss.item()
+        return total_loss / len(train_loader)
+
 
 class FrontAndHead(torch.nn.Module):
+    r""" Inherit from :class:`torch.nn.Module`.
+    After the input graph data is prompted by :class:`HeavyPrompt`,
+    the GNN model is used to extract the feature of the prompted graph data,
+    and finally the prediction is carried out by the full connection layer and softmax function.
+    This class is used in multi-label classification tasks
+    and provides an example of building front-end and header models in a context that uses :class:`HeavyPrompt`.
+
+    Args:
+        input_dim (int): The dimension of input.
+        hid_dim (int): The dimension of hidden layer. (default: :obj:`16`)
+        num_classes (int): The number of classes. (default: :obj:`2`)
+        task_type (str): The type of the task. (default: :obj:`multi_label_classification`)
+        token_num (int): The number of the tokens (default: :obj:`10`).
+        cross_prune (float): The threshold of pruning operations to determine which crossing connections should be cut.
+            (default: :obj:`0.1`)
+        inner_prone (float): The threshold of pruning operations to determine which inner connections should be cut.
+            (default: :obj:`0.3`)
+
+    """
+
     def __init__(self, input_dim, hid_dim=16, num_classes=2,
                  task_type="multi_label_classification",
                  token_num=10, cross_prune=0.1, inner_prune=0.3):
@@ -158,5 +199,6 @@ class FrontAndHead(torch.nn.Module):
         pre = self.answering(graph_emb)
 
         return pre
+
 
 

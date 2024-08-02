@@ -5,12 +5,15 @@ import pdb
 import scipy.sparse as sp
 import numpy as np
 
-def main():
-    pass
-
 
 def aug_random_mask(input_feature, drop_percent=0.2):
-    
+    r"""
+    Randomly mask some nodes in the input feature.
+
+    Args:
+        input_feature (Tensor)
+        drop_percent (float): Ratio of nodes to mask. (default: :obj:`0.2`)
+    """
     node_num = input_feature.shape[1]
     mask_num = int(node_num * drop_percent)
     node_idx = [i for i in range(node_num)]
@@ -23,7 +26,13 @@ def aug_random_mask(input_feature, drop_percent=0.2):
 
 
 def aug_random_edge(input_adj, drop_percent=0.2):
+    r"""
+        Randomly drop some edges in the input feature.
 
+        Args:
+            input_feature (Tensor)
+            drop_percent (float): Ratio of edges to drop. (default: :obj:`0.2`)
+        """
     percent = drop_percent / 2
     row_idx, col_idx = input_adj.nonzero()
 
@@ -35,20 +44,18 @@ def aug_random_edge(input_adj, drop_percent=0.2):
     for i in list(index_list):
         single_index_list.append(i)
         index_list.remove((i[1], i[0]))
-    
-    
-    edge_num = int(len(row_idx) / 2)      # 9228 / 2
-    add_drop_num = int(edge_num * percent / 2) 
+
+    edge_num = int(len(row_idx) / 2)  # 9228 / 2
+    add_drop_num = int(edge_num * percent / 2)
     aug_adj = copy.deepcopy(input_adj.todense().tolist())
 
     edge_idx = [i for i in range(edge_num)]
     drop_idx = random.sample(edge_idx, add_drop_num)
 
-    
     for i in drop_idx:
         aug_adj[single_index_list[i][0]][single_index_list[i][1]] = 0
         aug_adj[single_index_list[i][1]][single_index_list[i][0]] = 0
-    
+
     '''
     above finish drop edges
     '''
@@ -57,22 +64,29 @@ def aug_random_edge(input_adj, drop_percent=0.2):
     add_list = random.sample(l, add_drop_num)
 
     for i in add_list:
-        
         aug_adj[i[0]][i[1]] = 1
         aug_adj[i[1]][i[0]] = 1
-    
+
     aug_adj = np.matrix(aug_adj)
     aug_adj = sp.csr_matrix(aug_adj)
     return aug_adj
 
 
 def aug_drop_node(input_fea, input_adj, drop_percent=0.2):
+    r"""
+        Randomly drop some nodes in the input feature.
+
+        Args:
+            input_fea (Tensor)
+            input_adj (Tensor): Adjustment matrix.
+            drop_percent (float): Ratio of nodes to drop. (default: :obj:`0.2`)
+        """
 
     input_adj = torch.tensor(input_adj.todense().tolist())
     input_fea = input_fea.squeeze(0)
 
     node_num = input_fea.shape[0]
-    drop_num = int(node_num * drop_percent)    # number of drop nodes
+    drop_num = int(node_num * drop_percent)  # number of drop nodes
     all_node_list = [i for i in range(node_num)]
 
     drop_node_list = sorted(random.sample(all_node_list, drop_num))
@@ -87,7 +101,17 @@ def aug_drop_node(input_fea, input_adj, drop_percent=0.2):
 
 
 def aug_subgraph(input_fea, input_adj, drop_percent=0.2):
-    
+    r"""
+        A node is randomly selected from the input feature and adjacency matrix,
+        and the subgraph is gradually expanded with the node as the center
+
+        Args:
+            input_fea (Tensor)
+            input_adj (Tensor): Adjustment matrix.
+            drop_percent (float): Ratio of nodes to drop,
+            where :obj:`1-drop_percent` is the number of nodes to keep in the subgraph. (default: :obj:`0.2`)
+        """
+
     input_adj = torch.tensor(input_adj.todense().tolist())
     input_fea = input_fea.squeeze(0)
     node_num = input_fea.shape[0]
@@ -99,9 +123,9 @@ def aug_subgraph(input_fea, input_adj, drop_percent=0.2):
     all_neighbor_list = []
 
     for i in range(s_node_num - 1):
-        
+
         all_neighbor_list += torch.nonzero(input_adj[sub_node_id_list[i]], as_tuple=False).squeeze(1).tolist()
-        
+
         all_neighbor_list = list(set(all_neighbor_list))
         new_neighbor_list = [n for n in all_neighbor_list if not n in sub_node_id_list]
         if len(new_neighbor_list) != 0:
@@ -110,7 +134,6 @@ def aug_subgraph(input_fea, input_adj, drop_percent=0.2):
         else:
             break
 
-    
     drop_node_list = sorted([i for i in all_node_list if not i in sub_node_id_list])
 
     aug_input_fea = delete_row_col(input_fea, drop_node_list, only_row=True)
@@ -122,10 +145,15 @@ def aug_subgraph(input_fea, input_adj, drop_percent=0.2):
     return aug_input_fea, aug_input_adj
 
 
-
-
-
 def delete_row_col(input_matrix, drop_list, only_row=False):
+    r"""
+        Deletes the specified rows and columns of the input matrix.
+
+        Args:
+            input_matrix (Tensor)
+            drop_list (list): An index list of rows and columns to delete.
+            only_row (bool): Whether only delete rows. (default: :obj:`FALSE`)
+        """
 
     remain_list = [i for i in range(input_matrix.shape[0]) if i not in drop_list]
     out = input_matrix[remain_list, :]
@@ -136,23 +164,5 @@ def delete_row_col(input_matrix, drop_list, only_row=False):
     return out
 
 
-
-    
-
-
-
-    
-
-     
-
-    
-
-
-
-
-
-
-
 if __name__ == "__main__":
     main()
-    

@@ -11,8 +11,17 @@ from torch_geometric.data import Data,Batch
 from torch_geometric.utils import negative_sampling
 import os
 
-def node_sample_and_save(data, k, folder, num_classes):
-    r"""split the nodes into training and testing sets."""
+def node_sample_and_save(data:Data, k:int, folder:str, num_classes:int):
+    r"""Shuffle and split the nodes into training and testing sets.
+    The training set contains :obj:`90%` of the nodes.
+    The testing set contains :obj:`k*num_classes` nodes from :obj:`10%` of the nodes.
+
+    Args:
+        data (Data): The original graph.
+        k (int): The number of each class picked as testing data.
+        folder (str): The path where the testing and training data are saved.
+        num_classes (int): The number of classes in the graph.
+    """
     # 获取标签
     labels = data.y.to('cpu')
     
@@ -38,7 +47,19 @@ def node_sample_and_save(data, k, folder, num_classes):
     torch.save(test_labels, os.path.join(folder, 'test_labels.pt'))
 
 def graph_sample_and_save(dataset, k, folder, num_classes):
-    r"""split the graphs into training and testing sets."""
+    r"""Shuffle and split the graphs into training and testing sets.
+    The training set contains :obj:`90%` of the graphs.
+    The testing set contains :obj:`k*num_classes` graphs from the rest of the graphs.
+    If the number of graphs corresponding to a specific class is less than :obj:`k`,
+    then pick all the graphs in the remaining set of this class as patial of the testing set.
+
+
+    Args:
+        dataset (Dataset): The original graphs.
+        k (int): The number of each class picked as testing data.
+        folder (str): The path where the testing and training data are saved.
+        num_classes (int): The number of classes in the dataset.
+    """
     # 计算测试集的数量（例如90%的图作为测试集）
     num_graphs = len(dataset)
     num_test = int(0.8 * num_graphs)
@@ -70,12 +91,12 @@ def graph_sample_and_save(dataset, k, folder, num_classes):
     train_labels = labels[train_indices]
     torch.save(train_labels, os.path.join(folder, 'train_labels.pt'))
 
-def load4graph(dataset_name, shot_num= 10, num_parts=None, pretrained=False):
-    r"""A plain old python object modeling a batch of graphs as one big
-        (dicconnected) graph. With :class:`torch_geometric.data.Data` being the
-        base class, all its methods can also be used here.
-        In addition, single graphs can be reconstructed via the assignment vector
-        :obj:`batch`, which maps each node to its respective graph identifier.
+def load4graph(dataset_name:str, shot_num=10, num_parts=None, pretrained:bool=False):
+    r"""Loading the data of the graphs and shuffle the dataset(graph set).
+
+    Args:
+        dataset_name (str): The number of the dataset.
+        pretrained (bool): Whether to do pretrain step (default: :obj:`FALSE`).
         """
 
     if dataset_name in ['MUTAG', 'ENZYMES', 'COLLAB', 'PROTEINS', 'IMDB-BINARY', 'REDDIT-BINARY', 'COX2', 'BZR', 'PTC_MR']:
@@ -134,11 +155,14 @@ def load4graph(dataset_name, shot_num= 10, num_parts=None, pretrained=False):
 
         return input_dim, out_dim, None, None, None, graph_list
     
-def load4node(dataname, shot_num= 10):
-    r"""Load and preprocess the given data set and 
-    create masks for the training set and test set based on shot_num.
-    With :class:`torch_geometric.data.Data` being the
-    base class, all its methods can also be used here."""
+def load4node(dataname:str, shot_num:int=10):
+    r"""Load and preprocess the given data(graph), divide the nodes into training and testing set.
+
+    Args:
+        dataname (str): The number of the data.
+        shot_num (int): The number of the nodes in training set (default: :obj:`10`).
+        """
+
     print(dataname)
     if dataname in ['PubMed', 'CiteSeer', 'Cora']:
         dataset = Planetoid(root='data/Planetoid', name=dataname, transform=NormalizeFeatures())
@@ -207,9 +231,14 @@ def load4node(dataname, shot_num= 10):
 
     return data,dataset
 
-def load4link_prediction_single_graph(dataname, num_per_samples=1):
-    r"""Load a single graph dataset for link prediction 
-    and generate negative neighbor samples"""
+def load4link_prediction_single_graph(dataname:str, num_per_samples:int=1):
+    r"""Load a single graph dataset for link prediction.
+    If the edge of the graph is directed,
+    the two dimensions of the edge index are concatenated to account for the direction of the edge.
+    Otherwise, the original edge index is used directly as edge_index.
+    In addition, negative sampling operations are performed if the graph data object is not a directed graph.
+    """
+
     if dataname in ['PubMed', 'CiteSeer', 'Cora']:
         dataset = Planetoid(root='data/Planetoid', name=dataname, transform=NormalizeFeatures())
     elif dataname in ['Computers', 'Photo']:
@@ -221,8 +250,7 @@ def load4link_prediction_single_graph(dataname, num_per_samples=1):
     data = dataset[0]
     input_dim = dataset.num_features
     output_dim = dataset.num_classes
-    
-    r"""Perform negative sampling to generate negative neighbor samples"""
+
     if data.is_directed():
         row, col = data.edge_index
         row, col = torch.cat([row, col], dim=0), torch.cat([col, row], dim=0)
@@ -241,8 +269,14 @@ def load4link_prediction_single_graph(dataname, num_per_samples=1):
     return data, edge_label, edge_index, input_dim, output_dim
 
 def load4link_prediction_multi_graph(dataset_name, num_per_samples=1):
-    r"""Load multiple graphs for link prediction 
-    and generate negative neighbor samples"""
+    r"""Load multiple graphs for link prediction
+    and generate negative neighbor samples.
+    If the edge of the graph is directed,
+    the two dimensions of the edge index are concatenated to account for the direction of the edge.
+    Otherwise, the original edge index is used directly as edge_index.
+    In addition, negative sampling operations are performed if the graph data object is not a directed graph.
+    """
+
     if dataset_name in ['MUTAG', 'ENZYMES', 'COLLAB', 'PROTEINS', 'IMDB-BINARY', 'REDDIT-BINARY', 'COX2', 'BZR', 'PTC_MR']:
         dataset = TUDataset(root='data/TUDataset', name=dataset_name)
 
@@ -250,7 +284,7 @@ def load4link_prediction_multi_graph(dataset_name, num_per_samples=1):
     output_dim = 2 # link prediction的输出维度应该是2，0代表无边，1代表右边
     data = Batch.from_data_list(dataset)
     
-    r"""Perform negative sampling to generate negative neighbor samples"""
+
     if data.is_directed():
         row, col = data.edge_index
         row, col = torch.cat([row, col], dim=0), torch.cat([col, row], dim=0)
@@ -270,9 +304,13 @@ def load4link_prediction_multi_graph(dataset_name, num_per_samples=1):
     return data, edge_label, edge_index, input_dim, output_dim
 
 # used in pre_train.py
-def NodePretrain(dataname='CiteSeer', num_parts=200):
-    r"""Load different datasets, 
-    get the number of node features and divide data into multiple clusters."""
+def NodePretrain(dataname:str='CiteSeer', num_parts:int=200):
+    r"""Load graph based on the given dataset name
+    and perform some preprocessing operations,
+    finally returning a list of graph data and input dimensions.
+    The pretraining step contains edge index transformation and getting graph list according to :obj:`num_parts`.
+    """
+
     if dataname in ['PubMed', 'CiteSeer', 'Cora']:
         dataset = Planetoid(root='data/Planetoid', name=dataname, transform=NormalizeFeatures())
     elif dataname in ['Computers', 'Photo']:

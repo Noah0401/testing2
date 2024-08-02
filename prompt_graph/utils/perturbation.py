@@ -3,6 +3,7 @@ import numpy as np
 
 
 def graph_views(data, aug='random', aug_ratio=0.1):
+    r"""Perform view enhancement on the graph data according to the augmentation method and the ratio."""
     if aug == 'dropN':
         data = drop_nodes(data, aug_ratio)
     elif aug == 'permE':
@@ -21,6 +22,8 @@ def graph_views(data, aug='random', aug_ratio=0.1):
     return data
 
 def drop_nodes(data, aug_ratio):
+    r"""A certain number of nodes are randomly discarded according to the given :obj:`aug_ratio`,
+    and the node index and features of the graph data are updated"""
     node_num, _ = data.x.size()
     _, edge_num = data.edge_index.size()
     drop_num = int(node_num * aug_ratio)
@@ -47,7 +50,8 @@ def drop_nodes(data, aug_ratio):
 
 def permute_edges(data, aug_ratio):
     """
-    only change edge_index, all the other keys unchanged and consistent
+    Edge displacement operation, which randomly replaces a certain number of edges according to a given :obj:`aug_ratio`,
+    only change :obj:`edge_index`, all the other keys unchanged and consistent
     """
     node_num, _ = data.x.size()
     _, edge_num = data.edge_index.size()
@@ -61,6 +65,7 @@ def permute_edges(data, aug_ratio):
 
 
 def mask_nodes(data, aug_ratio):
+    r"""A certain number of node features are randomly masked according to the given :obj:`aug_ratio`."""
     node_num, feat_dim = data.x.size()
     mask_num = int(node_num * aug_ratio)
 

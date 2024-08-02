@@ -1,5 +1,6 @@
 
 def GNNNodeEva(data, idx_test,  gnn, answering):
+    r"""Node classification accuracy of GNN"""
     gnn.eval()
     out = gnn(data.x, data.edge_index, batch=None)
     out = answering(out)
@@ -9,6 +10,7 @@ def GNNNodeEva(data, idx_test,  gnn, answering):
     return acc
 
 def GNNGraphEva(loader, gnn, answering, device):
+    r"""graph classification accuracy of GNN"""
     gnn.eval()
     if answering:
         answering.eval()

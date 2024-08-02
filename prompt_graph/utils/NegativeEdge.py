@@ -3,10 +3,11 @@ import torch
 
 
 class NegativeEdge:
-    def __init__(self):
-        """
+    r"""
         Randomly sample negative edges
-        """
+    """
+    def __init__(self):
+
         pass
 
     def __call__(self, data):

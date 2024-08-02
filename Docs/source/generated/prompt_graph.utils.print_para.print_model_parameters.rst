@@ -1,6 +1,12 @@
-﻿prompt\_graph.utils.print\_para.print\_model\_parameters
-========================================================
+﻿print_model_parameters
+======================
 
+.. autoclass:: prompt_graph.utils.print_para.print_model_parameters
+   :members:
 .. currentmodule:: prompt_graph.utils.print_para
 
-.. autofunction:: print_model_parameters
+.. autoclass:: print_model_parameters
+   :show-inheritance:
+   :members:
+   :inherited-members:
+   :special-members: __cat_dim__, __inc__

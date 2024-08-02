@@ -1,12 +1,21 @@
 import torch
 
 class Gprompt(torch.nn.Module):
+    r"""
+    Inherit from :class:`torch.nn.Module`, it defines a GPrompt model.
+
+    Args:
+        input_dim (int): The dimension of the input.
+    """
     def __init__(self,input_dim):
         super(Gprompt, self).__init__()
         self.weight= torch.nn.Parameter(torch.Tensor(1,input_dim))
         self.max_n_num=input_dim
         self.reset_parameters()
     def reset_parameters(self):
+        r"""
+        Initialize the parameter :obj:`self.weight`
+        """
         torch.nn.init.xavier_uniform_(self.weight)
     def forward(self, node_embeddings):
         node_embeddings=node_embeddings*self.weight

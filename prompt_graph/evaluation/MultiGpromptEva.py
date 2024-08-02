@@ -3,6 +3,7 @@ import torch
 
 
 def MultiGpromptEva(test_embs, test_lbls, idx_test, prompt_feature, Preprompt, DownPrompt, sp_adj):
+    r"""node classification accuracy of multi-Gprompt"""
     embeds1, _ = Preprompt.embed(prompt_feature, sp_adj, True, None, False)
     test_embs1 = embeds1[0, idx_test]
     print('idx_test', idx_test)

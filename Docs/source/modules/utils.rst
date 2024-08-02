@@ -48,7 +48,7 @@ constraint
     constraint
 
 edge_index_to_sparse_matrix
--------------------
+--------------------------------------
 
 .. currentmodule:: prompt_graph.utils.edge_index_to_sparse_matrix
 
@@ -116,7 +116,7 @@ perturbation
     mask_nodes
 
 prepare_structured_data
--------------------
+--------------------------------------
 
 .. currentmodule:: prompt_graph.utils.prepare_structured_data
 
@@ -155,20 +155,3 @@ seed
     seed_everything
     __seeds_list__
     seed_torch
-
-utils
--------------------
-
-.. currentmodule:: prompt_graph.utils.utils
-
-
-.. autosummary::
-    :nosignatures:
-    :toctree: ../generated
-    :template: autosummary/inherited_class.rst
-
-    evaluate
-    __dname__
-    __pos_neg_nodes__
-    __induced_graph_list_for_graphs__
-    GPPT_evaluate

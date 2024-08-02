@@ -9,8 +9,23 @@ import numpy as np
 from prompt_graph.utils import process
 import prompt_graph.utils.aug as aug
 import os
+
+
 class PrePrompt(nn.Module):
-    def __init__(self, dataset_name, n_h, activation,a1,a2,a3, a4, num_layers_num, dropout):
+    r"""Inherited from :class:`nn.Module`.
+    It uses multiple pretrain methods to cover the information of the graph.
+    See `here <https://arxiv.org/abs/2312.03731>`__ for more information.
+
+    Args:
+        dataset_name(str): The name of the dataset.
+        n_h (int): The size of the hidden dimension.
+        activation (str): The type of the activation function.
+        a1, a2, a3, a4 (float): Defines the weight.
+        num_layers_num: The number of GCN layer.
+        dropout (float): The possibility of dropout.
+    """
+
+    def __init__(self, dataset_name, n_h, activation, a1, a2, a3, a4, num_layers_num, dropout):
         super(PrePrompt, self).__init__()
         self.dataset_name = dataset_name
         self.hid_dim = n_h
@@ -23,7 +38,7 @@ class PrePrompt(nn.Module):
         # self.gcn = GCN(n_in, n_h, n_h, num_layers_num, drop_ratio=dropout)
         self.read = AvgReadout()
 
-        self.weighted_feature=weighted_feature(a1,a2,a3)
+        self.weighted_feature = weighted_feature(a1, a2, a3)
 
         self.a1 = a1
         self.a2 = a2
@@ -33,14 +48,19 @@ class PrePrompt(nn.Module):
         self.graphcledgeprompt = GraphCLprompt(n_in, n_h, activation)
         self.lpprompt = Lpprompt(n_in, n_h)
         sample = self.negetive_sample
-        self.sample = torch.tensor(sample,dtype=int).cuda()
+        self.sample = torch.tensor(sample, dtype=int).cuda()
         self.loss = nn.BCEWithLogitsLoss()
         self.act = nn.ELU()
 
     def load_data(self):
-        self.adj, features, self.labels, self.idx_train, self.idx_val, self.idx_test = process.load_data(self.dataset_name)  
+        r"""
+        Load the data and get attributes of the graph.
+        return the node feature dimension and the number of the nodes.
+        """
+        self.adj, features, self.labels, self.idx_train, self.idx_val, self.idx_test = process.load_data(
+            self.dataset_name)
         self.features, _ = process.preprocess_features(features)
-        self.negetive_sample = prompt_pretrain_sample(self.adj,200)
+        self.negetive_sample = prompt_pretrain_sample(self.adj, 200)
         # prompt_pretrain_sample为图中的每个节点提供了一个正样本和多个负样本的索引
         nb_nodes = self.features.shape[0]  # node number
         ft_size = self.features.shape[1]  # node features dim
@@ -50,44 +70,48 @@ class PrePrompt(nn.Module):
     def forward(self, seq1, seq2, seq3, seq4, seq5, seq6, adj, aug_adj1edge, aug_adj2edge, aug_adj1mask, aug_adj2mask,
                 sparse, msk, samp_bias1, samp_bias2,
                 lbl):
-        seq1 = torch.squeeze(seq1,0)
-        seq2 = torch.squeeze(seq2,0)
-        seq3 = torch.squeeze(seq3,0)
-        seq4 = torch.squeeze(seq4,0)
+        seq1 = torch.squeeze(seq1, 0)
+        seq2 = torch.squeeze(seq2, 0)
+        seq3 = torch.squeeze(seq3, 0)
+        seq4 = torch.squeeze(seq4, 0)
         logits1 = self.dgi(self.gcn, seq1, seq2, adj, sparse, msk, samp_bias1, samp_bias2)
         logits2 = self.graphcledge(self.gcn, seq1, seq2, seq3, seq4, adj, aug_adj1edge, aug_adj2edge, sparse, msk,
                                    samp_bias1,
                                    samp_bias2, aug_type='edge')
-        logits3 = self.lp(self.gcn,seq1,adj,sparse)
-        
-        
+        logits3 = self.lp(self.gcn, seq1, adj, sparse)
+
         logits4 = self.dgiprompt(self.gcn, seq1, seq2, adj, sparse, msk, samp_bias1, samp_bias2)
         logits5 = self.graphcledgeprompt(self.gcn, seq1, seq2, seq3, seq4, adj, aug_adj1edge, aug_adj2edge, sparse, msk,
-                                   samp_bias1,
-                                   samp_bias2, aug_type='edge')
-        logits6 = self.lpprompt(self.gcn,seq1,adj,sparse)
+                                         samp_bias1,
+                                         samp_bias2, aug_type='edge')
+        logits6 = self.lpprompt(self.gcn, seq1, adj, sparse)
 
-
-        logits11 = logits1 + self.a4*logits4
-        logits22 = logits2 + self.a4*logits5
-        logits33 = logits3 + self.a4*logits6
+        logits11 = logits1 + self.a4 * logits4
+        logits22 = logits2 + self.a4 * logits5
+        logits33 = logits3 + self.a4 * logits6
 
         dgiloss = self.loss(logits11, lbl)
         graphcledgeloss = self.loss(logits22, lbl)
-        lploss = compareloss(logits33,self.sample,temperature=1.5)
+        lploss = compareloss(logits33, self.sample, temperature=1.5)
         lploss.requires_grad_(True)
-        
+
         ret = self.a1 * dgiloss + self.a2 * graphcledgeloss + self.a3 * lploss
 
         return ret
 
-    def embed(self, seq, adj, sparse, msk,LP):
-        h_1 = self.gcn(seq, adj, sparse,LP)
+    def embed(self, seq, adj, sparse, msk, LP):
+        r"""The input sequence and adjacency matrix are accepted,
+        and the input sequence is embedded in a low-dimensional space using the GCN model.
+        """
+        h_1 = self.gcn(seq, adj, sparse, LP)
         c = self.read(h_1, msk)
 
         return h_1.detach(), c.detach()
-    
+
     def pretrain(self):
+        r"""Perform multiple rounds of pre-training
+        and save the model with the least training loss at the end of each round."""
+
         batch_size = 1
         nb_epochs = 1000
         patience = 20
@@ -112,7 +136,6 @@ class PrePrompt(nn.Module):
         drop_percent = 0.1
         aug_adj1edge = aug.aug_random_edge(adj, drop_percent=drop_percent)  # random drop edges
         aug_adj2edge = aug.aug_random_edge(adj, drop_percent=drop_percent)  # random drop edges
-
 
         aug_features1mask = aug.aug_random_mask(features, drop_percent=drop_percent)
         aug_features2mask = aug.aug_random_mask(features, drop_percent=drop_percent)
@@ -141,15 +164,14 @@ class PrePrompt(nn.Module):
         labels = torch.FloatTensor(self.labels[np.newaxis])
         idx_train = torch.LongTensor(self.idx_train)
         # print("labels",labels)
-        print("adj",sp_adj.shape)
-        print("feature",features.shape)
+        print("adj", sp_adj.shape)
+        print("feature", features.shape)
         idx_val = torch.LongTensor(self.idx_val)
         idx_test = torch.LongTensor(self.idx_test)
         LP = False
         print("")
-        lr=0.0001
+        lr = 0.0001
 
-      
         optimizer = torch.optim.Adam(self.parameters(), lr=lr, weight_decay=l2_coef)
         if torch.cuda.is_available():
             print('Using CUDA')
@@ -159,7 +181,7 @@ class PrePrompt(nn.Module):
             aug_features2edge = aug_features2edge.cuda()
             aug_features1mask = aug_features1mask.cuda()
             aug_features2mask = aug_features2mask.cuda()
-     
+
             sp_adj = sp_adj.cuda()
             sp_aug_adj1edge = sp_aug_adj1edge.cuda()
             sp_aug_adj2edge = sp_aug_adj2edge.cuda()
@@ -170,7 +192,7 @@ class PrePrompt(nn.Module):
             idx_train = idx_train.cuda()
             idx_val = idx_val.cuda()
             idx_test = idx_test.cuda()
-    
+
         cnt_wait = 0
         best = 1e9
 
@@ -194,7 +216,7 @@ class PrePrompt(nn.Module):
                         sp_aug_adj2mask if sparse else aug_adj2mask,
                         sparse, None, None, None, lbl=lbl)
             print('Loss:[{:.4f}]'.format(loss.item()))
-            
+
             if loss < best:
                 best = loss
                 best_t = epoch
@@ -203,8 +225,11 @@ class PrePrompt(nn.Module):
                 if not os.path.exists(folder_path):
                     os.makedirs(folder_path)
                 torch.save(self.state_dict(),
-                           "./Experiment/pre_trained_model/{}/{}.{}.{}.pth".format(self.dataset_name, 'multigprompt', 'GCL', str(self.hid_dim) + 'hidden_dim'))
-                print("+++model saved ! {}.{}.{}.{}.pth".format(self.dataset_name, 'multigprompt', 'GCL', str(self.hid_dim) + 'hidden_dim'))
+                           "./Experiment/pre_trained_model/{}/{}.{}.{}.pth".format(self.dataset_name, 'multigprompt',
+                                                                                   'GCL',
+                                                                                   str(self.hid_dim) + 'hidden_dim'))
+                print("+++model saved ! {}.{}.{}.{}.pth".format(self.dataset_name, 'multigprompt', 'GCL',
+                                                                str(self.hid_dim) + 'hidden_dim'))
 
             else:
                 cnt_wait += 1
@@ -215,22 +240,27 @@ class PrePrompt(nn.Module):
             optimizer.step()
 
 
-def mygather(feature, index): 
-    input_size=index.size(0)
+def mygather(feature: torch.Tensor, index: torch.Tensor) -> torch.Tensor:
+    r"""reshape the tenson.
+      collect elements of the feature tensor according to the index"""
+    input_size = index.size(0)
     index = index.flatten()
     index = index.reshape(len(index), 1)
     index = torch.broadcast_to(index, (len(index), feature.size(1)))
     res = torch.gather(feature, dim=0, index=index)
-    return res.reshape(input_size,-1,feature.size(1))
+    return res.reshape(input_size, -1, feature.size(1))
 
 
-def compareloss(feature,tuples,temperature):
-
-    h_tuples=mygather(feature,tuples)
+def compareloss(feature: torch.Tensor, tuples: tuple, temperature: float) -> torch.Tensor:
+    r"""
+    The cosine similarity between the elements in the feature tensor is calculated and
+    adjusted according to the :obj:`temperature` to calculate the loss.
+    """
+    h_tuples = mygather(feature, tuples)
     temp = torch.arange(0, len(tuples))
     temp = temp.reshape(-1, 1)
     temp = torch.broadcast_to(temp, (temp.size(0), tuples.size(1)))
-    temp=temp.cuda()
+    temp = temp.cuda()
     h_i = mygather(feature, temp)
     sim = F.cosine_similarity(h_i, h_tuples, dim=2)
     # print("sim",sim)
@@ -245,38 +275,50 @@ def compareloss(feature,tuples,temperature):
     return res.mean()
 
 
-def prompt_pretrain_sample(adj,n):
-    nodenum=adj.shape[0]
-    indices=adj.indices
-    indptr=adj.indptr
-    res=np.zeros((nodenum,1+n))
-    whole=np.array(range(nodenum))
+def prompt_pretrain_sample(adj, n):
+    r"""
+    The sample of the training prediction model is generated according to the given adjacency matrix.
+    """
+    nodenum = adj.shape[0]
+    indices = adj.indices
+    indptr = adj.indptr
+    res = np.zeros((nodenum, 1 + n))
+    whole = np.array(range(nodenum))
     print("#############")
     print("start sampling disconnected tuples")
     for i in tqdm.trange(nodenum):
-        nonzero_index_i_row=indices[indptr[i]:indptr[i+1]]
-        zero_index_i_row=np.setdiff1d(whole,nonzero_index_i_row)
+        nonzero_index_i_row = indices[indptr[i]:indptr[i + 1]]
+        zero_index_i_row = np.setdiff1d(whole, nonzero_index_i_row)
         np.random.shuffle(nonzero_index_i_row)
         np.random.shuffle(zero_index_i_row)
-        if np.size(nonzero_index_i_row)==0:
+        if np.size(nonzero_index_i_row) == 0:
             res[i][0] = i
         else:
-            res[i][0]=nonzero_index_i_row[0]
-        res[i][1:1+n]=zero_index_i_row[0:n]
+            res[i][0] = nonzero_index_i_row[0]
+        res[i][1:1 + n] = zero_index_i_row[0:n]
     return res.astype(int)
 
+
 class weighted_feature(nn.Module):
-    def __init__(self,a1,a2,a3):
+    r"""learn the weight of the features"""
+
+    def __init__(self, a1, a2, a3):
         super(weighted_feature, self).__init__()
-        self.weight= nn.Parameter(torch.FloatTensor(1,3), requires_grad=True)
-        self.reset_parameters(a1,a2,a3)
-    def reset_parameters(self,a1,a2,a3):
+        self.weight = nn.Parameter(torch.FloatTensor(1, 3), requires_grad=True)
+        self.reset_parameters(a1, a2, a3)
+
+    def reset_parameters(self, a1, a2, a3):
+        r"""
+        reset the weight parameters.
+        """
         # torch.nn.init.xavier_uniform_(self.weight)
 
         self.weight[0][0].data.fill_(a1)
         self.weight[0][1].data.fill_(a2)
         self.weight[0][2].data.fill_(a3)
-    def forward(self, graph_embedding1,graph_embedding2,graph_embedding3):
-        print("weight",self.weight)
-        graph_embedding= self.weight[0][0] * graph_embedding1 + self.weight[0][1] * graph_embedding2 + self.weight[0][2] * graph_embedding3
+
+    def forward(self, graph_embedding1, graph_embedding2, graph_embedding3):
+        print("weight", self.weight)
+        graph_embedding = self.weight[0][0] * graph_embedding1 + self.weight[0][1] * graph_embedding2 + self.weight[0][
+            2] * graph_embedding3
         return graph_embedding

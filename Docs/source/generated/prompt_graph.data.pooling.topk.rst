@@ -1,6 +1,12 @@
-﻿prompt\_graph.data.pooling.topk
-===============================
+﻿topk
+====
 
+.. autoclass:: prompt_graph.data.pooling.topk
+   :members:
 .. currentmodule:: prompt_graph.data.pooling
 
-.. autofunction:: topk
+.. autoclass:: topk
+   :show-inheritance:
+   :members:
+   :inherited-members:
+   :special-members: __cat_dim__, __inc__

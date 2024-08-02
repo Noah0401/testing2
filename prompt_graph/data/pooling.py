@@ -16,7 +16,18 @@ def topk(
     min_score: Optional[float] = None,
     tol: float = 1e-7,
 ) -> Tensor:
-    r"""Pooling is performed on the first K elements that meet the condition"""
+    r"""
+    Select the index corresponding to the first k maximum values in the input tensor x.
+
+    Args:
+        x (Tensor): The features/scores of the nodes.
+        ratio (Union[float, int]): The selection ratio.
+        batch (Tensor): The batch of the graph.
+        min_score (Optional, float): Indicates the minimum score threshold. If :obj:`min_score` is specified,
+        only nodes with scores greater than this threshold are selected.
+        tol (float): Tolerance for handling floating-point comparisons.
+    """
+
     if min_score is not None:
         # Make sure that we do not drop all nodes in a graph.
         scores_max = scatter(x, batch, reduce='max')[batch] - tol
@@ -78,8 +89,11 @@ def filter_adj(
     perm: Tensor,
     num_nodes: Optional[int] = None,
 ) -> Tuple[Tensor, Optional[Tensor]]:
-    r"""According to a given node index arrangement perm to filter and rearrange 
-    edge_attr and edge_index"""
+    r"""
+    According to a given node index is arranged in :obj:`perm` to
+    filter and rearrange :obj:`edge_attr` and :obj:`edge_index`.
+    """
+
     num_nodes = maybe_num_nodes(edge_index, num_nodes)
 
     mask = perm.new_full((num_nodes, ), -1)
@@ -98,7 +112,19 @@ def filter_adj(
 
 
 class TopKPooling(torch.nn.Module):
-    
+    r"""
+    Inherited from :class:`torch.nn.Module`, doing the top-k pooling.
+
+    Args:
+        in_channels (int): The number of input channels.
+        ratio (Union[float, int]): The selection ratio (default: :obj:`0.5`).
+        min_score (Optional, float): Indicates the minimum score threshold. If :obj:`min_score` is specified,
+        only nodes with scores greater than this threshold are selected (default: :obj:`None`).
+        multiplier (float): A multiplication factor that adjusts the pooled node representation (default: :obj:`1`).
+        nonlinearity (Union[str, Callable]): The attention scores of nodes are nonlinear transformed (default: :obj:`'tanh'`).
+        softmax (bool): Whether to use softmax (default: :obj:`FALSE`).
+        """
+
     def __init__(
         self,
         in_channels: int,
@@ -138,7 +164,9 @@ class TopKPooling(torch.nn.Module):
         batch: Optional[Tensor] = None,
         attn: Optional[Tensor] = None,
     ) -> Tuple[Tensor, Tensor, Optional[Tensor], Tensor, Tensor, Tensor]:
-        
+
+        r"""Used to execute the module's forward computing logic."""
+
         if batch is None:
             batch = edge_index.new_zeros(x.size(0))
 
@@ -178,6 +206,23 @@ class TopKPooling(torch.nn.Module):
                 f'multiplier={self.multiplier})')
 
 class SAGPooling(torch.nn.Module):
+    r"""
+        Inherited from :class:`torch.nn.Module`.
+        The most relevant or important nodes are selected according to their scores or attention coefficients,
+        and pooled operations are performed to obtain the pooled node representation.
+
+        Args:
+            in_channels (int): The number of input channels.
+            ratio (Union[float, int]): The selection ratio (default: :obj:`0.5`).
+            GNN (torch.nn.Modile): The chosen GNN method (default: :obj:`GraphConv`).
+            min_score (Optional, float): Indicates the minimum score threshold. If :obj:`min_score` is specified,
+            only nodes with scores greater than this threshold are selected (default: :obj:`None`).
+            multiplier (float): A multiplication factor that adjusts the pooled node representation (default: :obj:`1`).
+            nonlinearity (Union[str, Callable]): The attention scores of nodes are nonlinear transformed (default: :obj:`'tanh'`).
+            softmax (bool): Whether to use softmax (default: :obj:`FALSE`).
+            **kwargs (dict): Additional attributes.
+            """
+
     def __init__(
         self,
         in_channels: int,
@@ -209,14 +254,16 @@ class SAGPooling(torch.nn.Module):
         self.gnn.reset_parameters()
 
     def forward(
-        self,
-        x: Tensor,
-        prompt: Tensor,
-        edge_index: Tensor,
-        edge_attr: OptTensor = None,
-        batch: OptTensor = None,
-        attn: OptTensor = None,
+            self,
+            x: Tensor,
+            prompt: Tensor,
+            edge_index: Tensor,
+            edge_attr: OptTensor = None,
+            batch: OptTensor = None,
+            attn: OptTensor = None,
     ) -> Tuple[Tensor, Tensor, OptTensor, Tensor, Tensor, Tensor]:
+        r"""Used to execute the module's forward computing logic."""
+
         if batch is None:
             batch = edge_index.new_zeros(x.size(0))
 
@@ -242,7 +289,7 @@ class SAGPooling(torch.nn.Module):
         return x, edge_index, edge_attr, batch, perm, score[perm]
 
     def __repr__(self) -> str:
-        r"""return string representation"""
+        r"""return the string representation."""
         if self.min_score is None:
             ratio = f'ratio={self.ratio}'
         else:

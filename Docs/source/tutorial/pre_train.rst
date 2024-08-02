@@ -1,39 +1,42 @@
-pre_train
+Pre-Train
 ============
 
-- We summarized all the possible ways of pre-training in **academic research**
-include:
+- We summarized all the possible ways of pre-training in **academic research**.
+Including:
 ::
+
     - Edge Prediction
     - GraphCL
     - SimGRACE
     - and even more
 
-To pre Train your model you basicly need those steps
 
-- **first**: determine which model you will use, what's the hidden dimension and number of hidden layers
-.. code-block:: python
+- To pre-train your model you basically need the following steps.
 
-    gln = number of hidden layers
-    hid_dim = hidden dimension
-    gnn_type = model you what use
+    + **Firstly**: Determine the model, the hidden dimension and the hidden layers you want to set.
+    .. code-block:: python
 
-- **second**: determine the dataset and how many shots you what use
-.. code-block:: python
+        gln = number of hidden layers
+        hid_dim = hidden dimension
+        gnn_type = model you what use
 
-    dataname = dataset you want to use
-    num_parts =  shots you what to use
-    graph_list, input_dim, hid_dim = load_data4pretrain(dataname, num_parts)
+    + **Secondly**: Determine the dataset and how many shots you what set.
+    .. code-block:: python
 
-- **third**: determine the pretrain method you want to use and build the task of pretrain:
-.. code-block:: python
+        dataname = dataset you want to use
+        num_parts =  shots you what to use
+        graph_list, input_dim, hid_dim = load_data4pretrain(dataname, num_parts)
 
-    pt = PreTrain(pre_train_method, gnn_type, input_dim, hid_dim, gln)
+    + **Thirdly**: Determine the pre-train method you want to use and build the task of pretrain.
+    .. code-block:: python
 
-- **last**: run the task, get the trained model and save it
-.. code-block:: python
+        pt = PreTrain(pre_train_method, gnn_type, input_dim, hid_dim, gln)
 
-    pt.train(graph_list, batch_size=batch_size, lr=0.01, decay=0.0001, epochs=100)
+    + **Lastly**: Run the task, get the trained model and save it.
+    .. code-block:: python
+
+        pt.train(graph_list, batch_size=batch_size, lr=0.01, decay=0.0001, epochs=100)
+
 
 - The following codes present a simple example on how to pre-train a GNN model via GraphCL:
 
@@ -44,17 +47,30 @@ To pre Train your model you basicly need those steps
 
     mkdir('./pre_trained_gnn/')
 
-    pretext = 'GraphCL'  # 'GraphCL', 'SimGRACE'
-    gnn_type = 'TransformerConv'  # 'GAT', 'GCN'
-    dataname, num_parts, batch_size = 'CiteSeer', 200, 10
+    args = get_args()
 
     print("load data...")
-    graph_list, input_dim, hid_dim = load_data4pretrain(dataname, num_parts)
+    input_dim, out_dim, graph_list = load4graph(args.dataset_name, pretrained=True)
 
     print("create PreTrain instance...")
-    pt = PreTrain(pretext, gnn_type, input_dim, hid_dim, gln=2)
+    pt = GraphCL(dataset_name = args.dataset_name, gnn_type = args.gnn_type, hid_dim = args.hid_dim, gln = args.num_layer, num_epoch=args.epochs, device=args.device)
 
     print("pre-training...")
-    pt.train(dataname, graph_list, batch_size=batch_size,
-            aug1='dropN', aug2="permE", aug_ratio=None,
-            lr=0.01, decay=0.0001, epochs=100)
+    pt.pretrain().
+
+- Other pre-train methods can also be done in the similar way.
+
+.. code-block:: python
+
+    #SimGRACE
+    pt = SimGRACE(dataset_name = args.dataset_name, gnn_type = args.gnn_type, hid_dim = args.hid_dim, gln = args.num_layer, num_epoch=args.epochs, device=args.device)
+
+    #Edgepred_GPPT
+    pt = Edgepred_GPPT(dataset_name = args.dataset_name, gnn_type = args.gnn_type, hid_dim = args.hid_dim, gln = args.num_layer, num_epoch=args.epochs, device=args.device)
+
+    #DGI
+    pt = DGI(dataset_name = args.dataset_name, gnn_type = args.gnn_type, hid_dim = args.hid_dim, gln = args.num_layer, num_epoch=args.epochs, device=args.device)
+
+    #......
+
+    pt.pretrain()

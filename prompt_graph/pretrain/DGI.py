@@ -10,7 +10,16 @@ from prompt_graph.utils import generate_corrupted_graph
 from prompt_graph.data import load4node, load4graph, NodePretrain
 import os
 
+
 class Discriminator(nn.Module):
+    r"""
+        Used in adversarial learning to identify the difference between
+        positive samples and negative samples.
+
+        Args:
+            f_k (nn.Bilinear): Performs bilinear transformations on input features.
+    """
+
     def __init__(self, n_h):
         super(Discriminator, self).__init__()
         self.f_k = nn.Bilinear(n_h, n_h, 1)
@@ -19,6 +28,7 @@ class Discriminator(nn.Module):
             self.weights_init(m)
 
     def weights_init(self, m):
+        r"""Initialize the weight of the layers, letting the bias become :obj:`0`"""
         if isinstance(m, nn.Bilinear):
             torch.nn.init.xavier_uniform_(m.weight.data)
             if m.bias is not None:
@@ -42,18 +52,33 @@ class Discriminator(nn.Module):
 
 
 class DGI(PreTrain):
-    def __init__(self, *args, hid_dim = 16, **kwargs):    # hid_dim=16
+    r"""
+    Inherited from PreTrain, forming the DGI pre-train method.
+    DGI uses positive and negative sampling,
+    maximizes mutual information strategy,
+    to learn node embedding,
+    getting more complete information of the graph.
+    See `here <https://arxiv.org/abs/1809.10341>`__ for more information.
+
+    Args:
+        hid_dim (int): The dimension of hidden layer (default: :obj:`16`).
+        *args (tuple): Additional attributes.
+        **kwargs (dict): Additional attributes.
+
+    """
+
+    def __init__(self, *args, hid_dim=16, **kwargs):  # hid_dim=16
         super().__init__(*args, **kwargs)
-        
-        
+
         self.disc = Discriminator(hid_dim).to(self.device)
         self.loss = nn.BCEWithLogitsLoss()
         self.graph_data = self.load_data()
-        self.initialize_gnn(self.input_dim, hid_dim)  
-        self.optimizer = Adam(self.gnn.parameters(), lr=0.01, weight_decay = 0.0001)
+        self.initialize_gnn(self.input_dim, hid_dim)
+        self.optimizer = Adam(self.gnn.parameters(), lr=0.01, weight_decay=0.0001)
 
-    def load_data(self):
-        if self.dataset_name in ['PubMed', 'CiteSeer', 'Cora','Computers', 'Photo', 'Reddit', 'WikiCS', 'Flickr']:
+    def load_data(self) -> Data:
+        r"""Load the graph data and return it"""
+        if self.dataset_name in ['PubMed', 'CiteSeer', 'Cora', 'Computers', 'Photo', 'Reddit', 'WikiCS', 'Flickr']:
             data, dataset = load4node(self.dataset_name)
             self.input_dim = dataset.num_features
         return data
@@ -62,13 +87,19 @@ class DGI(PreTrain):
         #     self.input_dim, _, self.graph_list= load4graph(self.dataset_name, pretrained=True)
 
     def generate_loader_data(self):
+        r"""Generate 2 data loaders.
+        It returns two data loaders (loader1 and loader2),
+        where loader1 contains the raw graph data
+        and loader2 contains the perturbed graph data"""
         loader1 = self.graph_data
 
         # only perturb node indices in transductive setup
         loader2 = generate_corrupted_graph(self.graph_data, "shuffleX")
         return loader1, loader2
 
-    def pretrain_one_epoch(self):
+    def pretrain_one_epoch(self) -> float:
+        r"""train one time,
+        return the cumulative loss value of a pre-training round."""
         self.gnn.train()
 
         device = self.device
@@ -95,23 +126,27 @@ class DGI(PreTrain):
 
         accum_loss = float(l.detach().cpu().item())
         return accum_loss
-            
-
 
     def pretrain(self):
+        r"""Perform multiple rounds of pre-training
+        and save the model with the least training loss at the end of each round.
+        The pre-training effect of the model is gradually optimized through iterative loops
+        and saved in the specified folder"""
         train_loss_min = 1000000
         for epoch in range(1, self.epochs + 1):
             time0 = time.time()
             self.optimizer.zero_grad()
             train_loss = self.pretrain_one_epoch()
-            print("***epoch: {}/{} | train_loss: {:.8}".format(epoch, self.epochs , train_loss))
+            print("***epoch: {}/{} | train_loss: {:.8}".format(epoch, self.epochs, train_loss))
 
-            
             if train_loss_min > train_loss:
                 train_loss_min = train_loss
                 folder_path = f"./Experiment/pre_trained_model/{self.dataset_name}"
                 if not os.path.exists(folder_path):
                     os.makedirs(folder_path)
                 torch.save(self.gnn.state_dict(),
-                           "./Experiment/pre_trained_model/{}/{}.{}.{}.pth".format(self.dataset_name, 'DGI', self.gnn_type, str(self.hid_dim) + 'hidden_dim'))
-                print("+++model saved ! {}.{}.{}.{}.pth".format(self.dataset_name, 'DGI', self.gnn_type, str(self.hid_dim) + 'hidden_dim'))
+                           "./Experiment/pre_trained_model/{}/{}.{}.{}.pth".format(self.dataset_name, 'DGI',
+                                                                                   self.gnn_type,
+                                                                                   str(self.hid_dim) + 'hidden_dim'))
+                print("+++model saved ! {}.{}.{}.{}.pth".format(self.dataset_name, 'DGI', self.gnn_type,
+                                                                str(self.hid_dim) + 'hidden_dim'))

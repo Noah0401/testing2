@@ -1,6 +1,8 @@
 
 
 def print_model_parameters(model):
+    r"""Print the parameters of the given model."""
+
     total_params = 0
     for name, parameter in model.named_parameters():
         if not parameter.requires_grad: continue

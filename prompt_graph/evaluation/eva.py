@@ -5,13 +5,22 @@ import sklearn.linear_model as lm
 import sklearn.metrics as skm
 
 class Evaluator:
+    r"""
+    Args:
+        eval_metric (str): :obj:`hits@k` refers to the probability of a hit in the first k results.
+        K (int): Get from :obj:`hits@k`.
+    """
+
     def __init__(self, eval_metric='hits@50'):
 
         self.eval_metric = eval_metric
         if 'hits@' in self.eval_metric:
             self.K = int(self.eval_metric.split('@')[1])
 
-    def _parse_and_check_input(self, input_dict):
+    def _parse_and_check_input(self, input_dict: dict):
+        r"""Parse and check whether the type and shape of the input data meets the requirements,
+        and the data is converted into a uniform format"""
+
         if 'hits@' in self.eval_metric:
             if not 'y_pred_pos' in input_dict:
                 raise RuntimeError('Missing key of y_pred_pos')
@@ -84,7 +93,8 @@ class Evaluator:
         else:
             raise ValueError('Undefined eval metric %s' % (self.eval_metric))
 
-    def eval(self, input_dict):
+    def eval(self, input_dict: dict):
+        r"""evaluate and return the result"""
 
         if 'hits@' in self.eval_metric:
             y_pred_pos, y_pred_neg, type_info = self._parse_and_check_input(input_dict)
@@ -97,6 +107,7 @@ class Evaluator:
             raise ValueError('Undefined eval metric %s' % (self.eval_metric))
 
     def _eval_hits(self, y_pred_pos, y_pred_neg, type_info):
+        r"""Evaluate and return the value :obj:`hits@k`"""
 
         if type_info == 'torch':
             res = torch.topk(y_pred_neg, self.K)
@@ -110,6 +121,8 @@ class Evaluator:
         return {'hits@{}'.format(self.K): hitsK}
 
     def _eval_mrr(self, y_pred_pos, y_pred_neg, type_info):
+        r"""Evaluate and return the value :obj:`mrr`: Mean Reciprocal Ranking."""
+
         if type_info == 'torch':
             y_pred = torch.cat([y_pred_pos.view(-1, 1), y_pred_neg], dim=1)
             argsort = torch.argsort(y_pred, dim=1, descending=True)
@@ -127,6 +140,8 @@ class Evaluator:
 
 
 def mrr_hit(normal_label: np.ndarray, pos_out: np.ndarray, metric: list = None):
+    r"""Evaluate and return the value of both :obj:`mrr` and :obj:`hits@k`"""
+
     if isinstance(normal_label, np.ndarray) and isinstance(pos_out, np.ndarray):
         pass
     else:
@@ -173,7 +188,7 @@ def mrr_hit(normal_label: np.ndarray, pos_out: np.ndarray, metric: list = None):
 
 
 def compute_acc_unsupervised(emb, labels, train_nids, val_nids, test_nids):
-    """
+    r"""
     Compute the accuracy of prediction given the labels.
     """
     emb = emb.cpu().numpy()

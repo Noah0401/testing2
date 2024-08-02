@@ -1,6 +1,12 @@
-﻿prompt\_graph.data.loader.graph\_data\_obj\_to\_nx
-==================================================
+﻿graph_data_obj_to_nx
+====================
 
+.. autoclass:: prompt_graph.data.loader.graph_data_obj_to_nx
+   :members:
 .. currentmodule:: prompt_graph.data.loader
 
-.. autofunction:: graph_data_obj_to_nx
+.. autoclass:: graph_data_obj_to_nx
+   :show-inheritance:
+   :members:
+   :inherited-members:
+   :special-members: __cat_dim__, __inc__

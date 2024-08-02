@@ -2,7 +2,14 @@ import torch
 import torch.nn.functional as F
 
 
-def act(x=None, act_type='leakyrelu'):
+def act(x=None, act_type:str='leakyrelu'):
+    r"""
+    Applies different activation functions to the input x based on the specified act_type.
+
+    Args:
+        x (Tensor): The input tensor. (default: :obj:`None`)
+        act_type (str): The specified activation function type. (default: :obj:`leakyrelu`)
+    """
     if act_type == 'leakyrelu':
         return torch.nn.LeakyReLU() if x is None else F.leaky_relu(x)
     elif act_type == 'tanh':

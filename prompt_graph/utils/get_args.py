@@ -1,6 +1,30 @@
 import argparse
 
 def get_args():
+    r"""Add and return the arguments.
+    The arguments include:
+    :obj:`task`,
+    :obj:`dataset_name`
+    :obj:`device`
+    :obj:`gnn_type`
+    :obj:`prompt type`
+    :obj:`hid_dim`
+    :obj:`batch_size`
+    :obj:`epochs`
+    :obj:`shot_num`
+    obj:`pre_train_model_path`
+    obj:`lr`
+    obj:`decay`
+    obj:`num_layer`
+    obj:`dropout_ratio`
+    obj:`graph_pooling`
+    obj:`JK`
+    obj:`seed`
+    obj:`runseed`
+    obj:`num_workers`
+    obj:`num_layers`
+    obj:`pnum`
+    """
     parser = argparse.ArgumentParser(description='PyTorch implementation of pre-training of graph neural networks')
     parser.add_argument('--task', type = str)
     parser.add_argument('--dataset_name', type=str, default='Cora',help='Choose the dataset of pretrainor downstream task')

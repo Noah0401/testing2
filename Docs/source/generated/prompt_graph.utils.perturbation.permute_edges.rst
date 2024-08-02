@@ -1,6 +1,12 @@
-﻿prompt\_graph.utils.perturbation.permute\_edges
-===============================================
+﻿permute_edges
+=============
 
+.. autoclass:: prompt_graph.utils.perturbation.permute_edges
+   :members:
 .. currentmodule:: prompt_graph.utils.perturbation
 
-.. autofunction:: permute_edges
+.. autoclass:: permute_edges
+   :show-inheritance:
+   :members:
+   :inherited-members:
+   :special-members: __cat_dim__, __inc__

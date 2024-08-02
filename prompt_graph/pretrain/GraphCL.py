@@ -10,26 +10,58 @@ from torch.optim import Adam
 import os
 from.base import PreTrain
 
+
 class GraphCL(PreTrain):
-    def __init__(self, *args, **kwargs):    # hid_dim=16
+    r"""
+        Inherited from PreTrain, forming the GraphCL pre-train method.
+        It optimizes the model by maximizing the similarity of
+        positive sample pairs and minimizing the similarity of negative sample pairs.
+        See `here <https://arxiv.org/abs/2010.13902>`__ for more information.
+
+        Args:
+            *args (tuple): Additional attributes.
+            **kwargs (dict): Additional attributes.
+        """
+
+    def __init__(self, *args, **kwargs):  # hid_dim=16
         super().__init__(*args, **kwargs)
         self.load_graph_data()
-        self.initialize_gnn(self.input_dim, self.hid_dim)   
+        self.initialize_gnn(self.input_dim, self.hid_dim)
         self.projection_head = torch.nn.Sequential(torch.nn.Linear(self.hid_dim, self.hid_dim),
                                                    torch.nn.ReLU(inplace=True),
                                                    torch.nn.Linear(self.hid_dim, self.hid_dim)).to(self.device)
+
     def load_graph_data(self):
-        if self.dataset_name in ['PubMed', 'CiteSeer', 'Cora','Computers', 'Photo', 'Reddit', 'WikiCS', 'Flickr']:
-            self.graph_list, self.input_dim = NodePretrain(dataname = self.dataset_name, num_parts=200)
+        r"""data loading"""
+        if self.dataset_name in ['PubMed', 'CiteSeer', 'Cora', 'Computers', 'Photo', 'Reddit', 'WikiCS', 'Flickr']:
+            self.graph_list, self.input_dim = NodePretrain(dataname=self.dataset_name, num_parts=200)
         else:
-            self.input_dim, self.out_dim, self.graph_list= load4graph(self.dataset_name,pretrained=True)
-    
-    def get_loader(self, graph_list, batch_size,aug1=None, aug2=None, aug_ratio=None):
+            self.input_dim, self.out_dim, self.graph_list = load4graph(self.dataset_name, pretrained=True)
+
+    def get_loader(self, graph_list, batch_size, aug1=None, aug2=None, aug_ratio=None):
+        r"""
+        Get two data loaders, loader1 and loader2,
+        which are used to load the graph data after different data enhancement operations.
+        There are 3 types of data enhancement methods.
+        :obj:`dropN`: randomly delete some nodes of from the graph;
+        :obj:`permE`: randomly permutate some edges in the graph
+        :obj:`maskN`: randomly mask some node features in the graph
+
+        Args:
+        graph_list (list): The original graph list.
+        batch_size (int): The size of one batch.
+        aug1 (str): The type of the first data enhancement operation can be selected as :obj:`dropN`, :obj:`permE`, or :obj:`maskN`.
+         (default: :obj:`None`)
+        aug2 (str): The type of the second data enhancement operation can be selected as :obj:`dropN`, :obj:`permE`, or :obj:`maskN`.
+         (default: :obj:`None`)
+        aug_ratio (float): Scale factor of the data enhancement operation. The value ranges from :obj:`0.1`, :obj:`0.2`, or :obj:`0.3`
+         (default: :obj:`None`)
+        """
 
         if len(graph_list) % batch_size == 1:
             raise KeyError(
                 "batch_size {} makes the last batch only contain 1 graph, \n which will trigger a zero bug in GraphCL!")
-        
+
         shuffle(graph_list)
         if aug1 is None:
             aug1 = random.sample(['dropN', 'permE', 'maskN'], k=1)
@@ -51,18 +83,19 @@ class GraphCL(PreTrain):
             view_list_2.append(view_g)
 
         loader1 = DataLoader(view_list_1, batch_size=batch_size, shuffle=False,
-                                num_workers=1)  # you must set shuffle=False !
+                             num_workers=1)  # you must set shuffle=False !
         loader2 = DataLoader(view_list_2, batch_size=batch_size, shuffle=False,
-                                num_workers=1)  # you must set shuffle=False !
+                             num_workers=1)  # you must set shuffle=False !
 
         return loader1, loader2
-    
+
     def forward_cl(self, x, edge_index, batch):
         x = self.gnn(x, edge_index, batch)
         x = self.projection_head(x)
         return x
 
     def loss_cl(self, x1, x2):
+        r"""the loss function"""
         T = 0.1
         batch_size, _ = x1.size()
         x1_abs = x1.norm(dim=1)
@@ -72,18 +105,22 @@ class GraphCL(PreTrain):
         pos_sim = sim_matrix[range(batch_size), range(batch_size)]
         loss = - torch.log(pos_sim / (sim_matrix.sum(dim=1) + 1e-4)).mean()
         # loss = pos_sim / ((sim_matrix.sum(dim=1) - pos_sim) + 1e-4)
-        # loss = - torch.log(loss).mean() 
+        # loss = - torch.log(loss).mean()
         return loss
 
     def train_graphcl(self, loader1, loader2, optimizer):
+        r"""train one time, using 2 loaders,
+        return the average(of batch) loss for the training"""
         self.train()
         train_loss_accum = 0
         total_step = 0
         for step, batch in enumerate(zip(loader1, loader2)):
             batch1, batch2 = batch
             optimizer.zero_grad()
-            x1 = self.forward_cl(batch1.x.to(self.device), batch1.edge_index.to(self.device), batch1.batch.to(self.device))
-            x2 = self.forward_cl(batch2.x.to(self.device), batch2.edge_index.to(self.device), batch2.batch.to(self.device))
+            x1 = self.forward_cl(batch1.x.to(self.device), batch1.edge_index.to(self.device),
+                                 batch1.batch.to(self.device))
+            x2 = self.forward_cl(batch2.x.to(self.device), batch2.edge_index.to(self.device),
+                                 batch2.batch.to(self.device))
             loss = self.loss_cl(x1, x2)
 
             loss.backward()
@@ -95,7 +132,10 @@ class GraphCL(PreTrain):
         return train_loss_accum / total_step
 
     def pretrain(self, batch_size=10, aug1='dropN', aug2="permE", aug_ratio=None, lr=0.01, decay=0.0001, epochs=100):
-        
+        r"""Perform multiple rounds of pre-training
+        and save the model with the least training loss at the end of each round.
+        The pre-training effect of the model is gradually optimized through iterative loops
+        and saved in the specified folder"""
         self.to(self.device)
         loader1, loader2 = self.get_loader(self.graph_list, batch_size, aug1=aug1, aug2=aug2)
         print('start training {} | {} | {}...'.format(self.dataset_name, 'GraphCL', self.gnn_type))
@@ -114,5 +154,8 @@ class GraphCL(PreTrain):
                     os.makedirs(folder_path)
 
                 torch.save(self.gnn.state_dict(),
-                           "./Experiment/pre_trained_model/{}/{}.{}.{}.pth".format(self.dataset_name, 'GraphCL', self.gnn_type, str(self.hid_dim) + 'hidden_dim'))
-                print("+++model saved ! {}.{}.{}.{}.pth".format(self.dataset_name, 'GraphCL', self.gnn_type, str(self.hid_dim) + 'hidden_dim'))
+                           "./Experiment/pre_trained_model/{}/{}.{}.{}.pth".format(self.dataset_name, 'GraphCL',
+                                                                                   self.gnn_type,
+                                                                                   str(self.hid_dim) + 'hidden_dim'))
+                print("+++model saved ! {}.{}.{}.{}.pth".format(self.dataset_name, 'GraphCL', self.gnn_type,
+                                                                str(self.hid_dim) + 'hidden_dim'))

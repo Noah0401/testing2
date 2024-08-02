@@ -1,6 +1,12 @@
-﻿prompt\_graph.utils.constraint.constraint
-=========================================
+﻿constraint
+==========
 
+.. autoclass:: prompt_graph.utils.constraint.constraint
+   :members:
 .. currentmodule:: prompt_graph.utils.constraint
 
-.. autofunction:: constraint
+.. autoclass:: constraint
+   :show-inheritance:
+   :members:
+   :inherited-members:
+   :special-members: __cat_dim__, __inc__

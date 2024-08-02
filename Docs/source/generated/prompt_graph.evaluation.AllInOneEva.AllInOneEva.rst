@@ -1,16 +1,12 @@
-﻿prompt\_graph.evaluation.AllInOneEva.AllInOneEva
-================================================
+﻿AllInOneEva
+===========
 
+.. autoclass:: prompt_graph.evaluation.AllInOneEva.AllInOneEva
+   :members:
 .. currentmodule:: prompt_graph.evaluation.AllInOneEva
 
 .. autoclass:: AllInOneEva
-
-   
-   .. automethod:: __init__
-
-   
-   
-
-   
-   
-   
+   :show-inheritance:
+   :members:
+   :inherited-members:
+   :special-members: __cat_dim__, __inc__

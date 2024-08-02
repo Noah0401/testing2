@@ -1,16 +1,12 @@
-﻿prompt\_graph.evaluation.AllInOneEva.AllInOneEvaWithoutAnswer
-=============================================================
+﻿AllInOneEvaWithoutAnswer
+========================
 
+.. autoclass:: prompt_graph.evaluation.AllInOneEva.AllInOneEvaWithoutAnswer
+   :members:
 .. currentmodule:: prompt_graph.evaluation.AllInOneEva
 
 .. autoclass:: AllInOneEvaWithoutAnswer
-
-   
-   .. automethod:: __init__
-
-   
-   
-
-   
-   
-   
+   :show-inheritance:
+   :members:
+   :inherited-members:
+   :special-members: __cat_dim__, __inc__

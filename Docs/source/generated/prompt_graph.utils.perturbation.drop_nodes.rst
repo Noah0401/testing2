@@ -1,6 +1,12 @@
-﻿prompt\_graph.utils.perturbation.drop\_nodes
-============================================
+﻿drop_nodes
+==========
 
+.. autoclass:: prompt_graph.utils.perturbation.drop_nodes
+   :members:
 .. currentmodule:: prompt_graph.utils.perturbation
 
-.. autofunction:: drop_nodes
+.. autoclass:: drop_nodes
+   :show-inheritance:
+   :members:
+   :inherited-members:
+   :special-members: __cat_dim__, __inc__

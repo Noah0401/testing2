@@ -1,6 +1,7 @@
 
 
 def GPFEva(loader, gnn, prompt, answering, device):
+    r"""graph classification accuracy of GPF"""
     prompt.eval()
     if answering:
         answering.eval()

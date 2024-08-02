@@ -1,16 +1,14 @@
 ===============================
-Learn to use ProG in 10 minutes
+Quick Start
 ===============================
 
 
-Basic concept(5min)
+Basic Concepts
 ==============================
 
-Firstly, Let's introduce the fundamental concepts and usage of :pyg:`ProG` through a few examples.
+The core concept of `ProG` is to integrate the prompting engineering of graph neural network into a **single task**.
 
-The core concept of  :pyg:`ProG` is to integrate the prompting engineering of graph neural network into a **single task**
-
-To get started with ProG, all you need to do is understand the following packages and their relationships, and then you'll be fluent in doing whatever you want with ProG.
+To get started with `ProG`, all you need to do is understand the following packages and their relationships, and then you'll be fluent in doing whatever you want with ProG.
 
 .. contents::
     :local:
@@ -20,14 +18,14 @@ Tasker
 
 
 A task is a list of parameters for the specific event you want to implement and give specific implementation.
-A single task in :pyg:`ProG` is described by an instance of class ***"prompt_graph.tasker.TaskType"***, which holds the following attributes by default:
+A single task in `ProG` is described by an instance of class **prompt_graph.tasker.TaskType**, which holds the following attributes by default:
 
 - TaskType: This indicate the type of task you want to perform (e.g. NodeTask, LinkTask, GraphTask).
 - TaskType.pre_train_model_path: This indicates the path of your pre-trained model, the parameters of which will be read as the initial model.
-- TaskType.prompt: This is prompting object of the prompt method you chose (e.g. allinone, GPPT, GPF, etc.).
-- TaskType.gnn: This is the graph neural network object of the model you have chosen (e.g. GIN, GAT, GCN, etc.).
+- TaskType.prompt_type: This is prompting object of the prompt method you chose (e.g. All-in-one, GPPT, GPF, etc.).
+- TaskType.gnn_type: This is the graph neural network object of the model you have chosen (e.g. GIN, GAT, GCN, etc.).
 - TaskType.dataset_name: This is the dataset name string of the dataset you selected (e.g. Cora, CiteSeer, etc.).
-- TaskType.run():  This function will automatically call the prompting and training process for us, and print the relevant metrics after training.
+- TaskType.run(): This function will automatically call the prompting and training process for us, and print the relevant metrics after training.
 
 These properties are all built into the tasker object, and only need to be set in the external interface.
 
@@ -42,30 +40,32 @@ Let's show a concrete example of a design task:
 .. code-block:: python
 
     from prompt_graph.tasker import NodeTask, LinkTask, GraphTask
-    tasker = NodeTask(pre_train_model_path = './pre_trained_gnn/Cora.Edgepred_Gprompt.GCN.pth',
-                  dataset_name = 'Cora', num_layer = 3, gnn_type = 'GCN', prompt_type = 'gpf', shot_num = 5)
+    tasker = NodeTask(pre_train_model_path = './pre_trained_gnn/Cora.Edgepred_Gprompt.GCN.pth', gnn_type='TransformerConv', hid_dim = 128, num_layer = 2,
+                  dataset_name='Cora', prompt_type='GPF', epochs=100, shot_num=10, device : int = 5)
     tasker.run()
 
 
-- pre_train_model_path: used to set the ".pth" file path
-- dataset_name: used to set the dataset you want to select
-- num_layer: used to set the layer of the GNN model of your task
-- gnn_type: uesd to set the type of GNN model in your task
-- prompt_type: used to set the type of prompt you want to use in your task
-- shot_num: used to set the number of training cases
+- pre_train_model_path: Used to set the ".pth" file path.
+- gnn_type: Uesd to set the type of GNN model in your task.
+- hid_dim: Used to set the dimension of hidden layers.
+- num_layer: Used to set the layer of the GNN model of your task.
+- dataset_name: Used to set the dataset you want to selet.
+- prompt_type: Used to set the type of prompt you want to use in your task.
+- epochs: Used to set the training times you want to perform.
+- shot_num: Used to set the number of samples used in each training step.
+- device: Used to set the device you want to use.
 
 
-
-PreTain
+PreTrain
 -------------------------
 
 
-A pretain object is used to build the pre-trained model on which the graph prompting project is based.
+A pretrain object is used to build the pre-trained model on which the graph prompting project is based.
 All you need to do is pretraining first and save the model under the relevant path. After that, you can reuse this pre-trained model.
-A single pretain object in :pyg:`ProG` is described by an instance of class ***"prompt_graph.pretain.preTainType"***, which holds the following attributes by default:
+A single pretain object in :pyg:`ProG` is described by an instance of class **prompt_graph.pretain.preTainType**, which holds the following attributes by default:
 
 - preTainType: This indicate the type of preTain you want to perform (e.g. DGI, GraphCL, SimGRACE, etc. ).
-- preTainType.gnn: This is the graph neural network object of the model you have chosen (e.g. GIN, GAT, GCN, etc.), whose arguments will be saved.
+- preTainType.gnn_type: This is the graph neural network object of the model you have chosen (e.g. GIN, GAT, GCN, etc.), whose arguments will be saved.
 - preTainType.dataset_name: This is the dataset name string of the dataset you selected (e.g. Cora, CiteSeer, etc.).
 - preTainType.pretrain():  This function will automatically call the training process, print the relevant metrics after training and save the model to relevant file after training.
 
@@ -87,38 +87,30 @@ Let's show a concrete example of a design task:
     args = get_args()
     seed_everything(args.seed)
     mkdir('./pre_trained_gnn/')
-    pt = SimGRACE(dataset_name = args.dataset_name, gnn_type = args.gnn_type, hid_dim = args.hid_dim, gln = args.num_layer, num_epoch=args.epochs)
+    pt = SimGRACE(gnn_type = args.gnn_type, dataset_name = args.dataset_name, hid_dim = args.hid_dim, gln = args.num_layer, num_epoch=args.epochs, device=args.device)
     pt.pretrain()
 
 
-- dataset_name: used to set the dataset you want to select in preTrain
-- gnn_type: uesd to set the type of GNN model in preTrain
-- hid_dim: used to set the dim of the hidden layer of the GNN model in preTrain
-- gln: used to set the layer of the GNN model in preTrain
-- num_epoch: used to set the number of training epochs
+- gnn_type: Uesd to set the type of GNN model in preTrain.
+- dataset_name: Used to set the dataset you want to select in preTrain.
+- hid_dim: Used to set the dim of the hidden layer of the GNN model in preTrain.
+- gln: Used to set the layer of the GNN model in preTrain.
+- num_epoch: Used to set the number of training epochs.
+- device: Used to set the device you want to use.
 
 
-other packages
+
+Other Packages
 ------------
 
-All the other packages (data, evaluation, model, prompt, utills), are providing internal implementations to the task objects. If you just want to use ProG quickly, you don't need to know its internals.
-
-Now, let's introduce the 5 other packages below.
-
-- "data": implements the introduction of external datasets and standardises the format. It also helps to split and package the data according to the requirements.
-- "model": implements the underlying GNN model according to requirements.
-- "evaluation": helps you to evaluate how effective your configured tasks are and returns parameters characterising the model's performance.
-- "prompt": implements all the prompt methods.
-- "utils": implements various other related tools.
+All other packages (data, evaluation, model, prompt, utils), are providing internal implementations to the task objects. If you just want to use `ProG` quickly, you don't need to know its internals.
+Details can be seen in **Main Packages** part.
 
 
-
-
-introduce with an example(5min)
+introduce with an example
 ==============================
 
-For example, now we want to compare the node classification task without prompting and using the Allinone prompting method.
-
+For example, now we want to compare the node classification task without prompting and using the All-In-One prompting method.
 
 Let's construct it step by step.
 
@@ -152,7 +144,7 @@ Firstly, let's overview the simple code.
 
 Secondly, let's break it down bit by bit.
 
-- import relevant packages
+- Import relevant packages.
 
 .. code-block:: python
 
@@ -164,10 +156,10 @@ Secondly, let's break it down bit by bit.
 
 
 .. Note::
-    You need to import the method you want to use for pre-train from
-    **preTain** and import the level of the task you want to perform from **tasker**
+    You need to import the method you want to use for Pre-Train from
+    **PreTrain** and import the level of the task you want to perform from **Tasker**
 
-- preTain your model
+- PreTrain your model.
 
 .. code-block:: python
 
@@ -181,10 +173,9 @@ Secondly, let's break it down bit by bit.
 
 
 .. Note::
-    Choose a pre-training parameter list and do a preTain,
-    which you can generate randomly by seeding everything, or specify yourself.
+    Choose a pre-training parameter list and do a pre-train task, which you can generate randomly by seeding everything, or specify yourself.
 
-- compare two prompting method
+- Compare two prompting methods.
 
 .. code-block:: python
 
@@ -196,14 +187,14 @@ Secondly, let's break it down bit by bit.
     >>>
     # tasker 2
     tasker = NodeTask(pre_train_model_path = './pre_trained_gnn/Cora.Edgepred_Gprompt.GCN.pth',
-                   dataset_name = args.dataset_name, num_layer = args.num_layer gnn_type = args.gnn_type, prompt_type = 'allinone', shot_num = 5)
+                   dataset_name = args.dataset_name, num_layer = args.num_layer gnn_type = args.gnn_type, prompt_type = 'All-in-one', shot_num = 5)
     tasker.run()
     >>>
 
 
 .. Note::
     Use a pre-trained model with a specified cue to do downstream and give an assessment of the effect.
-    In this way, we can compare the accuracy, training complexity, etc. of different prompting methods
+    In this way, we can compare the accuracy, training complexity, etc. of different prompting methods.
 
 Exercises
 ---------

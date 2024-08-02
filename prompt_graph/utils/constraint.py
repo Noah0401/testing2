@@ -1,6 +1,10 @@
 import torch
 
 def constraint(device,prompt):
+    r"""
+    Calculates the value of the constraint term.
+    """
+
     if isinstance(prompt,list):
         sum=0
         for p in prompt:

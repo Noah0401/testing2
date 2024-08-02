@@ -9,7 +9,9 @@ import sys
 import torch
 import torch.nn as nn
 
+
 def parse_skipgram(fname):
+    r"""Parses a text file and converts it into a NumPy array containing node features."""
     with open(fname) as f:
         toks = list(f.read().split())
     nb_nodes = int(toks[0])
@@ -25,8 +27,10 @@ def parse_skipgram(fname):
             it += 1
     return ret
 
+
 # Process a (subset of) a TU dataset into standard form
 def process_tu(data, nb_nodes):
+    r""" Process a (subset of) a TU dataset into standard form"""
     nb_graphs = len(data)
     ft_size = data.num_features
 
@@ -35,7 +39,7 @@ def process_tu(data, nb_nodes):
     labels = np.zeros(nb_graphs)
     sizes = np.zeros(nb_graphs, dtype=np.int32)
     masks = np.zeros((nb_graphs, nb_nodes))
-       
+
     for g in range(nb_graphs):
         sizes[g] = data[g].x.shape[0]
         features[g, :sizes[g]] = data[g].x
@@ -47,10 +51,12 @@ def process_tu(data, nb_nodes):
 
     return features, adjacency, labels, sizes, masks
 
+
 def micro_f1(logits, labels):
+    r"""Calculate the microscopic F1 score"""
     # Compute predictions
     preds = torch.round(nn.Sigmoid()(logits))
-    
+
     # Cast to avoid trouble
     preds = preds.long()
     labels = labels.long()
@@ -67,13 +73,12 @@ def micro_f1(logits, labels):
     f1 = (2 * prec * rec) / (prec + rec)
     return f1
 
-"""
- Prepare adjacency matrix by expanding up to a given neighbourhood.
- This will insert loops on every node.
- Finally, the matrix is converted to bias vectors.
- Expected shape: [graph, nodes, nodes]
-"""
+
 def adj_to_bias(adj, sizes, nhood=1):
+    r"""Prepare adjacency matrix by expanding up to a given neighbourhood.
+    This will insert loops on every node.
+    Finally, the matrix is converted to bias vectors.
+    Expected shape: [graph, nodes, nodes]"""
     nb_graphs = adj.shape[0]
     mt = np.empty(adj.shape)
     for g in range(nb_graphs):
@@ -92,27 +97,28 @@ def adj_to_bias(adj, sizes, nhood=1):
 ###############################################
 
 def parse_index_file(filename):
-    """Parse index file."""
+    r"""Parse index file."""
     index = []
     for line in open(filename):
         index.append(int(line.strip()))
     return index
 
+
 def sample_mask(idx, l):
-    """Create mask."""
+    r"""Create mask."""
     mask = np.zeros(l)
     mask[idx] = 1
     return np.array(mask, dtype=np.bool)
 
-def load_data(dataset_str): # {'pubmed', 'citeseer', 'cora'}
-    """Load data."""
+
+def load_data(dataset_str):  # {'pubmed', 'citeseer', 'cora'}
+    r"""Load data."""
     current_path = os.path.dirname(__file__)
     names = ['x', 'y', 'tx', 'ty', 'allx', 'ally', 'graph']
     objects = []
     for i in range(len(names)):
         with open("./data/Planetoid/Cora/raw/ind.{}.{}".format(dataset_str, names[i]), 'rb') as f:
             objects.append(pkl.load(f, encoding='latin1'))
-        
 
     x, y, tx, ty, allx, ally, graph = tuple(objects)
     test_idx_reorder = parse_index_file("./data/Planetoid/Cora/raw/ind.{}.test.index".format(dataset_str))
@@ -121,12 +127,12 @@ def load_data(dataset_str): # {'pubmed', 'citeseer', 'cora'}
     if dataset_str == 'citeseer':
         # Fix citeseer dataset (there are some isolated nodes in the graph)
         # Find isolated nodes, add them as zero-vecs into the right position
-        test_idx_range_full = range(min(test_idx_reorder), max(test_idx_reorder)+1)
+        test_idx_range_full = range(min(test_idx_reorder), max(test_idx_reorder) + 1)
         tx_extended = sp.lil_matrix((len(test_idx_range_full), x.shape[1]))
-        tx_extended[test_idx_range-min(test_idx_range), :] = tx
+        tx_extended[test_idx_range - min(test_idx_range), :] = tx
         tx = tx_extended
         ty_extended = np.zeros((len(test_idx_range_full), y.shape[1]))
-        ty_extended[test_idx_range-min(test_idx_range), :] = ty
+        ty_extended[test_idx_range - min(test_idx_range), :] = ty
         ty = ty_extended
 
     features = sp.vstack((allx, tx)).tolil()
@@ -138,13 +144,15 @@ def load_data(dataset_str): # {'pubmed', 'citeseer', 'cora'}
 
     idx_test = test_idx_range.tolist()
     idx_train = range(len(y))
-    idx_val = range(len(y), len(y)+500)
+    idx_val = range(len(y), len(y) + 500)
 
     return adj, features, labels, idx_train, idx_val, idx_test
 
+
 def sparse_to_tuple(sparse_mx, insert_batch=False):
-    """Convert sparse matrix to tuple representation."""
-    """Set insert_batch=True if you want to insert a batch dimension."""
+    r"""Convert sparse matrix to tuple representation.
+    Set :obj:`insert_batch`=:obj:`TRUE` if you want to insert a batch dimension."""
+
     def to_tuple(mx):
         if not sp.isspmatrix_coo(mx):
             mx = mx.tocoo()
@@ -166,8 +174,9 @@ def sparse_to_tuple(sparse_mx, insert_batch=False):
 
     return sparse_mx
 
+
 def standardize_data(f, train_mask):
-    """Standardize feature matrix and convert to tuple representation"""
+    r"""Standardize feature matrix and convert to tuple representation"""
     # standardize data
     f = f.todense()
     mu = f[train_mask == True, :].mean(axis=0)
@@ -178,8 +187,9 @@ def standardize_data(f, train_mask):
     f = (f - mu) / sigma
     return f
 
+
 def preprocess_features(features):
-    """Row-normalize feature matrix and convert to tuple representation"""
+    r"""Row-normalize feature matrix and convert to tuple representation"""
     rowsum = np.array(features.sum(1))
     r_inv = np.power(rowsum, -1).flatten()
     r_inv[np.isinf(r_inv)] = 0.
@@ -187,8 +197,9 @@ def preprocess_features(features):
     features = r_mat_inv.dot(features)
     return features.todense(), sparse_to_tuple(features)
 
+
 def normalize_adj(adj):
-    """Symmetrically normalize adjacency matrix."""
+    r"""Symmetrically normalize adjacency matrix."""
     adj = sp.coo_matrix(adj)
     rowsum = np.array(adj.sum(1))
     d_inv_sqrt = np.power(rowsum, -0.5).flatten()
@@ -198,19 +209,16 @@ def normalize_adj(adj):
 
 
 def preprocess_adj(adj):
-    """Preprocessing of adjacency matrix for simple GCN model and conversion to tuple representation."""
+    r"""Preprocessing of adjacency matrix for simple GCN model and conversion to tuple representation."""
     adj_normalized = normalize_adj(adj + sp.eye(adj.shape[0]))
     return sparse_to_tuple(adj_normalized)
 
+
 def sparse_mx_to_torch_sparse_tensor(sparse_mx):
-    """Convert a scipy sparse matrix to a torch sparse tensor."""
+    r"""Convert a scipy sparse matrix to a torch sparse tensor."""
     sparse_mx = sparse_mx.tocoo().astype(np.float32)
     indices = torch.from_numpy(
         np.vstack((sparse_mx.row, sparse_mx.col)).astype(np.int64))
     values = torch.from_numpy(sparse_mx.data)
     shape = torch.Size(sparse_mx.shape)
     return torch.sparse.FloatTensor(indices, values, shape)
-
-
-
-

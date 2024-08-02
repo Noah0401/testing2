@@ -7,6 +7,7 @@ from random import shuffle
 
 
 def seed_everything(seed):
+    r"""Use this seed value to set the seed of the random number generator"""
     random.seed(seed)
     np.random.seed(seed)
     torch.manual_seed(seed)
@@ -15,6 +16,7 @@ def seed_everything(seed):
 
 
 def __seeds_list__(nodes):
+    r"""Splits the node array nodes into multiple subarrays and returns a list of these subarray."""
     split_size = max(5, int(nodes.shape[0] / 400))
     seeds_list = list(torch.split(nodes, split_size))
     if len(seeds_list) < 400:
@@ -31,11 +33,12 @@ def __seeds_list__(nodes):
     return seeds_list
 
 def seed_torch(seed=1029):
-	random.seed(seed)
-	os.environ['PYTHONHASHSEED'] = str(seed) # 为了禁止hash随机化，使得实验可复现
-	np.random.seed(seed)
-	torch.manual_seed(seed)
-	torch.cuda.manual_seed(seed)
-	torch.cuda.manual_seed_all(seed) # if you are using multi-GPU.
-	torch.backends.cudnn.benchmark = False
-	torch.backends.cudnn.deterministic = True
+    r"""Accepts a seed value, and uses it to set the seed of the PyTorch associated random number generator."""
+    random.seed(seed)
+    os.environ['PYTHONHASHSEED'] = str(seed) # 为了禁止hash随机化，使得实验可复现
+    # np.random.seed(seed)
+    torch.manual_seed(seed)
+    torch.cuda.manual_seed(seed)
+    torch.cuda.manual_seed_all(seed) # if you are using multi-GPU.
+    torch.backends.cudnn.benchmark = False
+    torch.backends.cudnn.deterministic = True

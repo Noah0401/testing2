@@ -64,16 +64,6 @@ induced_graphs
 
     induced_graphs
     split_induced_graphs
-    multi_class_NIG
-    nodes_split
-    edge_split
-    induced_graphs_nodes
-    induced_graphs_edges
-    induced_graphs_graphs
-    induced_graph_2_K_shot
-    load_tasks
-
-
 
 load4data
 -------------------
@@ -106,7 +96,6 @@ loader
     nx_to_graph_data_obj
     graph_data_obj_to_nx
     BioDataset
-
 
 pooling
 -------------------

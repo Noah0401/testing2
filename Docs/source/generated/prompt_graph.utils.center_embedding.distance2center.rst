@@ -1,6 +1,12 @@
-﻿prompt\_graph.utils.center\_embedding.distance2center
-=====================================================
+﻿distance2center
+===============
 
+.. autoclass:: prompt_graph.utils.center_embedding.distance2center
+   :members:
 .. currentmodule:: prompt_graph.utils.center_embedding
 
-.. autofunction:: distance2center
+.. autoclass:: distance2center
+   :show-inheritance:
+   :members:
+   :inherited-members:
+   :special-members: __cat_dim__, __inc__

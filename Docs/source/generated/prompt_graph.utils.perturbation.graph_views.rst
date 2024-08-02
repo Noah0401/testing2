@@ -1,6 +1,12 @@
-﻿prompt\_graph.utils.perturbation.graph\_views
-=============================================
+﻿graph_views
+===========
 
+.. autoclass:: prompt_graph.utils.perturbation.graph_views
+   :members:
 .. currentmodule:: prompt_graph.utils.perturbation
 
-.. autofunction:: graph_views
+.. autoclass:: graph_views
+   :show-inheritance:
+   :members:
+   :inherited-members:
+   :special-members: __cat_dim__, __inc__

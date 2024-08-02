@@ -2,6 +2,7 @@ import torch.nn.functional as F
 import torch
 
 def GpromptEva(loader, gnn, prompt, center_embedding, device):
+    r"""graph classification accuracy of Gprompt"""
     prompt.eval()
     correct = 0
     for batch in loader: 

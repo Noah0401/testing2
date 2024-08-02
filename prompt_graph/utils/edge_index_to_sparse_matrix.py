@@ -2,6 +2,7 @@ import torch
 
 
 def edge_index_to_sparse_matrix(edge_index: torch.LongTensor, num_node: int):
+    r"""Turn the edge index to a sparse matrix."""
     node_idx = torch.LongTensor([i for i in range(num_node)])
     self_loop = torch.stack([node_idx, node_idx], dim=0)
     edge_index = torch.cat([edge_index, self_loop], dim=1)

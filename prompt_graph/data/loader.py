@@ -20,32 +20,29 @@ response = requests.get(url)
 with open("dataset.zip", "wb") as f:
     f.write(response.content)
 
+def nx_to_graph_data_obj(g:nx, center_id:any, allowable_features_downstream:list=None,
+                         allowable_features_pretrain:list=None,
+                         node_id_to_go_labels:dict=None)->Data:
+    r"""Converts nx graph of PPI to pytorch geometric Data object.
+    Return :class:`torch_geometric.data.Data` object with the following attributes:
+    :obj:`edge_attr`, :obj:`edge_index`, :obj:`x`
+    , :obj:`species_id`, :obj:`center_node_idx`
+    , :obj:`go_target_downstream` (only if node_id_to_go_labels is not None)
+    , :obj:`go_target_pretrain` (only if node_id_to_go_labels is not None).
 
-
-def nx_to_graph_data_obj(g, center_id, allowable_features_downstream=None,
-                         allowable_features_pretrain=None,
-                         node_id_to_go_labels=None):
-    """
-    Converts nx graph of PPI to pytorch geometric Data object.
-    :param g: nx graph object of ego graph
-    :param center_id: node id of center node in the ego graph
-    :param allowable_features_downstream: list of possible go function node
+    Args:
+    g (nx): nx graph object of ego graph
+    center_id (Any): node id of center node in the ego graph
+    allowable_features_downstream (list): list of possible go function node
     features for the downstream task. The resulting go_target_downstream node
     feature vector will be in this order.
-    :param allowable_features_pretrain: list of possible go function node
+    allowable_features_pretrain (list): list of possible go function node
     features for the pretraining task. The resulting go_target_pretrain node
     feature vector will be in this order.
-    :param node_id_to_go_labels: dict that maps node id to a list of its
+    node_id_to_go_labels (dict): dict that maps node id to a list of its
     corresponding go labels
-    :return: pytorch geometric Data object with the following attributes:
-    edge_attr
-    edge_index
-    x
-    species_id
-    center_node_idx
-    go_target_downstream (only if node_id_to_go_labels is not None)
-    go_target_pretrain (only if node_id_to_go_labels is not None)
     """
+
     n_nodes = g.number_of_nodes()
     n_edges = g.number_of_edges()
 
@@ -126,11 +123,8 @@ def nx_to_graph_data_obj(g, center_id, allowable_features_downstream=None,
 
     return data
 
-def graph_data_obj_to_nx(data):
-    """
-    Converts pytorch geometric Data obj to network x data object.
-    :param data: pytorch geometric Data object
-    :return: nx graph object
+def graph_data_obj_to_nx(data:Data)->nx:
+    r"""Converts pytorch geometric Data obj to network x data object.
     """
     G = nx.Graph()
 
@@ -151,7 +145,36 @@ def graph_data_obj_to_nx(data):
 
     return G
 
+
 class BioDataset(InMemoryDataset):
+    r"""
+        Inherited from :class:`torch_geometric.data.InMemoryDataset`, creating dataset of biography.
+        See `here <https://pytorch-geometric.readthedocs.io/en/latest/_modules/torch_geometric/data/in_memory_dataset.html#InMemoryDataset>`__ for the accompanying
+        tutorial.
+
+        Args:
+        root (str): The data directory that contains a raw and processed dir.
+        data_type (str): either supervised or unsupervised.
+        empty (bool): if obj:`TRUE`, then will not load any data obj. For
+        initializing empty dataset (default: :obj:`FALSE`).
+        transform (callable, optional): A function/transform that takes in a
+            :class:`~torch_geometric.data.Data` or
+            :class:`~torch_geometric.data.HeteroData` object and returns a
+            transformed version.
+            The data object will be transformed before every access.
+            (default: :obj:`None`)
+        pre_transform (callable, optional): A function/transform that takes in
+            a :class:`~torch_geometric.data.Data` or
+            :class:`~torch_geometric.data.HeteroData` object and returns a
+            transformed version.
+            The data object will be transformed before being saved to disk.
+            (default: :obj:`None`)
+        pre_filter (callable, optional): A function that takes in a
+            :class:`~torch_geometric.data.Data` or
+            :class:`~torch_geometric.data.HeteroData` object and returns a
+            boolean value, indicating whether the data object should be
+            included in the final dataset. (default: :obj:`None`)
+    """
     def __init__(self,
                  root,
                  data_type,
@@ -159,16 +182,7 @@ class BioDataset(InMemoryDataset):
                  transform=None,
                  pre_transform=None,
                  pre_filter=None):
-        """
-        Adapted from qm9.py. Disabled the download functionality
-        :param root: the data directory that contains a raw and processed dir
-        :param data_type: either supervised or unsupervised
-        :param empty: if True, then will not load any data obj. For
-        initializing empty dataset
-        :param transform:
-        :param pre_transform:
-        :param pre_filter:
-        """
+
         self.root = root
         self.data_type = data_type
 

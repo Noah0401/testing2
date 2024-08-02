@@ -16,21 +16,24 @@ from prompt_graph.utils import act
 
 
 class GraphSAGE(torch.nn.Module):
-    def __init__(self, input_dim, hid_dim=None, out_dim=None, num_layer=3,JK="last", drop_ratio=0, pool='mean'):
-        super().__init__()
-        """
+    r"""
+        Inherited from :class:`torch.nn.Module`, forming a GraphSAGE model.
+
         Args:
-            num_layer (int): the number of GNN layers
-            num_tasks (int): number of tasks in multi-task learning scenario
-            drop_ratio (float): dropout rate
-            JK (str): last, concat, max or sum.
-            pool (str): sum, mean, max, attention, set2set
-            
-        See https://arxiv.org/abs/1810.00826
-        JK-net: https://arxiv.org/abs/1806.03536
+            input_dim (int): the dimension of the input node feature
+            hid_dim (int): the dimension of the hidden layer (default: :obj:`None`)
+            out_dim (int): the dimension of output (default: :obj:`None`)
+            num_layer (int): the number of GNN layers (default: :obj:`3`)
+            JK (str): last, concat, max or sum. (default: :obj:`last`)
+            drop_ratio (float): dropout rate (default: :obj:`0`)
+            pool (str): sum, mean, max, attention, set2set (default: :obj:`mean`)
         """
+
+    def __init__(self, input_dim, hid_dim=None, out_dim=None, num_layer=3, JK="last", drop_ratio=0, pool='mean'):
+        super().__init__()
+
         GraphConv = SAGEConv
-  
+
         if hid_dim is None:
             hid_dim = int(0.618 * input_dim)  # "golden cut"
         if out_dim is None:
@@ -60,9 +63,7 @@ class GraphSAGE(torch.nn.Module):
         else:
             raise ValueError("Invalid graph pooling type.")
 
-      
-
-    def forward(self, x, edge_index, batch = None, prompt = None, prompt_type = None):
+    def forward(self, x, edge_index, batch=None, prompt=None, prompt_type=None):
         h_list = [x]
         for idx, conv in enumerate(self.conv_layers[0:-1]):
             x = conv(x, edge_index)
@@ -76,7 +77,7 @@ class GraphSAGE(torch.nn.Module):
         elif self.JK == "sum":
             h_list = [h.unsqueeze_(0) for h in h_list]
             node_emb = torch.sum(torch.cat(h_list[1:], dim=0), dim=0)[0]
-        
+
         if batch == None:
             return node_emb
         else:
@@ -86,8 +87,10 @@ class GraphSAGE(torch.nn.Module):
             return graph_emb
 
     def decode(self, z, edge_label_index):
+        r"""Computes the decoding results of the given node embedding and edge label index"""
         return (z[edge_label_index[0]] * z[edge_label_index[1]]).sum(dim=-1)
-    
+
     def decode_all(self, z):
+        r"""Computes the decoding result matrix embedded by a given node."""
         prob_adj = z @ z.t()
         return (prob_adj > 0).nonzero(as_tuple=False).t()

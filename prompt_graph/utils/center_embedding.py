@@ -2,6 +2,14 @@ import torch
 
 # ours
 def center_embedding(input, index, label_num):
+    r"""
+    Calculates the average embedding vector for each class in the input feature.
+
+    Args:
+        input (Tensor)
+        index (Tensor) :An index of the category to which each sample belongs.
+        label_num (int): The number of labels.
+    """
     device=input.device
     c = torch.zeros(label_num, input.size(1)).to(device)
     c = c.scatter_add_(dim=0, index=index.unsqueeze(1).expand(-1, input.size(1)), src=input)
@@ -20,6 +28,13 @@ def center_embedding(input, index, label_num):
     return c, class_counts
 
 def distance2center(input,center):
+    r"""
+    Calculate the distance between each sample in the input feature and the class center embedding vector
+
+    Args:
+        input (Tensor)
+        center (Tensor): The average embedding vector of the class
+    """
     n = input.size(0)
     k = center.size(0)
     input_power = torch.sum(input * input, dim=1, keepdim=True).expand(n, k)
