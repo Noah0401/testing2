@@ -121,9 +121,9 @@ class BatchMasking(Data):
     def cumsum(self, key:str, item)->bool:
 
         r"""This is a prompt function, If it returns :obj:`True`, the attribute :obj:`key` with content :obj:`item`
-         should be added up cumulatively before concatenated together.
+        should be added up cumulatively before concatenated together.
 
-        .. note::
+         ..note::
             This method is for internal use only, and should only be overridden
             if the batch concatenation process is corrupted for a specific data
             attribute.
