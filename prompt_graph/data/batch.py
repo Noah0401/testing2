@@ -3,10 +3,9 @@ from torch_geometric.data import Data, Batch
 
 class BatchFinetune(Data):
     r"""Inherited from :class:`torch_geometric.data.Data`,
-        it can create a :obj:`batch` for fine-tuning. A :obj:`batch` is a combination of several graphs in a dataset, and is
-        represented by a tensor which maps each node to its respective graph.
-        :obj:`Fine-tune` is a process after pre-train, and completing fine-tuning process with the help of batches could
-        enhance the efficiency.
+    it can create a :obj:`batch` for fine-tuning. A :obj:`batch` is a combination of several graphs in a dataset, and is
+    represented by a tensor which maps each node to its respective graph.
+    :obj:`Fine-tune` is a process after pre-train, and completing fine-tuning process with the help of batches could enhance the efficiency.
 
         Args:
             batch (torch.Tensor): The created batch tensor.
@@ -120,8 +119,10 @@ class BatchMasking(Data):
         return batch.contiguous()
 
     def cumsum(self, key:str, item)->bool:
+
         r"""This is a prompt function, If it returns :obj:`True`, the attribute :obj:`key` with content :obj:`item`
-            should be added up cumulatively before concatenated together.
+         should be added up cumulatively before concatenated together.
+
         .. note::
             This method is for internal use only, and should only be overridden
             if the batch concatenation process is corrupted for a specific data
