@@ -14,7 +14,6 @@ batch
 .. autosummary::
     :nosignatures:
     :toctree: ../generated
-    :template: autosummary/inherited_class.rst
 
     BatchFinetune
     BatchMasking
