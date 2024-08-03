@@ -4,8 +4,11 @@ from torch.utils.data.dataloader import default_collate
 from .batch import BatchFinetune, BatchMasking, BatchAE, BatchSubstructContext
 
 class DataLoaderFinetune(torch.utils.data.DataLoader):
-    r"""Merge data objects from a
-        :class:`torch_geometric.data.dataset` to a mini-batch for fine-tune mission.
+    r"""Merges data objects from a
+        :class:`torch_geometric.data.Dataset` to a mini-batch for fine-tune mission.
+        :class:`torch.utils.data.DataLoader` could support for map-style and iterable-style datasets,
+        customizing data loading order, automatic batching, single and multi-process data loading,
+        and automatic memory pinning.
 
         Args:
             dataset (Dataset): The dataset from which to load the data.
@@ -13,7 +16,7 @@ class DataLoaderFinetune(torch.utils.data.DataLoader):
                 (default: :obj:`1`).
             shuffle (bool, optional): If set to :obj:`True`, the data will be
                 reshuffled at every epoch (default: :obj:`True`).
-            **kwargs (dict): Additional attributes.
+            **kwargs (dict): Additional attributes for :class:`torch.utils.data.DataLoader`.
         """
 
     def __init__(self, dataset, batch_size=1, shuffle=True, **kwargs):
@@ -26,15 +29,15 @@ class DataLoaderFinetune(torch.utils.data.DataLoader):
 
 class DataLoaderMasking(torch.utils.data.DataLoader):
     r"""Data loader which merges data objects from a
-    :class:`torch_geometric.data.dataset` to a mini-batch for masking mission.
+        :class:`torch_geometric.data.dataset` to a mini-batch for masking mission.
 
         Args:
-        dataset (Dataset): The dataset from which to load the data.
-        batch_size (int, optional): How may samples per batch to load.
+            dataset (Dataset): The dataset from which to load the data.
+            batch_size (int, optional): How may samples per batch to load.
             (default: :obj:`1`).
-        shuffle (bool, optional): If set to :obj:`True`, the data will be
+            shuffle (bool, optional): If set to :obj:`True`, the data will be
             reshuffled at every epoch (default: :obj:`True`).
-        **kwargs (dict): Additional attributes.
+            **kwargs (dict): Additional attributes for :class:`torch.utils.data.DataLoader`.
     """
 
     def __init__(self, dataset, batch_size=1, shuffle=True, **kwargs):
@@ -56,7 +59,7 @@ class DataLoaderAE(torch.utils.data.DataLoader):
             (default: :obj:`1`).
         shuffle (bool, optional): If set to :obj:`True`, the data will be
             reshuffled at every epoch (default: :obj:`True`).
-        **kwargs (dict): Additional attributes.
+        **kwargs (dict): Additional attributes for :class:`torch.utils.data.DataLoader`.
     """
 
     def __init__(self, dataset, batch_size=1, shuffle=True, **kwargs):
@@ -79,7 +82,7 @@ class DataLoaderSubstructContext(torch.utils.data.DataLoader):
             (default: :obj:`1`).
         shuffle (bool, optional): If set to :obj:`True`, the data will be
             reshuffled at every epoch (default: :obj:`True`).
-        **kwargs (dict): Additional attributes.
+        **kwargs (dict): Additional attributes for :class:`torch.utils.data.DataLoader`.
     """
 
     def __init__(self, dataset, batch_size=1, shuffle=True, **kwargs):

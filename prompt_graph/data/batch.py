@@ -124,6 +124,7 @@ class BatchMasking(Data):
         should be added up cumulatively before concatenated together.
 
          ..note::
+
             This method is for internal use only, and should only be overridden
             if the batch concatenation process is corrupted for a specific data
             attribute.
@@ -291,7 +292,9 @@ class BatchSubstructContext(Data):
     def cumsum(self, key:str, item)->bool:
         r"""If the function returns :obj:`True`, the attribute :obj:`key` with content :obj:`item`
         should be added up cumulatively before concatenated together.
+
         .. note::
+
             This method is for internal use only, and should only be overridden
             if the batch concatenation process is corrupted for a specific data
             attribute.
