@@ -3,5 +3,5 @@
 
 .. currentmodule:: {{ module }}
 
-.. autofunction:: {{ objname }}
+.. autoclass:: {{ objname }}
    :show-inheritance:

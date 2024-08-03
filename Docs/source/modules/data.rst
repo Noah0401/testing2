@@ -47,7 +47,7 @@ graph_split
 .. autosummary::
     :nosignatures:
     :toctree: ../generated
-    :template: autosummary/only_class.rst
+    :template: autosummary/function.rst
 
     graph_split
 
