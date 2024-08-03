@@ -1,11 +1,10 @@
 import random
 
-
-def graph_split(graph_list, shot_num):
+def graph_split(graph_list:list, shot_num:int)->tuple[list,list,list]:
     r""" Splits the graphs in :obj:`graph_list` into
     training data, testing data and validating data and then shuffle
     their data respectively. :obj:`[1:shot_num]` will be testing data,
-    while :obj:`1/9` of the rest will be testing data and :obj:`8/9` of the
+    while :obj:`1/9` of the rest will be testing data, and :obj:`8/9` of the
     rest will be validating data.
 
     Args:
