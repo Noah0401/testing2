@@ -8,7 +8,7 @@ def graph_split(graph_list, shot_num):
     while :obj:`1/9` of the rest will be testing data and :obj:`8/9` of the
     rest will be validating data.
 
-      Args:
+    Args:
           graph_list (list): A list containing all the graphs needed to be split.
           shot_num (int): :obj:`[1:shot_num]` will be separated into testing data list, and the remaining will be used to generate testing and validating data.
       """
