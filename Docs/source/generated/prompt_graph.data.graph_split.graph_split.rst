@@ -1,7 +1,7 @@
 ﻿graph_split
 ===========
 
-.. autoclass:: prompt_graph.data.graph_split.graph_split
+.. autoclass:: graph_split
    :members:
 .. currentmodule:: prompt_graph.data.graph_split
 
