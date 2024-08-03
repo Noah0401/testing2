@@ -6,6 +6,7 @@ from .batch import BatchFinetune, BatchMasking, BatchAE, BatchSubstructContext
 class DataLoaderFinetune(torch.utils.data.DataLoader):
     r"""Data loader which merges data objects from a
     :class:`torch_geometric.data.dataset` to a mini-batch for fine-tune mission.
+
     Args:
         dataset (Dataset): The dataset from which to load the data.
         batch_size (int, optional): How may samples per batch to load.
@@ -26,6 +27,7 @@ class DataLoaderFinetune(torch.utils.data.DataLoader):
 class DataLoaderMasking(torch.utils.data.DataLoader):
     r"""Data loader which merges data objects from a
     :class:`torch_geometric.data.dataset` to a mini-batch for masking mission.
+
     Args:
         dataset (Dataset): The dataset from which to load the data.
         batch_size (int, optional): How may samples per batch to load.
@@ -47,6 +49,7 @@ class DataLoaderMasking(torch.utils.data.DataLoader):
 class DataLoaderAE(torch.utils.data.DataLoader):
     r"""Data loader which merges data objects from a
     :class:`torch_geometric.data.dataset` to a mini-batch for autoencoder mission.
+
     Args:
         dataset (Dataset): The dataset from which to load the data.
         batch_size (int, optional): How may samples per batch to load.
@@ -69,6 +72,7 @@ class DataLoaderSubstructContext(torch.utils.data.DataLoader):
     r"""Data loader which merges data objects from a
     :class:`torch_geometric.data.dataset` to a mini-batch for
     those with substructure context pair.
+
     Args:
         dataset (Dataset): The dataset from which to load the data.
         batch_size (int, optional): How may samples per batch to load.
