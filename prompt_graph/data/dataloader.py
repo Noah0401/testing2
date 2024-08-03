@@ -73,8 +73,8 @@ class DataLoaderAE(torch.utils.data.DataLoader):
 
 class DataLoaderSubstructContext(torch.utils.data.DataLoader):
     r"""Data loader which merges data objects from a
-        :class:`torch_geometric.data.dataset` to a mini-batch for
-        those with substructure context pair.
+    :class:`torch_geometric.data.dataset` to a mini-batch for
+    those with substructure context pair.
 
     Args:
         dataset (Dataset): The dataset from which to load the data.

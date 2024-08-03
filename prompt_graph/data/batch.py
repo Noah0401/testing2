@@ -123,8 +123,7 @@ class BatchMasking(Data):
         r"""This is a prompt function, If it returns :obj:`True`, the attribute :obj:`key` with content :obj:`item`
         should be added up cumulatively before concatenated together.
 
-         ..note::
-
+         .. note::
             This method is for internal use only, and should only be overridden
             if the batch concatenation process is corrupted for a specific data
             attribute.
@@ -187,11 +186,11 @@ class BatchAE(Data):
         return batch.contiguous()
 
     @property
-    def num_graphs(self)->int:
+    def num_graphs(self) ->int:
         r"""Returns the number of graphs in the batch."""
         return self.batch[-1].item() + 1
 
-    def cat_dim(self, key:str)->int:
+    def cat_dim(self, key:str) ->int:
         r"""Determines the concatenation dimension when using the :obj:`torch.cat`
             function for tensor concatenation. """
 
@@ -294,9 +293,8 @@ class BatchSubstructContext(Data):
         should be added up cumulatively before concatenated together.
 
         .. note::
-
             This method is for internal use only, and should only be overridden
-            if the batch concatenation process is corrupted for a specific data
+            in case the mini-batch creation process is corrupted for a specific
             attribute.
         """
         return key in ["edge_index", "edge_index_substruct", "edge_index_context", "overlap_context_substruct_idx", "center_substruct_idx"]
