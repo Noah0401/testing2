@@ -23,8 +23,8 @@ with open("dataset.zip", "wb") as f:
 def nx_to_graph_data_obj(g:nx, center_id:any, allowable_features_downstream:list=None,
                          allowable_features_pretrain:list=None,
                          node_id_to_go_labels:dict=None)->Data:
-    r"""Converts nx graph of PPI to pytorch geometric Data object.
-    Return :class:`torch_geometric.data.Data` object with the following attributes:
+    r"""Converts nx graph of PPI to pytorch geometric Data object;
+    Returns :class:`torch_geometric.data.Data` object with the following attributes:
     :obj:`edge_attr`, :obj:`edge_index`, :obj:`x`
     , :obj:`species_id`, :obj:`center_node_idx`
     , :obj:`go_target_downstream` (only if node_id_to_go_labels is not None)
@@ -125,6 +125,9 @@ def nx_to_graph_data_obj(g:nx, center_id:any, allowable_features_downstream:list
 
 def graph_data_obj_to_nx(data:Data)->nx:
     r"""Converts pytorch geometric Data obj to network x data object.
+
+    Args:
+        data (Data): The provided graph.
     """
     G = nx.Graph()
 

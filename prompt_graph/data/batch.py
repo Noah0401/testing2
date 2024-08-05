@@ -65,7 +65,7 @@ class BatchFinetune(Data):
 
 class BatchMasking(Data):
     r"""Inherited from :class:`torch_geometric.data.Data`, it can create a
-        :obj:`batch` for masking. And :obj:`masking` for both nodes and edges means hiding partial feature information, which
+        :obj:`batch` for masking; And :obj:`masking` for both nodes and edges means hiding partial feature information, which
         controls a model's access to and processing of different elements in the graph.
 
         Args:
@@ -140,8 +140,9 @@ class BatchMasking(Data):
 
 class BatchAE(Data):
     r"""Inherited from :class:`torch_geometric.data.Data`, it can create a
-        :obj:`batch` for data with different autoencoders. :obj:`AE` stands for "Autoencoder". Autoencoders are unsupervised learning algorithms used to learn efficient data
-        representations, typically for dimensionality reduction or feature learning. While :obj:`BatchAE` is a graph embedding method based on autoencoder.
+        :obj:`batch` for data with different autoencoders; :obj:`AE` stands for "Autoencoder";
+        Autoencoders are unsupervised learning algorithms used to learn efficient data
+        representations, typically for dimensionality reduction or feature learning; While :obj:`BatchAE` is a graph embedding method based on autoencoder.
 
         Args:
             batch (torch.Tensor): The created batch matrix.

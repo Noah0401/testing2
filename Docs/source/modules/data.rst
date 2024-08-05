@@ -93,7 +93,7 @@ loader
 .. autosummary::
     :nosignatures:
     :toctree: ../generated
-    :template: autosummary/inherited_class.rst
+    :template: autosummary/function.rst
 
     nx_to_graph_data_obj
     graph_data_obj_to_nx

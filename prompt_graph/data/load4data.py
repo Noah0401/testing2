@@ -12,8 +12,8 @@ from torch_geometric.utils import negative_sampling
 import os
 
 def node_sample_and_save(data:Data, k:int, folder:str, num_classes:int):
-    r"""Shuffles and splits the nodes into training and testing sets.
-    The training set contains :obj:`90%` of the nodes.
+    r"""Shuffles and splits the nodes into training and testing sets;
+    The training set contains :obj:`90%` of the nodes;
     The testing set contains :obj:`k*num_classes` nodes from :obj:`10%` of the nodes.
 
     Args:
@@ -47,9 +47,9 @@ def node_sample_and_save(data:Data, k:int, folder:str, num_classes:int):
     torch.save(test_labels, os.path.join(folder, 'test_labels.pt'))
 
 def graph_sample_and_save(dataset, k, folder, num_classes):
-    r"""Shuffle and split the graphs into training and testing sets.
-    The training set contains :obj:`90%` of the graphs.
-    The testing set contains :obj:`k*num_classes` graphs from the rest of the graphs.
+    r"""Shuffles and splits the graphs into training and testing sets;
+    The training set contains :obj:`90%` of the graphs;
+    The testing set contains :obj:`k*num_classes` graphs from the rest of the graphs;
     If the number of graphs corresponding to a specific class is less than :obj:`k`,
     then pick all the graphs in the remaining set of this class as patial of the testing set.
 
@@ -92,11 +92,13 @@ def graph_sample_and_save(dataset, k, folder, num_classes):
     torch.save(train_labels, os.path.join(folder, 'train_labels.pt'))
 
 def load4graph(dataset_name:str, shot_num=10, num_parts=None, pretrained:bool=False):
-    r"""Loading the data of the graphs and shuffle the dataset(graph set).
+    r"""Loads the data of the graphs and shuffles the dataset(graph set); Input and output dimension, and the dataset list will be returned.
 
     Args:
         dataset_name (str): The number of the dataset.
         pretrained (bool): Whether to do pretrain step (default: :obj:`FALSE`).
+        If :obj:`FALSE`, the function will return the original dataset, otherwise, it will return
+        the graph list.
         """
 
     if dataset_name in ['MUTAG', 'ENZYMES', 'COLLAB', 'PROTEINS', 'IMDB-BINARY', 'REDDIT-BINARY', 'COX2', 'BZR', 'PTC_MR']:
@@ -156,7 +158,7 @@ def load4graph(dataset_name:str, shot_num=10, num_parts=None, pretrained:bool=Fa
         return input_dim, out_dim, None, None, None, graph_list
     
 def load4node(dataname:str, shot_num:int=10):
-    r"""Load and preprocess the given data(graph), divide the nodes into training and testing set.
+    r"""Loads and preprocesses the given data(graph), and divides the nodes into training and testing set.
 
     Args:
         dataname (str): The number of the data.
@@ -232,11 +234,15 @@ def load4node(dataname:str, shot_num:int=10):
     return data,dataset
 
 def load4link_prediction_single_graph(dataname:str, num_per_samples:int=1):
-    r"""Load a single graph dataset for link prediction.
+    r"""Loads a single graph dataset for link prediction;
     If the edge of the graph is directed,
-    the two dimensions of the edge index are concatenated to account for the direction of the edge.
-    Otherwise, the original edge index is used directly as edge_index.
+    the two dimensions of the edge index are concatenated to account for the direction of the edge;
+    Otherwise, the original edge index is used directly as edge_index;
     In addition, negative sampling operations are performed if the graph data object is not a directed graph.
+
+    Args:
+        dataname (str): The name of the dataset.
+        num_per_samples (int): The number of edge in each sample, which is used to calculate the number of negative samples (default: :obj:`1`).
     """
 
     if dataname in ['PubMed', 'CiteSeer', 'Cora']:
@@ -269,12 +275,17 @@ def load4link_prediction_single_graph(dataname:str, num_per_samples:int=1):
     return data, edge_label, edge_index, input_dim, output_dim
 
 def load4link_prediction_multi_graph(dataset_name, num_per_samples=1):
-    r"""Load multiple graphs for link prediction
-    and generate negative neighbor samples.
+    r"""Loads multiple graphs for link prediction
+    and generates negative neighbor samples;
     If the edge of the graph is directed,
-    the two dimensions of the edge index are concatenated to account for the direction of the edge.
-    Otherwise, the original edge index is used directly as edge_index.
+    the two dimensions of the edge index are concatenated to account for the direction of the edge;
+    Otherwise, the original edge index is used directly as edge_index;
     In addition, negative sampling operations are performed if the graph data object is not a directed graph.
+
+    Args:
+        dataset_name (str): The name of the dataset.
+        num_per_samples (int): The number of edge in each sample, which is used to calculate the number of negative samples (default: :obj:`1`).
+
     """
 
     if dataset_name in ['MUTAG', 'ENZYMES', 'COLLAB', 'PROTEINS', 'IMDB-BINARY', 'REDDIT-BINARY', 'COX2', 'BZR', 'PTC_MR']:
@@ -309,6 +320,13 @@ def NodePretrain(dataname:str='CiteSeer', num_parts:int=200):
     and perform some preprocessing operations,
     finally returning a list of graph data and input dimensions.
     The pretraining step contains edge index transformation and getting graph list according to :obj:`num_parts`.
+
+    Args:
+        dataname (str): The name of the dataset.
+        num_parts (int): The number of parts the set is divided into
+         (default: :obj:`200`).
+
+
     """
 
     if dataname in ['PubMed', 'CiteSeer', 'Cora']:
