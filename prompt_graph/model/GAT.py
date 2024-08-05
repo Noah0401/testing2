@@ -102,7 +102,7 @@ class GAT(torch.nn.Module):
 
     def decode_all(self, z):
         r"""The probability adjacency matrix is decoded as a series of edge connection relations,
-        indicating which nodes are connected
+        indicating which nodes are connected.
 
         Args:
             z (Tensor): Used to compute the decoding result of a given node embedding and edge label index.
