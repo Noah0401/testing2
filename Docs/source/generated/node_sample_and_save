@@ -1,0 +1,12 @@
+node_sample_and_save
+=====================
+
+.. autoclass:: prompt_graph.data.load4data.node_sample_and_save
+   :members:
+.. currentmodule:: prompt_graph.data.load4data
+
+.. autoclass:: load4graph
+   :show-inheritance:
+   :members:
+   :inherited-members:
+   :special-members: __cat_dim__, __inc__
