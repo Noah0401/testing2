@@ -9,14 +9,15 @@ AllInOneEva
 
 .. currentmodule:: prompt_graph.evaluation.AllInOneEva
 
-
 .. autosummary::
     :nosignatures:
-    :toctree: ../generated
-    :template: autosummary/function.rst
+    {% for cls in prompt_graph.evaluation.AllInOneEva.classes %}
+      {{ cls }}
+    {% endfor %}
 
-    AllInOneEva
-    AllInOneEvaWithoutAnswer
+.. automodule:: prompt_graph.evaluation.AllInOneEva
+    :members:
+    :undoc-members:
 
 
 eva
