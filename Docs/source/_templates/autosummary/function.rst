@@ -5,13 +5,9 @@
 
    {% block attributes %}
    {%- if attributes %}
-    .. currentmodule:: {{ module }}
+   .. rubric:: {{ _('Module Attributes') }}
 
-    .. autoclass:: {{ objname }}
-       :show-inheritance:
-       :members:
-       :inherited-members:
-       :special-members: __cat_dim__, __inc__
+   .. autosummary::
    {% for item in attributes %}
       {{ item }}
    {%- endfor %}
@@ -31,13 +27,9 @@
 
    {%- block classes %}
    {%- if classes %}
-   .. currentmodule:: {{ module }}
+   .. rubric:: {{ _('Classes') }}
 
-    .. autoclass:: {{ objname }}
-       :show-inheritance:
-       :members:
-       :inherited-members:
-       :special-members: __cat_dim__, __inc__
+   .. autosummary::
    {% for item in classes %}
       {{ item }}
    {%- endfor %}
@@ -57,13 +49,11 @@
 
 {%- block modules %}
 {%- if modules %}
-    .. currentmodule:: {{ module }}
+.. rubric:: Modules
 
-    .. autoclass:: {{ objname }}
-       :show-inheritance:
-       :members:
-       :inherited-members:
-       :special-members: __cat_dim__, __inc__
+.. autosummary::
+   :toctree:
+   :recursive:
 {% for item in modules %}
    {{ item }}
 {%- endfor %}
