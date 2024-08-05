@@ -14,9 +14,12 @@ import sklearn.metrics as skm
 from prompt_graph.utils import act
 
 class GAT(torch.nn.Module):
-    r"""Inherited from :class:`torch.nn.Module`, forming a GAT model.
+    r"""Inherited from :class:`torch.nn.Module`, forming a GAT model;
+    GAT (Graph Attention Network) captures the relations of nodes by adaptively calculating
+    the attention weights between nodes from stacking layers;
     See `here <https://arxiv.org/abs/1810.00826>`__
-    and `JK-net <https://arxiv.org/abs/1806.03536>`__
+    and `JK-net <https://arxiv.org/abs/1806.03536>`__ for more information.
+
 
         Args:
             input_dim (int): the dimension of the input node feature
