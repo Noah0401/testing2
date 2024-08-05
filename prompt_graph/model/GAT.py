@@ -68,6 +68,7 @@ class GAT(torch.nn.Module):
       
 
     def forward(self, x, edge_index, batch = None, prompt = None, prompt_type = None):
+
         h_list = [x]
         for idx, conv in enumerate(self.conv_layers[0:-1]):
             x = conv(x, edge_index)
@@ -91,11 +92,22 @@ class GAT(torch.nn.Module):
             return graph_emb
 
     def decode(self, z, edge_label_index):
-        r"""Computes the decoding results of the given node embedding and edge label index"""
+        r"""Computes the decoding results of the given node embedding and edge label index.
+
+        Args:
+            z (Tensor): Used to compute the decoding result of a given node embedding and edge label index.
+            edge_label_index (Tensor): The index of the labels of edges.
+        """
         return (z[edge_label_index[0]] * z[edge_label_index[1]]).sum(dim=-1)
 
     def decode_all(self, z):
         r"""The probability adjacency matrix is decoded as a series of edge connection relations,
-        indicating which nodes are connected"""
+        indicating which nodes are connected
+
+        Args:
+            z (Tensor): Used to compute the decoding result of a given node embedding and edge label index.
+
+            """
         prob_adj = z @ z.t()
         return (prob_adj > 0).nonzero(as_tuple=False).t()
+
