@@ -160,7 +160,7 @@ class BioDataset(InMemoryDataset):
             root (str): The data directory that contains a raw and processed dir.
             data_type (str): either supervised or unsupervised.
             empty (bool): if obj:`TRUE`, then will not load any data obj. For
-            initializing empty dataset (default: :obj:`FALSE`).
+                initializing empty dataset (default: :obj:`FALSE`).
             transform (callable, optional): A function/transform that takes in a
                 :class:`~torch_geometric.data.Data` or
                 :class:`~torch_geometric.data.HeteroData` object and returns a

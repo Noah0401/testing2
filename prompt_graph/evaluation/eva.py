@@ -18,8 +18,13 @@ class Evaluator:
             self.K = int(self.eval_metric.split('@')[1])
 
     def _parse_and_check_input(self, input_dict: dict):
-        r"""Parse and check whether the type and shape of the input data meets the requirements,
-        and the data is converted into a uniform format"""
+        r"""Parses and checks whether the type and shape of the input data meets the requirements,
+        and the data is converted into a uniform format.
+
+        Args:
+            input_dict (dict): The input dictionary.
+
+        """
 
         if 'hits@' in self.eval_metric:
             if not 'y_pred_pos' in input_dict:
@@ -94,7 +99,7 @@ class Evaluator:
             raise ValueError('Undefined eval metric %s' % (self.eval_metric))
 
     def eval(self, input_dict: dict):
-        r"""evaluate and return the result"""
+        r"""Evaluate and Return the result"""
 
         if 'hits@' in self.eval_metric:
             y_pred_pos, y_pred_neg, type_info = self._parse_and_check_input(input_dict)

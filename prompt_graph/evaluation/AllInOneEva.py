@@ -3,8 +3,16 @@ import torch
 
 def AllInOneEva(loader, prompt, gnn, answering, num_class, device):
     r"""
-    Perform evaluation on all-in-one classification with the help of predicted answer :obj:`answering`.
-    Return the accuracy and f1 rate(macro).
+    Performs evaluation on all-in-one classification with the help of predicted answer :obj:`answering`;
+    Returns the accuracy and f1 rate(macro); Accuracy means the proportion of the correctly classified
+    dataset, while f1 rate is a measure of the harmonic mean of precision and recall.
+
+    Args:
+        loader (DataLoader): Wraps an iterable around the Dataset to enable easy access to the samples.
+        prompt (model): Used to perform some processing on the input data in preparation for passing it to the GNN model for processing.
+        answering (model): The predicted result of The given node/graph.
+        num_class (int): The number of classified classes.
+        device (device): The device used for evaluation.
     """
     prompt.eval()
     answering.eval()
@@ -34,9 +42,16 @@ def AllInOneEva(loader, prompt, gnn, answering, num_class, device):
 
 def AllInOneEvaWithoutAnswer(loader, prompt, gnn, num_class, device):
     r"""
-        Perform evaluation on all-in-one classification without :obj:`answering`.
-        Evaluate it directly by the graph, edge, node features.
-        Return the accuracy and f1 rate(macro).
+        Performs evaluation on all-in-one classification without :obj:`answering`;
+        Evaluates it directly by the graph, edge, node features;
+        Returns the accuracy and f1 rate(macro).
+
+        Args:
+            loader (DataLoader): Wraps an iterable around the Dataset to enable easy access to the samples.
+            prompt (model): Used to perform some processing on the input data in preparation for passing it to the GNN model for processing.
+            gnn (model): The GNN model which used for embedding.
+            num_class (int): The number of classified classes.
+            device (device): The device used for evaluation.
         """
     prompt.eval()
     accuracy = torchmetrics.classification.Accuracy(task="multiclass", num_classes=num_class).to(device)
