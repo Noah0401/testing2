@@ -11,9 +11,9 @@ AllInOneEva
 
 .. autosummary::
     :nosignatures:
-    {% for cls in prompt_graph.evaluation.AllInOneEva %}
-      {{ cls }}
-    {% endfor %}
+
+    AllInOneEva
+    AllInOneEvaWithoutAnswer
 
 .. automodule:: prompt_graph.evaluation.AllInOneEva
     :members:
