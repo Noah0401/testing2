@@ -24,15 +24,16 @@ def nx_to_graph_data_obj(g:nx, center_id:any, allowable_features_downstream:list
                          allowable_features_pretrain:list=None,
                          node_id_to_go_labels:dict=None)->Data:
     r"""Converts nx graph of PPI to pytorch geometric Data object;
-    Returns :class:`torch_geometric.data.Data` object with the following attributes:
-    :obj:`edge_attr`, :obj:`edge_index`, :obj:`x`
-    , :obj:`species_id`, :obj:`center_node_idx`
-    , :obj:`go_target_downstream` (only if node_id_to_go_labels is not None)
-    , :obj:`go_target_pretrain` (only if node_id_to_go_labels is not None).
+        Returns :class:`torch_geometric.data.Data` object with the following attributes:
+        :obj:`edge_attr`, :obj:`edge_index`, :obj:`x`
+        , :obj:`species_id`, :obj:`center_node_idx`
+        , :obj:`go_target_downstream` (only if :obj:`node_id_to_go_labels` is not None)
+        , :obj:`go_target_pretrain` (only if :obj:`node_id_to_go_labels` is not None).
 
         Args:
-            g (nx): nx graph object of ego graph
-            center_id (Any): node id of center node in the ego graph
+
+            g (nx): nx graph object of ego graph.
+            center_id (Any): node id of center node in the ego graph.
             allowable_features_downstream (list): list of possible go function node
                 features for the downstream task. The resulting go_target_downstream node
                 feature vector will be in this order.
@@ -40,7 +41,7 @@ def nx_to_graph_data_obj(g:nx, center_id:any, allowable_features_downstream:list
                 features for the pretraining task. The resulting go_target_pretrain node
                 feature vector will be in this order.
             node_id_to_go_labels (dict): dict that maps node id to a list of its
-                corresponding go labels
+                corresponding go labels.
     """
 
     n_nodes = g.number_of_nodes()
