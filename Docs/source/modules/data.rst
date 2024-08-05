@@ -60,7 +60,7 @@ induced_graphs
 .. autosummary::
     :nosignatures:
     :toctree: generated/
-    :template: autosummary/inherited_class.rst
+    :template: autosummary/function.rst
 
     induced_graphs
     split_induced_graphs
@@ -74,8 +74,10 @@ load4data
 .. autosummary::
     :nosignatures:
     :toctree: ../generated
-    :template: autosummary/inherited_class.rst
+    :template: autosummary/function.rst
 
+    node_sample_and_save
+    graph_sample_and_save
     load4graph
     load4node
     load4link_prediction_single_graph

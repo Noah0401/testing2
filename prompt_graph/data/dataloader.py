@@ -4,7 +4,7 @@ from torch.utils.data.dataloader import default_collate
 from .batch import BatchFinetune, BatchMasking, BatchAE, BatchSubstructContext
 
 class DataLoaderFinetune(torch.utils.data.DataLoader):
-    r"""Merges data objects from a
+    r"""Data loader which merges data objects from a
         :class:`torch_geometric.data.Dataset` to a mini-batch for fine-tune mission.
         :class:`torch.utils.data.DataLoader` could support for map-style and iterable-style datasets,
         customizing data loading order, automatic batching, single and multi-process data loading,

@@ -12,7 +12,7 @@ from torch_geometric.utils import negative_sampling
 import os
 
 def node_sample_and_save(data:Data, k:int, folder:str, num_classes:int):
-    r"""Shuffle and split the nodes into training and testing sets.
+    r"""Shuffles and splits the nodes into training and testing sets.
     The training set contains :obj:`90%` of the nodes.
     The testing set contains :obj:`k*num_classes` nodes from :obj:`10%` of the nodes.
 
