@@ -5,9 +5,13 @@
 
    {% block attributes %}
    {%- if attributes %}
-   .. rubric:: {{ _('Module Attributes') }}
+    .. currentmodule:: {{ module }}
 
-   .. autosummary::
+    .. autoclass:: {{ objname }}
+       :show-inheritance:
+       :members:
+       :inherited-members:
+       :special-members: __cat_dim__, __inc__
    {% for item in attributes %}
       {{ item }}
    {%- endfor %}
@@ -27,9 +31,13 @@
 
    {%- block classes %}
    {%- if classes %}
-   .. rubric:: {{ _('Classes') }}
+   .. currentmodule:: {{ module }}
 
-   .. autosummary::
+    .. autoclass:: {{ objname }}
+       :show-inheritance:
+       :members:
+       :inherited-members:
+       :special-members: __cat_dim__, __inc__
    {% for item in classes %}
       {{ item }}
    {%- endfor %}
@@ -49,13 +57,13 @@
 
 {%- block modules %}
 {%- if modules %}
-.. currentmodule:: {{ module }}
+    .. currentmodule:: {{ module }}
 
-.. autoclass:: {{ objname }}
-   :show-inheritance:
-   :members:
-   :inherited-members:
-   :special-members: __cat_dim__, __inc__
+    .. autoclass:: {{ objname }}
+       :show-inheritance:
+       :members:
+       :inherited-members:
+       :special-members: __cat_dim__, __inc__
 {% for item in modules %}
    {{ item }}
 {%- endfor %}
