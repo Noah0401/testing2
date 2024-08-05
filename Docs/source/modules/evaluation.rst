@@ -27,12 +27,14 @@ eva
 
 .. autosummary::
     :nosignatures:
-    :toctree: ../generated
-    :template: autosummary/function.rst
 
     Evaluator
     mrr_hit
     compute_acc_unsupervised
+
+.. automodule:: prompt_graph.evaluation.eva
+    :members:
+    :undoc-members:
 
 
 
@@ -44,11 +46,14 @@ GNNEva
 
 .. autosummary::
     :nosignatures:
-    :toctree: ../generated
-    :template: autosummary/inherited_class.rst
 
     GNNNodeEva
     GNNGraphEva
+
+.. automodule:: prompt_graph.evaluation.eva
+    :members:
+    :undoc-members:
+
 
 GPFEva
 -------------------
@@ -58,10 +63,12 @@ GPFEva
 
 .. autosummary::
     :nosignatures:
-    :toctree: ../generated
-    :template: autosummary/inherited_class.rst
 
     GPFEva
+
+.. automodule:: prompt_graph.evaluation.GPFEva
+    :members:
+    :undoc-members:
 
 GPPTEva
 -------------------
@@ -71,10 +78,12 @@ GPPTEva
 
 .. autosummary::
     :nosignatures:
-    :toctree: ../generated
-    :template: autosummary/inherited_class.rst
 
     GPPTEva
+
+.. automodule:: prompt_graph.evaluation.GPPTEva
+    :members:
+    :undoc-members:
 
 GpromptEva
 -------------------
@@ -84,8 +93,9 @@ GpromptEva
 
 .. autosummary::
     :nosignatures:
-    :toctree: ../generated
-    :template: autosummary/inherited_class.rst
 
     GpromptEva
 
+.. automodule:: prompt_graph.evaluation.GpromptEva
+    :members:
+    :undoc-members:

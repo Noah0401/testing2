@@ -6,6 +6,9 @@ import sklearn.metrics as skm
 
 class Evaluator:
     r"""
+    A unified evaluation mechanism is provided to ensure that the input data is in the correct format
+    and meets the requirements of the evaluation indicators.
+
     Args:
         eval_metric (str): :obj:`hits@k` refers to the probability of a hit in the first k results.
         K (int): Get from :obj:`hits@k`.
@@ -99,7 +102,11 @@ class Evaluator:
             raise ValueError('Undefined eval metric %s' % (self.eval_metric))
 
     def eval(self, input_dict: dict):
-        r"""Evaluate and Return the result"""
+        r"""Evaluates and return the results(which could be hits or mrr) according to the evaluation metric.
+
+        Args:
+            input_dict (dict): The input dictionary.
+        """
 
         if 'hits@' in self.eval_metric:
             y_pred_pos, y_pred_neg, type_info = self._parse_and_check_input(input_dict)
@@ -112,7 +119,15 @@ class Evaluator:
             raise ValueError('Undefined eval metric %s' % (self.eval_metric))
 
     def _eval_hits(self, y_pred_pos, y_pred_neg, type_info):
-        r"""Evaluate and return the value :obj:`hits@k`"""
+        r"""Evaluates and returns the value :obj:`hits@k`, which refers to the probability of hitting in the first k results.
+        It is to see whether there is a real label in the first k results, if there is a hit success, otherwise it is a hit failure
+
+        Args:
+            y_pred_pos (float): The fraction or probability of the sample for which the model predicts a positive sample.
+            y_pred_neg (float): The fraction or probability of the sample for which the model predicts a negative example
+            type_info (str): The way to address the data.
+
+"""
 
         if type_info == 'torch':
             res = torch.topk(y_pred_neg, self.K)
@@ -126,7 +141,13 @@ class Evaluator:
         return {'hits@{}'.format(self.K): hitsK}
 
     def _eval_mrr(self, y_pred_pos, y_pred_neg, type_info):
-        r"""Evaluate and return the value :obj:`mrr`: Mean Reciprocal Ranking."""
+        r"""Evaluates and returns the value :obj:`mrr`: Mean Reciprocal Ranking.
+
+        Args:
+            y_pred_pos (float): The fraction or probability of the sample for which the model predicts a positive sample.
+            y_pred_neg (float): The fraction or probability of the sample for which the model predicts a negative example
+            type_info (str): The way to address the data.
+            """
 
         if type_info == 'torch':
             y_pred = torch.cat([y_pred_pos.view(-1, 1), y_pred_neg], dim=1)
@@ -145,7 +166,13 @@ class Evaluator:
 
 
 def mrr_hit(normal_label: np.ndarray, pos_out: np.ndarray, metric: list = None):
-    r"""Evaluate and return the value of both :obj:`mrr` and :obj:`hits@k`"""
+    r"""Evaluates and returns the value of both :obj:`mrr` and :obj:`hits@k`.
+
+    Args:
+        normal_label (ndarray): The information of labeling.
+        pos_out (ndarray): The information of positive output.
+        matric (list): Assigned evaluation index.
+        """
 
     if isinstance(normal_label, np.ndarray) and isinstance(pos_out, np.ndarray):
         pass
@@ -194,7 +221,13 @@ def mrr_hit(normal_label: np.ndarray, pos_out: np.ndarray, metric: list = None):
 
 def compute_acc_unsupervised(emb, labels, train_nids, val_nids, test_nids):
     r"""
-    Compute the accuracy of prediction given the labels.
+    Computes the accuracy of prediction given the labels, and returns both f1 score for evaluation and testing.
+
+    Args:
+        emb(Tensor): The embedding of dataset.
+        train_nids (Tensor): Index of the training set node.
+        val_nids (Tensor): Index of the validating set node.
+        test_nids (Tensor): Index of the testing set node.
     """
     emb = emb.cpu().numpy()
     labels = labels.cpu().numpy()
