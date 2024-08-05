@@ -51,7 +51,7 @@ GNNEva
     GNNNodeEva
     GNNGraphEva
 
-.. automodule:: prompt_graph.evaluation.eva
+.. automodule:: prompt_graph.evaluation.GNNEva
     :members:
     :undoc-members:
 

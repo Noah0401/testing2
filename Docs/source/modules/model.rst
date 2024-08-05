@@ -13,10 +13,12 @@ GAT
 
 .. autosummary::
     :nosignatures:
-    :toctree: ../generated
-    :template: autosummary/inherited_class.rst
 
     GAT
+
+.. automodule:: prompt_graph.model.GAT
+    :members:
+    :undoc-members:
 
 
 
@@ -27,10 +29,12 @@ GCN
 
 .. autosummary::
     :nosignatures:
-    :toctree: ../generated
-    :template: autosummary/inherited_class.rst
 
     GCN
+
+.. automodule:: prompt_graph.model.GCN
+    :members:
+    :undoc-members:
 
 
 GCov
@@ -41,10 +45,12 @@ GCov
 
 .. autosummary::
     :nosignatures:
-    :toctree: ../generated
-    :template: autosummary/inherited_class.rst
 
     GCov
+
+.. automodule:: prompt_graph.model.GCov
+    :members:
+    :undoc-members:
 
 GIN
 -------------------
@@ -53,10 +59,12 @@ GIN
 
 .. autosummary::
     :nosignatures:
-    :toctree: ../generated
-    :template: autosummary/inherited_class.rst
 
     GIN
+
+.. automodule:: prompt_graph.model.GIN
+    :members:
+    :undoc-members:
 
 GraphSAGE
 -------------------
@@ -66,10 +74,12 @@ GraphSAGE
 
 .. autosummary::
     :nosignatures:
-    :toctree: ../generated
-    :template: autosummary/inherited_class.rst
 
     GraphSAGE
+
+.. automodule:: prompt_graph.model.GraphSAGE
+    :members:
+    :undoc-members:
 
 GraphTransformer
 -------------------
@@ -79,8 +89,10 @@ GraphTransformer
 
 .. autosummary::
     :nosignatures:
-    :toctree: ../generated
-    :template: autosummary/inherited_class.rst
 
     GraphTransformer
+
+.. automodule:: prompt_graph.model.GraphTransformer
+    :members:
+    :undoc-members:
 
