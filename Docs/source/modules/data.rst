@@ -12,6 +12,7 @@ batch
 
 .. autosummary::
     :nosignatures:
+    :template: autosummary/inherited_class.rst
 
     BatchFinetune
     BatchMasking
