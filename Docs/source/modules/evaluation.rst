@@ -27,6 +27,7 @@ eva
 
 .. autosummary::
     :nosignatures:
+    :autosummary_qualified_name: prompt_graph.evaluation.eva._parse_and_check_input
 
     Evaluator
     mrr_hit

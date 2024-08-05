@@ -1,7 +1,15 @@
 
 
 def GPFEva(loader, gnn, prompt, answering, device):
-    r"""graph classification accuracy of GPF"""
+    r"""Graph classification accuracy of GPF.
+
+        Args:
+            loader (DataLoader): The selected loader.
+            gnn (model): The chosen GNN type.
+            prompt (model): Used to perform some processing on the input data in preparation for passing it to the GNN model for processing.
+            answering (model): The predicted answer for classification.
+            device (device): The chosen device."""
+
     prompt.eval()
     if answering:
         answering.eval()

@@ -2,7 +2,17 @@ import torch.nn.functional as F
 import torch
 
 def GpromptEva(loader, gnn, prompt, center_embedding, device):
-    r"""graph classification accuracy of Gprompt"""
+    r"""Graph classification accuracy of Gprompt.
+
+    Args:
+        loader (DataLoader): The selected loader.
+        gnn (model): The chosen GNN type.
+        prompt (model): Used to perform some processing on the input data in preparation for passing it to the GNN model for processing.
+        device (device): The chosen device.
+        center_embedding (Tensor): The embedding of the center of the graph.
+
+        """
+
     prompt.eval()
     correct = 0
     for batch in loader: 

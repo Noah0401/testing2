@@ -1,7 +1,16 @@
 def GPPTEva(data, idx_test, gnn, prompt):
-    r"""node classification accuracy of GPPT.
+    r"""Node classification accuracy of GPPT;
     Prediction is made directly by selecting
-    the category with the highest prediction probability"""
+    the category with the highest prediction probability.
+
+
+    Args:
+        data (Data): The graph data.
+        idx_test (Tensor): The index of testing data.
+        gnn (model): The chosen GNN model.
+        prompt (model): The prompt token.
+
+    """
     # gnn.eval()
     prompt.eval()
     node_embedding = gnn(data.x, data.edge_index)
@@ -12,8 +21,13 @@ def GPPTEva(data, idx_test, gnn, prompt):
     return acc
 
 def GPPTGraphEva(loader, gnn, prompt, device):
-    r"""graph classification accuracy of GPPT,
-        using the voting way to find the category of prediction"""
+    r"""Graph classification accuracy of GPPT.
+
+            Args:
+                loader (DataLoader): The selected loader.
+                gnn (model): The chosen GNN type.
+                prompt (model): Used to perform some processing on the input data in preparation for passing it to the GNN model for processing.
+                device (device): The chosen device."""
 
     # batch must be 1
     prompt.eval()
