@@ -222,8 +222,7 @@ class SAGPooling(torch.nn.Module):
             in_channels (int): The number of input channels.
             ratio (Union[float, int]): The selection ratio (default: :obj:`0.5`).
             GNN (torch.nn.Modile): The chosen GNN method (default: :obj:`GraphConv`).
-            min_score (Optional, float): Indicates the minimum score threshold. If :obj:`min_score` is specified,
-            only nodes with scores greater than this threshold are selected (default: :obj:`None`).
+            min_score (Optional, float): Indicates the minimum score threshold. If :obj:`min_score` is specified, only nodes with scores greater than this threshold are selected (default: :obj:`None`).
             multiplier (float): A multiplication factor that adjusts the pooled node representation (default: :obj:`1`).
             nonlinearity (Union[str, Callable]): The attention scores of nodes are nonlinear transformed (default: :obj:`'tanh'`).
             softmax (bool): Whether to use softmax (default: :obj:`FALSE`).
