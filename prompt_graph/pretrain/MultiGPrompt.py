@@ -12,8 +12,8 @@ import os
 
 
 class PrePrompt(nn.Module):
-    r"""Inherited from :class:`nn.Module`.
-    It uses multiple pretrain methods to cover the information of the graph.
+    r"""Inherited from :class:`nn.Module`;
+    It uses multiple pretrain methods to cover the information of the graph;
     See `here <https://arxiv.org/abs/2312.03731>`__ for more information.
 
     Args:
@@ -54,8 +54,7 @@ class PrePrompt(nn.Module):
 
     def load_data(self):
         r"""
-        Load the data and get attributes of the graph.
-        return the node feature dimension and the number of the nodes.
+        Loads the data and get attributes of the graph and returns the node feature dimension and the number of the nodes.
         """
         self.adj, features, self.labels, self.idx_train, self.idx_val, self.idx_test = process.load_data(
             self.dataset_name)
@@ -102,6 +101,8 @@ class PrePrompt(nn.Module):
     def embed(self, seq, adj, sparse, msk, LP):
         r"""The input sequence and adjacency matrix are accepted,
         and the input sequence is embedded in a low-dimensional space using the GCN model.
+
+
         """
         h_1 = self.gcn(seq, adj, sparse, LP)
         c = self.read(h_1, msk)
@@ -109,8 +110,8 @@ class PrePrompt(nn.Module):
         return h_1.detach(), c.detach()
 
     def pretrain(self):
-        r"""Perform multiple rounds of pre-training
-        and save the model with the least training loss at the end of each round."""
+        r"""Performs multiple rounds of pre-training
+        and saves the model with the least training loss at the end of each round."""
 
         batch_size = 1
         nb_epochs = 1000
@@ -241,8 +242,14 @@ class PrePrompt(nn.Module):
 
 
 def mygather(feature: torch.Tensor, index: torch.Tensor) -> torch.Tensor:
-    r"""reshape the tenson.
-      collect elements of the feature tensor according to the index"""
+    r"""Reshapes the tensor, and
+      collects elements of the feature tensor according to the index.
+
+      Args:
+          feature (Tensor): The feature of the input.
+          index (Tensor): The criterion tensor.
+
+      """
     input_size = index.size(0)
     index = index.flatten()
     index = index.reshape(len(index), 1)
@@ -255,6 +262,11 @@ def compareloss(feature: torch.Tensor, tuples: tuple, temperature: float) -> tor
     r"""
     The cosine similarity between the elements in the feature tensor is calculated and
     adjusted according to the :obj:`temperature` to calculate the loss.
+
+    Args:
+        feature (Tensor): The feature of the input.
+        tuples (tuple): Used to obtain the relevant data for calculating the loss of cosine similarity.
+        temperature (float): Adjusts the temperature when calculating losses.
     """
     h_tuples = mygather(feature, tuples)
     temp = torch.arange(0, len(tuples))
@@ -278,6 +290,11 @@ def compareloss(feature: torch.Tensor, tuples: tuple, temperature: float) -> tor
 def prompt_pretrain_sample(adj, n):
     r"""
     The sample of the training prediction model is generated according to the given adjacency matrix.
+
+    Args:
+
+        adj (Tensor): The adjacent matrix of the graph.
+        n (int): Controls how many unconnected nodes each node selects during sampling.
     """
     nodenum = adj.shape[0]
     indices = adj.indices
@@ -300,7 +317,11 @@ def prompt_pretrain_sample(adj, n):
 
 
 class weighted_feature(nn.Module):
-    r"""learn the weight of the features"""
+    r"""Learns the weight of the features.
+
+        Args:
+            a1,a2,a3 (float): Initializes the value of the weight.
+            """
 
     def __init__(self, a1, a2, a3):
         super(weighted_feature, self).__init__()
@@ -309,7 +330,10 @@ class weighted_feature(nn.Module):
 
     def reset_parameters(self, a1, a2, a3):
         r"""
-        reset the weight parameters.
+        Reset the weight parameters.
+
+        Args:
+            a1,a2,a3 (float): Initializes the value of the weight.
         """
         # torch.nn.init.xavier_uniform_(self.weight)
 

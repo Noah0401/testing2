@@ -12,10 +12,12 @@ base
 
 .. autosummary::
     :nosignatures:
-    :toctree: ../generated
-    :template: autosummary/inherited_class.rst
 
     PreTrain
+
+.. automodule:: prompt_graph.pretrain.base
+    :members:
+    :undoc-members:
 
 
 
@@ -26,11 +28,12 @@ Edgepred_GPPT
 
 .. autosummary::
     :nosignatures:
-    :toctree: ../generated
-    :template: autosummary/inherited_class.rst
 
     Edgepred_GPPT
 
+.. automodule:: prompt_graph.pretrain.Edgepred_GPPT
+    :members:
+    :undoc-members:
 
 Edgepred_Gprompt
 -------------------
@@ -40,10 +43,12 @@ Edgepred_Gprompt
 
 .. autosummary::
     :nosignatures:
-    :toctree: ../generated
-    :template: autosummary/inherited_class.rst
 
     Edgepred_Gprompt
+
+.. automodule:: prompt_graph.pretrain.Edgepred_Gprompt
+    :members:
+    :undoc-members:
 
 GraphCL
 -------------------
@@ -52,10 +57,12 @@ GraphCL
 
 .. autosummary::
     :nosignatures:
-    :toctree: ../generated
-    :template: autosummary/inherited_class.rst
 
     GraphCL
+
+.. automodule:: prompt_graph.pretrain.GraphCL
+    :members:
+    :undoc-members:
 
 SimGRACE
 -------------------
@@ -65,7 +72,9 @@ SimGRACE
 
 .. autosummary::
     :nosignatures:
-    :toctree: ../generated
-    :template: autosummary/inherited_class.rst
 
     SimGRACE
+
+.. automodule:: prompt_graph.pretrain.SimGRACE
+    :members:
+    :undoc-members:

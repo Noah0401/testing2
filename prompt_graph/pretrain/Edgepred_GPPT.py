@@ -49,8 +49,8 @@ class Edgepred_GPPT(PreTrain):
             return DataLoader(data, batch_size=64, shuffle=True)
 
     def pretrain_one_epoch(self) -> float:
-        r"""train one epoch,
-        return the average(of batch) loss for the training"""
+        r"""Trains for one epoch, and
+        returns the average(of batch) loss for the training."""
         accum_loss, total_step = 0, 0
         device = self.device
 
@@ -79,10 +79,10 @@ class Edgepred_GPPT(PreTrain):
         return accum_loss / total_step
 
     def pretrain(self):
-        r"""Perform multiple rounds of pre-training
-                and save the model with the least training loss at the end of each round.
+        r"""Performs multiple rounds of pre-training
+                and saves the model with the least training loss at the end of each round;
                 The pre-training effect of the model is gradually optimized through iterative loops
-                and saved in the specified folder"""
+                and saved in the specified folder."""
         num_epoch = self.epochs
         train_loss_min = 1000000
         for epoch in range(1, num_epoch + 1):

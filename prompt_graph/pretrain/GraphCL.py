@@ -32,7 +32,7 @@ class GraphCL(PreTrain):
                                                    torch.nn.Linear(self.hid_dim, self.hid_dim)).to(self.device)
 
     def load_graph_data(self):
-        r"""data loading"""
+        r"""Data loading."""
         if self.dataset_name in ['PubMed', 'CiteSeer', 'Cora', 'Computers', 'Photo', 'Reddit', 'WikiCS', 'Flickr']:
             self.graph_list, self.input_dim = NodePretrain(dataname=self.dataset_name, num_parts=200)
         else:
@@ -40,7 +40,7 @@ class GraphCL(PreTrain):
 
     def get_loader(self, graph_list, batch_size, aug1=None, aug2=None, aug_ratio=None):
         r"""
-        Get two data loaders, loader1 and loader2,
+        Gets two data loaders, loader1 and loader2,
         which are used to load the graph data after different data enhancement operations.
         There are 3 types of data enhancement methods.
         :obj:`dropN`: randomly delete some nodes of from the graph;
@@ -90,12 +90,26 @@ class GraphCL(PreTrain):
         return loader1, loader2
 
     def forward_cl(self, x, edge_index, batch):
+        r"""
+        Forward process.
+
+        Args:
+            x (Tensor): The input tensor for operation.
+            edge_index (Tensor): The index of the edges.
+            batch (Tensor): Batch information.
+        """
         x = self.gnn(x, edge_index, batch)
         x = self.projection_head(x)
         return x
 
     def loss_cl(self, x1, x2):
-        r"""the loss function"""
+        r"""The loss function.
+
+        Args:
+            x1 (Tensor): The tensor used for calculating similarity loss.
+            x2 (Tensor): Same as x1.
+
+        """
         T = 0.1
         batch_size, _ = x1.size()
         x1_abs = x1.norm(dim=1)
@@ -109,8 +123,15 @@ class GraphCL(PreTrain):
         return loss
 
     def train_graphcl(self, loader1, loader2, optimizer):
-        r"""train one time, using 2 loaders,
-        return the average(of batch) loss for the training"""
+        r"""Trains one time, using 2 loaders,
+        and returns the average(of batch) loss for the training.
+
+
+        Args:
+            loader1 (DataLoader): Dataloader for training.
+            loader2 (DataLoader): Dataloader for training.
+            optimizer (Optimizer): The selected optimizer.
+        """
         self.train()
         train_loss_accum = 0
         total_step = 0
@@ -132,8 +153,8 @@ class GraphCL(PreTrain):
         return train_loss_accum / total_step
 
     def pretrain(self, batch_size=10, aug1='dropN', aug2="permE", aug_ratio=None, lr=0.01, decay=0.0001, epochs=100):
-        r"""Perform multiple rounds of pre-training
-        and save the model with the least training loss at the end of each round.
+        r"""Performs multiple rounds of pre-training
+        and saves the model with the least training loss at the end of each round.
         The pre-training effect of the model is gradually optimized through iterative loops
         and saved in the specified folder"""
         self.to(self.device)

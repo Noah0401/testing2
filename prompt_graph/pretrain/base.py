@@ -4,7 +4,7 @@ from torch.optim import Adam
 
 
 class PreTrain(torch.nn.Module):
-    r"""Inherited from :class:`torch.nn.Module`, being the base class for concrete pre-train method.
+    r"""Inherited from :class:`torch.nn.Module`, being the base class for concrete pre-train method;
         Initialize the GNN model to prepare for the training.
 
         Args:

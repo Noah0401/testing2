@@ -13,11 +13,11 @@ import os
 
 class SimGRACE(PreTrain):
     r"""
-        Inherited from PreTrain, forming the SimGRACE pre-train method.
+        Inherited from PreTrain, forming the SimGRACE pre-train method;
         By using different graph encoders as comparison view generators,
-        the semantic similarity between the views obtained from two different encoders is compared.
+        the semantic similarity between the views obtained from two different encoders is compared;
         By narrowing the vector representation of the same semantics in vector space,
-        contrast learning is carried out.
+        contrast learning is carried out;
         See `here <https://arxiv.org/abs/2202.03104>`__ for more information.
 
         Args:
@@ -34,14 +34,14 @@ class SimGRACE(PreTrain):
                                                    torch.nn.Linear(self.hid_dim, self.hid_dim)).to(self.device)
 
     def load_graph_data(self):
-        r"""data loading"""
+        r"""Data loading."""
         if self.dataset_name in ['PubMed', 'CiteSeer', 'Cora', 'Computers', 'Photo', 'Reddit', 'WikiCS', 'Flickr']:
             self.graph_list, self.input_dim = NodePretrain(dataname=self.dataset_name, num_parts=200)
         else:
             self.input_dim, self.out_dim, self.graph_list = load4graph(self.dataset_name, pretrained=True)
 
     def get_loader(self, graph_list, batch_size):
-        r"""Get the data loader"""
+        r"""Gets the data loader."""
         if len(graph_list) % batch_size == 1:
             raise KeyError(
                 "batch_size {} makes the last batch only contain 1 graph, \n which will trigger a zero bug in SimGRACE!")
@@ -50,11 +50,27 @@ class SimGRACE(PreTrain):
         return loader
 
     def forward_cl(self, x, edge_index, batch):
+
+        r"""
+                Forward process.
+
+                Args:
+                    x (Tensor): The input tensor for operation.
+                    edge_index (Tensor): The index of the edges.
+                    batch (Tensor): Batch information.
+                """
         x = self.gnn(x, edge_index, batch)
         x = self.projection_head(x)
         return x
 
     def loss_cl(self, x1, x2):
+        r"""The loss function.
+
+        Args:
+            x1 (Tensor): The tensor used for calculating similarity loss.
+            x2 (Tensor): Same as x1.
+            """
+
         T = 0.1
         batch_size, _ = x1.size()
         x1_abs = x1.norm(dim=1)
@@ -68,7 +84,11 @@ class SimGRACE(PreTrain):
         return loss
 
     def perturbate_gnn(self, data):
-        r"""Perturbation of GNN model parameters"""
+        r"""Perturbation of GNN model parameters.
+
+        Args:
+            data (Data): The input graph data.
+        """
         vice_model = deepcopy(self).to(self.device)
 
         for (vice_name, vice_model_param) in vice_model.named_parameters():
@@ -80,8 +100,8 @@ class SimGRACE(PreTrain):
         return z2
 
     def train_simgrace(self, loader, optimizer):
-        r"""train one time,
-            return the average(of batch) loss for the training"""
+        r"""Trains for one time,
+            returns the average(of batch) loss for the training."""
         self.train()
         train_loss_accum = 0
         total_step = 0

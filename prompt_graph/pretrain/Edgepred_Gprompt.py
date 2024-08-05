@@ -29,7 +29,7 @@ class Edgepred_Gprompt(PreTrain):
 
     def generate_loader_data(self) -> DataLoader:
         r"""
-            Get and return the dataloader of specific dataset.
+            Gets and returns the dataloader of specific dataset.
         """
         if self.dataset_name in ['PubMed', 'CiteSeer', 'Cora', 'Computers', 'Photo']:
             self.data, edge_label, edge_index, self.input_dim, self.output_dim = load4link_prediction_single_graph(
@@ -47,8 +47,8 @@ class Edgepred_Gprompt(PreTrain):
             return DataLoader(TensorDataset(data), batch_size=64, shuffle=True)
 
     def pretrain_one_epoch(self):
-        r"""train one time,
-            return the average(of batch) loss for the training"""
+        r"""Trains for one time,
+            and returns the average(of batch) loss for the training"""
         accum_loss, total_step = 0, 0
         device = self.device
         self.gnn.train()
@@ -79,8 +79,8 @@ class Edgepred_Gprompt(PreTrain):
         return accum_loss / total_step
 
     def pretrain(self):
-        r"""Perform multiple rounds of pre-training
-            and save the model with the least training loss at the end of each round.
+        r"""Performs multiple rounds of pre-training
+            and saves the model with the least training loss at the end of each round.
             The pre-training effect of the model is gradually optimized through iterative loops
             and saved in the specified folder
         """
