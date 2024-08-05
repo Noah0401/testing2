@@ -108,7 +108,7 @@ pooling
 .. autosummary::
     :nosignatures:
     :toctree: ../generated
-    :template: autosummary/inherited_class.rst
+    :template: autosummary/function.rst
 
     topk
     filter_adj

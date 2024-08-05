@@ -30,17 +30,17 @@ def nx_to_graph_data_obj(g:nx, center_id:any, allowable_features_downstream:list
     , :obj:`go_target_downstream` (only if node_id_to_go_labels is not None)
     , :obj:`go_target_pretrain` (only if node_id_to_go_labels is not None).
 
-    Args:
-    g (nx): nx graph object of ego graph
-    center_id (Any): node id of center node in the ego graph
-    allowable_features_downstream (list): list of possible go function node
-    features for the downstream task. The resulting go_target_downstream node
-    feature vector will be in this order.
-    allowable_features_pretrain (list): list of possible go function node
-    features for the pretraining task. The resulting go_target_pretrain node
-    feature vector will be in this order.
-    node_id_to_go_labels (dict): dict that maps node id to a list of its
-    corresponding go labels
+        Args:
+            g (nx): nx graph object of ego graph
+            center_id (Any): node id of center node in the ego graph
+            allowable_features_downstream (list): list of possible go function node
+                features for the downstream task. The resulting go_target_downstream node
+                feature vector will be in this order.
+            allowable_features_pretrain (list): list of possible go function node
+                features for the pretraining task. The resulting go_target_pretrain node
+                feature vector will be in this order.
+            node_id_to_go_labels (dict): dict that maps node id to a list of its
+                corresponding go labels
     """
 
     n_nodes = g.number_of_nodes()
@@ -156,27 +156,27 @@ class BioDataset(InMemoryDataset):
         tutorial.
 
         Args:
-        root (str): The data directory that contains a raw and processed dir.
-        data_type (str): either supervised or unsupervised.
-        empty (bool): if obj:`TRUE`, then will not load any data obj. For
-        initializing empty dataset (default: :obj:`FALSE`).
-        transform (callable, optional): A function/transform that takes in a
-            :class:`~torch_geometric.data.Data` or
-            :class:`~torch_geometric.data.HeteroData` object and returns a
-            transformed version.
-            The data object will be transformed before every access.
-            (default: :obj:`None`)
-        pre_transform (callable, optional): A function/transform that takes in
-            a :class:`~torch_geometric.data.Data` or
-            :class:`~torch_geometric.data.HeteroData` object and returns a
-            transformed version.
-            The data object will be transformed before being saved to disk.
-            (default: :obj:`None`)
-        pre_filter (callable, optional): A function that takes in a
-            :class:`~torch_geometric.data.Data` or
-            :class:`~torch_geometric.data.HeteroData` object and returns a
-            boolean value, indicating whether the data object should be
-            included in the final dataset. (default: :obj:`None`)
+            root (str): The data directory that contains a raw and processed dir.
+            data_type (str): either supervised or unsupervised.
+            empty (bool): if obj:`TRUE`, then will not load any data obj. For
+            initializing empty dataset (default: :obj:`FALSE`).
+            transform (callable, optional): A function/transform that takes in a
+                :class:`~torch_geometric.data.Data` or
+                :class:`~torch_geometric.data.HeteroData` object and returns a
+                transformed version.
+                The data object will be transformed before every access.
+                (default: :obj:`None`)
+            pre_transform (callable, optional): A function/transform that takes in
+                a :class:`~torch_geometric.data.Data` or
+                :class:`~torch_geometric.data.HeteroData` object and returns a
+                transformed version.
+                The data object will be transformed before being saved to disk.
+                (default: :obj:`None`)
+            pre_filter (callable, optional): A function that takes in a
+                :class:`~torch_geometric.data.Data` or
+                :class:`~torch_geometric.data.HeteroData` object and returns a
+                boolean value, indicating whether the data object should be
+                included in the final dataset. (default: :obj:`None`)
     """
     def __init__(self,
                  root,

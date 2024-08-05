@@ -17,7 +17,7 @@ def topk(
     tol: float = 1e-7,
 ) -> Tensor:
     r"""
-    Select the index corresponding to the first k maximum values in the input tensor x.
+    Selects the index corresponding to the first k maximum values in the input tensor x.
 
     Args:
         x (Tensor): The features/scores of the nodes.
@@ -92,6 +92,12 @@ def filter_adj(
     r"""
     According to a given node index is arranged in :obj:`perm` to
     filter and rearrange :obj:`edge_attr` and :obj:`edge_index`.
+
+    Args:
+        edge_index (Tensor): The representation of edges.
+        edge_attr (Optional, Tensor): The attributes of the edges.
+        perm (Tensor): Permutation tensor.
+        num_nodes (Optinal, int): The number of nodes.
     """
 
     num_nodes = maybe_num_nodes(edge_index, num_nodes)
@@ -113,7 +119,8 @@ def filter_adj(
 
 class TopKPooling(torch.nn.Module):
     r"""
-    Inherited from :class:`torch.nn.Module`, doing the top-k pooling.
+    Inherited from :class:`torch.nn.Module`, this class manages the top-k pooling;
+    The top-k pooling operation selects the k largest values from the input tensor and discards the rest.
 
     Args:
         in_channels (int): The number of input channels.
@@ -207,7 +214,7 @@ class TopKPooling(torch.nn.Module):
 
 class SAGPooling(torch.nn.Module):
     r"""
-        Inherited from :class:`torch.nn.Module`.
+        Inherited from :class:`torch.nn.Module`;
         The most relevant or important nodes are selected according to their scores or attention coefficients,
         and pooled operations are performed to obtain the pooled node representation.
 
