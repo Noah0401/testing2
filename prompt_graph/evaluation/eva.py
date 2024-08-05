@@ -20,7 +20,7 @@ class Evaluator:
         if 'hits@' in self.eval_metric:
             self.K = int(self.eval_metric.split('@')[1])
 
-    def _parse_and_check_input(self, input_dict: dict):
+    def parse_and_check_input(self, input_dict: dict):
         r"""Parses and checks whether the type and shape of the input data meets the requirements,
         and the data is converted into a uniform format.
 
@@ -109,16 +109,16 @@ class Evaluator:
         """
 
         if 'hits@' in self.eval_metric:
-            y_pred_pos, y_pred_neg, type_info = self._parse_and_check_input(input_dict)
-            return self._eval_hits(y_pred_pos, y_pred_neg, type_info)
+            y_pred_pos, y_pred_neg, type_info = self.parse_and_check_input(input_dict)
+            return self.eval_hits(y_pred_pos, y_pred_neg, type_info)
         elif self.eval_metric == 'mrr':
-            y_pred_pos, y_pred_neg, type_info = self._parse_and_check_input(input_dict)
-            return self._eval_mrr(y_pred_pos, y_pred_neg, type_info)
+            y_pred_pos, y_pred_neg, type_info = self.parse_and_check_input(input_dict)
+            return self.eval_mrr(y_pred_pos, y_pred_neg, type_info)
 
         else:
             raise ValueError('Undefined eval metric %s' % (self.eval_metric))
 
-    def _eval_hits(self, y_pred_pos, y_pred_neg, type_info):
+    def eval_hits(self, y_pred_pos, y_pred_neg, type_info):
         r"""Evaluates and returns the value :obj:`hits@k`, which refers to the probability of hitting in the first k results.
         It is to see whether there is a real label in the first k results, if there is a hit success, otherwise it is a hit failure
 
@@ -140,7 +140,7 @@ class Evaluator:
 
         return {'hits@{}'.format(self.K): hitsK}
 
-    def _eval_mrr(self, y_pred_pos, y_pred_neg, type_info):
+    def eval_mrr(self, y_pred_pos, y_pred_neg, type_info):
         r"""Evaluates and returns the value :obj:`mrr`: Mean Reciprocal Ranking.
 
         Args:
