@@ -16,7 +16,11 @@ from prompt_graph.utils import act
 
 class GCN(torch.nn.Module):
     r"""
-        Inherited from :class:`torch.nn.Module`, forming a GCN model.
+        Inherited from :class:`torch.nn.Module`, forming a GCN model; GCN (Graph Convolutional Network):
+        through scaling linearly in edges and learning from
+        hidden layers, it could capture the graph structure and nodes features;
+        See `here <https://arxiv.org/abs/1609.02907>`__ for more information.
+
 
         Args:
             input_dim (int): the dimension of the input node feature
@@ -86,11 +90,22 @@ class GCN(torch.nn.Module):
             return graph_emb
 
     def decode(self, z, edge_label_index):
-        r"""Computes the decoding results of the given node embedding and edge label index"""
+
+        r"""Computes the decoding results of the given node embedding and edge label index.
+
+        Args:
+            z (Tensor): Used to compute the decoding result of a given node embedding and edge label index.
+            edge_label_index (Tensor): The index of the labels of edges.
+        """
         return (z[edge_label_index[0]] * z[edge_label_index[1]]).sum(dim=-1)
 
     def decode_all(self, z):
         r"""The probability adjacency matrix is decoded as a series of edge connection relations,
-        indicating which nodes are connected"""
+        indicating which nodes are connected.
+
+        Args:
+            z (Tensor): Used to compute the decoding result of a given node embedding and edge label index.
+
+        """
         prob_adj = z @ z.t()
         return (prob_adj > 0).nonzero(as_tuple=False).t()

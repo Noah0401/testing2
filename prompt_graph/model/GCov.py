@@ -16,7 +16,8 @@ from prompt_graph.utils import act
 
 class GCov(torch.nn.Module):
     r"""
-        Inherited from :class:`torch.nn.Module`, forming a GCov model.
+        Inherited from :class:`torch.nn.Module`, forming a GCov model, which is the same as the
+        previous :obj:`GCN` model.
 
         Args:
             input_dim (int): the dimension of the input node feature
@@ -84,10 +85,19 @@ class GCov(torch.nn.Module):
             return graph_emb
 
     def decode(self, z, edge_label_index):
-        r"""Computes the decoding results of the given node embedding and edge label index"""
+        r"""Computes the decoding results of the given node embedding and edge label index.
+
+        Args:
+            z (Tensor): Used to compute the decoding result of a given node embedding and edge label index.
+            edge_label_index (Tensor): The index of the labels of edges.
+        """
         return (z[edge_label_index[0]] * z[edge_label_index[1]]).sum(dim=-1)
 
     def decode_all(self, z):
-        r"""Computes the decoding result matrix embedded by a given node."""
+        r"""Computes the decoding result matrix embedded by a given node.
+
+        Args:
+            z (Tensor): Used to compute the decoding result of a given node embedding and edge label index.
+        """
         prob_adj = z @ z.t()
         return (prob_adj > 0).nonzero(as_tuple=False).t()

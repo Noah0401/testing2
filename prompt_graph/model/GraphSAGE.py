@@ -17,7 +17,10 @@ from prompt_graph.utils import act
 
 class GraphSAGE(torch.nn.Module):
     r"""
-        Inherited from :class:`torch.nn.Module`, forming a GraphSAGE model.
+        Inherited from :class:`torch.nn.Module`, forming a GraphSAGE model;
+        GraphSAGE (Graph Sample and Aggregated): [5] Similar to :obj:`GIN`, it could learn node representations
+        from neighbors and generate embedding for novel nodes by learning from the previous one;
+        See `here <https://arxiv.org/abs/1706.02216>`__ for more information.
 
         Args:
             input_dim (int): the dimension of the input node feature
@@ -87,10 +90,19 @@ class GraphSAGE(torch.nn.Module):
             return graph_emb
 
     def decode(self, z, edge_label_index):
-        r"""Computes the decoding results of the given node embedding and edge label index"""
+        r"""Computes the decoding results of the given node embedding and edge label index.
+
+        Args:
+            z (Tensor): Used to compute the decoding result of a given node embedding and edge label index.
+            edge_label_index (Tensor): The index of the labels of edges.
+        """
         return (z[edge_label_index[0]] * z[edge_label_index[1]]).sum(dim=-1)
 
     def decode_all(self, z):
-        r"""Computes the decoding result matrix embedded by a given node."""
+        r"""Computes the decoding result matrix embedded by a given node.
+
+        Args:
+            z (Tensor): Used to compute the decoding result of a given node embedding and edge label index.
+       """
         prob_adj = z @ z.t()
         return (prob_adj > 0).nonzero(as_tuple=False).t()
