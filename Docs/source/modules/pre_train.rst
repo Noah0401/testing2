@@ -19,6 +19,21 @@ base
     :members:
     :undoc-members:
 
+DGI
+-------------------
+
+.. currentmodule:: prompt_graph.pretrain.DGI
+
+
+.. autosummary::
+    :nosignatures:
+
+    Discriminator
+    DGI
+
+.. automodule:: prompt_graph.pretrain.DGI
+    :members:
+    :undoc-members:
 
 
 Edgepred_GPPT
@@ -78,3 +93,23 @@ SimGRACE
 .. automodule:: prompt_graph.pretrain.SimGRACE
     :members:
     :undoc-members:
+
+MultiGPrompt
+-------------------
+
+.. currentmodule:: prompt_graph.pretrain.MultiGPrompt
+
+
+.. autosummary::
+    :nosignatures:
+
+    PrePrompt
+    mygather
+    compareloss
+    prompt_pretrain_sample
+    weighted_feature
+
+.. automodule:: prompt_graph.pretrain.MultiGPrompt
+    :members:
+    :undoc-members:
+
