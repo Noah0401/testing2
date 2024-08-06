@@ -32,9 +32,9 @@ def drop_nodes(data, aug_ratio):
     r"""A certain number of nodes are randomly discarded according to the given :obj:`aug_ratio`,
     and the node index and features of the graph data are updated.
 
-        Args:
-            data (Data): The graph.
-            aug_ratio (float): Ratio of dropping.
+    Args:
+        data (Data): The graph.
+        aug_ratio (float): Ratio of dropping.
 
     """
     node_num, _ = data.x.size()

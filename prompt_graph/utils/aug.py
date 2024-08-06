@@ -108,8 +108,8 @@ def aug_subgraph(input_fea, input_adj, drop_percent=0.2):
         Args:
             input_fea (Tensor)
             input_adj (Tensor): Adjustment matrix.
-            drop_percent (float): Ratio of nodes to drop,
-            where :obj:`1-drop_percent` is the number of nodes to keep in the subgraph. (default: :obj:`0.2`)
+            drop_percent (float): Ratio of nodes to drop.
+            where :obj:`1-drop_percent` is the number of nodes to keep in the subgraph (default: :obj:`0.2`).
         """
 
     input_adj = torch.tensor(input_adj.todense().tolist())

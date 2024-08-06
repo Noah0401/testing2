@@ -25,8 +25,8 @@ import prompt_graph
 # -- Project information -----------------------------------------------------
 
 project = 'ProG'
-copyright = '2024, WANGKevin'
-author = 'WANGKevin'
+copyright = '2024, WANGKevin & Ge Fangzhou'
+author = 'WANGKevin, Ge Fangzhou'
 
 
 # The full version, including alpha/beta/rc tags
@@ -54,9 +54,9 @@ extensions = [
     'pyg',
 ]
 
-html_theme = 'pyg_sphinx_theme'
-html_logo = ('https://github.com/sheldonresearch/ProG/blob/main/Logo.jpg?raw=true')
-html_favicon = ('https://github.com/sheldonresearch/ProG/blob/main/Logo.jpg?raw=true')
+html_theme = 'press'
+html_logo = ('https://github.com/Noah0401/testing2/blob/main/Logo__1_-removebg-preview.png?raw=true')
+html_favicon = ('https://github.com/Noah0401/testing2/blob/main/Logo__1_-removebg-preview.png?raw=true')
 html_static_path = ['_static']
 templates_path = ['_templates']
 

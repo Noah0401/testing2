@@ -12,18 +12,18 @@ def get_args():
     :obj:`batch_size`
     :obj:`epochs`
     :obj:`shot_num`
-    obj:`pre_train_model_path`
-    obj:`lr`
-    obj:`decay`
-    obj:`num_layer`
-    obj:`dropout_ratio`
-    obj:`graph_pooling`
-    obj:`JK`
-    obj:`seed`
-    obj:`runseed`
-    obj:`num_workers`
-    obj:`num_layers`
-    obj:`pnum`
+    :obj:`pre_train_model_path`
+    :obj:`lr`
+    :obj:`decay`
+    :obj:`num_layer`
+    :obj:`dropout_ratio`
+    :obj:`graph_pooling`
+    :obj:`JK`
+    :obj:`seed`
+    :obj:`runseed`
+    :obj:`num_workers`
+    :obj:`num_layers`
+    :obj:`pnum`.
     """
     parser = argparse.ArgumentParser(description='PyTorch implementation of pre-training of graph neural networks')
     parser.add_argument('--task', type = str)
