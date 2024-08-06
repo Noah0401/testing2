@@ -7,7 +7,7 @@ import numpy as np
 
 class downprompt(nn.Module):
     r"""
-        Inherit from :class:`torch.nn.Module`, it defines a downprompt model,
+        Inherited from :class:`torch.nn.Module`, it defines a downprompt model,
         which combines multiple prompt.
 
         Args:
@@ -80,7 +80,7 @@ class downprompt(nn.Module):
         return ret
 
     def weights_init(self, m):
-        r"""Initialize the weight of the mode."""
+        r"""Initializes the weight of the mode."""
         if isinstance(m, nn.Linear):
             torch.nn.init.xavier_uniform_(m.weight.data)
             if m.bias is not None:
@@ -166,7 +166,7 @@ class weighted_prompt(nn.Module):
 
 class weighted_feature(nn.Module):
     r"""
-    Inherit fromed :class:`torch.nn.Module`;
+    Inherited fromed :class:`torch.nn.Module`;
     The graph embeddings of the two inputs are weighted and the activation function is applied.
 
     Args:

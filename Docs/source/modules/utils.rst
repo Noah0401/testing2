@@ -13,10 +13,12 @@ act
 
 .. autosummary::
     :nosignatures:
-    :toctree: ../generated
-    :template: autosummary/inherited_class.rst
 
     act
+
+.. automodule:: prompt_graph.utils.act
+    :members:
+    :undoc-members:
 
 
 
@@ -27,11 +29,13 @@ center_embedding
 
 .. autosummary::
     :nosignatures:
-    :toctree: ../generated
-    :template: autosummary/inherited_class.rst
 
     center_embedding
     distance2center
+
+.. automodule:: prompt_graph.utils.center_embedding
+    :members:
+    :undoc-members:
 
 
 constraint
@@ -42,10 +46,12 @@ constraint
 
 .. autosummary::
     :nosignatures:
-    :toctree: ../generated
-    :template: autosummary/inherited_class.rst
 
     constraint
+
+.. automodule:: prompt_graph.utils.constraint
+    :members:
+    :undoc-members:
 
 edge_index_to_sparse_matrix
 --------------------------------------
@@ -54,10 +60,12 @@ edge_index_to_sparse_matrix
 
 .. autosummary::
     :nosignatures:
-    :toctree: ../generated
-    :template: autosummary/inherited_class.rst
 
     edge_index_to_sparse_matrix
+
+.. automodule:: prompt_graph.utils.edge_index_to_sparse_matrix
+    :members:
+    :undoc-members:
 
 loss
 -------------------
@@ -67,11 +75,13 @@ loss
 
 .. autosummary::
     :nosignatures:
-    :toctree: ../generated
-    :template: autosummary/inherited_class.rst
 
     Gprompt_tuning_loss
     Gprompt_link_loss
+
+.. automodule:: prompt_graph.utils.loss
+    :members:
+    :undoc-members:
 
 mkdir
 -------------------
@@ -81,10 +91,12 @@ mkdir
 
 .. autosummary::
     :nosignatures:
-    :toctree: ../generated
-    :template: autosummary/inherited_class.rst
 
     mkdir
+
+.. automodule:: prompt_graph.utils.mkdir
+    :members:
+    :undoc-members:
 
 NegativeEdge
 -------------------
@@ -94,10 +106,12 @@ NegativeEdge
 
 .. autosummary::
     :nosignatures:
-    :toctree: ../generated
-    :template: autosummary/inherited_class.rst
 
     NegativeEdge
+
+.. automodule:: prompt_graph.utils.NegativeEdge
+    :members:
+    :undoc-members:
 
 perturbation
 -------------------
@@ -107,13 +121,15 @@ perturbation
 
 .. autosummary::
     :nosignatures:
-    :toctree: ../generated
-    :template: autosummary/inherited_class.rst
 
     graph_views
     drop_nodes
     permute_edges
     mask_nodes
+
+.. automodule:: prompt_graph.utils.perturbation
+    :members:
+    :undoc-members:
 
 prepare_structured_data
 --------------------------------------
@@ -123,10 +139,12 @@ prepare_structured_data
 
 .. autosummary::
     :nosignatures:
-    :toctree: ../generated
-    :template: autosummary/inherited_class.rst
 
     prepare_structured_data
+
+.. automodule:: prompt_graph.utils.prepare_structured_data
+    :members:
+    :undoc-members:
 
 print_para
 -------------------
@@ -136,10 +154,12 @@ print_para
 
 .. autosummary::
     :nosignatures:
-    :toctree: ../generated
-    :template: autosummary/inherited_class.rst
 
     print_model_parameters
+
+.. automodule:: prompt_graph.utils.print_para
+    :members:
+    :undoc-members:
 
 seed
 -------------------
@@ -149,9 +169,11 @@ seed
 
 .. autosummary::
     :nosignatures:
-    :toctree: ../generated
-    :template: autosummary/inherited_class.rst
 
     seed_everything
     __seeds_list__
     seed_torch
+
+.. automodule:: prompt_graph.utils.seed
+    :members:
+    :undoc-members:

@@ -73,6 +73,11 @@ class LinkTask(BaseTask):
     def test(self, data):
         r"""
         Returns the ROC AUC level.
+        AUC ROC stands for “Area Under the Curve” of the
+        “Receiver Operating Characteristic” curve.
+        The AUC ROC curve is basically a way of measuring the performance of an ML model.
+        AUC measures the ability of a binary classifier to distinguish between classes
+        and is used as a summary of the ROC curve.
 
         Args:
             data (Data): The information of graphs.
