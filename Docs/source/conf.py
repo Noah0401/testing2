@@ -54,7 +54,7 @@ extensions = [
     'pyg',
 ]
 
-html_theme = 'press'
+html_theme = 'pyg_sphinx_theme'
 html_logo = ('https://github.com/Noah0401/testing2/blob/main/Logo__1_-removebg-preview.png?raw=true')
 html_favicon = ('https://github.com/Noah0401/testing2/blob/main/Logo__1_-removebg-preview.png?raw=true')
 html_static_path = ['_static']
