@@ -50,12 +50,12 @@ class GraphCL(PreTrain):
             Args:
                 graph_list (list): The original graph list.
                 batch_size (int): The size of one batch.
-                aug1 (str): The type of the first data enhancement operation can be selected as :obj:`dropN`, :obj:`permE`, or :obj:`maskN`.
-                 (default: :obj:`None`)
-                aug2 (str): The type of the second data enhancement operation can be selected as :obj:`dropN`, :obj:`permE`, or :obj:`maskN`.
-                 (default: :obj:`None`)
+                aug1 (str): The type of the first data enhancement operation can be selected as :obj:`dropN`, :obj:`permE`, or :obj:`maskN`
+                 (default: :obj:`None`).
+                aug2 (str): The type of the second data enhancement operation can be selected as :obj:`dropN`, :obj:`permE`, or :obj:`maskN`
+                 (default: :obj:`None`).
                 aug_ratio (float): Scale factor of the data enhancement operation. The value ranges from :obj:`0.1`, :obj:`0.2`, or :obj:`0.3`
-                 (default: :obj:`None`)
+                 (default: :obj:`None`).
         """
 
         if len(graph_list) % batch_size == 1:

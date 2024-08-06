@@ -41,7 +41,13 @@ class SimGRACE(PreTrain):
             self.input_dim, self.out_dim, self.graph_list = load4graph(self.dataset_name, pretrained=True)
 
     def get_loader(self, graph_list, batch_size):
-        r"""Gets the data loader."""
+        r"""Gets the data loader.
+
+        Args:
+            graph_list (list): The list of graphs.
+            batch_size (int): The size of a batch.
+
+        """
         if len(graph_list) % batch_size == 1:
             raise KeyError(
                 "batch_size {} makes the last batch only contain 1 graph, \n which will trigger a zero bug in SimGRACE!")
@@ -101,7 +107,12 @@ class SimGRACE(PreTrain):
 
     def train_simgrace(self, loader, optimizer):
         r"""Trains for one time,
-            returns the average(of batch) loss for the training."""
+            returns the average(of batch) loss for the training.
+
+            Args:
+                loader (DataLoader): Dataloader for training.
+                optimizer (Optimizer): The selected optimizer.
+                """
         self.train()
         train_loss_accum = 0
         total_step = 0
@@ -124,7 +135,13 @@ class SimGRACE(PreTrain):
         r"""Perform multiple rounds of pre-training
             and save the model with the least training loss at the end of each round.
             The pre-training effect of the model is gradually optimized through iterative loops
-            and saved in the specified folder
+            and saved in the specified folder.
+
+            Args:
+                batch_size (int): The size of a batch (default: :obj:`10`).
+                lr (float): Learning rate which controls how much the model parameters are adjusted at each iteration (default: :obj:`0.01`).
+                decay (float): Weight decay (default: :obj:`0.0001`).
+                epochs (int): How many times the training process will be done (default: :obj:`100`).
             """
 
         loader = self.get_loader(self.graph_list, batch_size)
