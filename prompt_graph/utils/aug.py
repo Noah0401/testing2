@@ -8,11 +8,11 @@ import numpy as np
 
 def aug_random_mask(input_feature, drop_percent=0.2):
     r"""
-    Randomly mask some nodes in the input feature.
+    Randomly masks some nodes in the input feature.
 
     Args:
         input_feature (Tensor)
-        drop_percent (float): Ratio of nodes to mask. (default: :obj:`0.2`)
+        drop_percent (float): Ratio of nodes to mask (default: :obj:`0.2`).
     """
     node_num = input_feature.shape[1]
     mask_num = int(node_num * drop_percent)
@@ -27,7 +27,7 @@ def aug_random_mask(input_feature, drop_percent=0.2):
 
 def aug_random_edge(input_adj, drop_percent=0.2):
     r"""
-        Randomly drop some edges in the input feature.
+        Randomly drops some edges in the input feature.
 
         Args:
             input_feature (Tensor)
@@ -74,7 +74,7 @@ def aug_random_edge(input_adj, drop_percent=0.2):
 
 def aug_drop_node(input_fea, input_adj, drop_percent=0.2):
     r"""
-        Randomly drop some nodes in the input feature.
+        Randomly drops some nodes in the input feature.
 
         Args:
             input_fea (Tensor)
@@ -103,7 +103,7 @@ def aug_drop_node(input_fea, input_adj, drop_percent=0.2):
 def aug_subgraph(input_fea, input_adj, drop_percent=0.2):
     r"""
         A node is randomly selected from the input feature and adjacency matrix,
-        and the subgraph is gradually expanded with the node as the center
+        and the subgraph is gradually expanded with the node as the center.
 
         Args:
             input_fea (Tensor)

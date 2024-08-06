@@ -1,7 +1,7 @@
 
 
 def print_model_parameters(model):
-    r"""Print the parameters of the given model."""
+    r"""Prints the parameters of the given model."""
 
     total_params = 0
     for name, parameter in model.named_parameters():

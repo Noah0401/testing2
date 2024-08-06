@@ -5,7 +5,7 @@ import torch.nn as nn
 
 class Gprompt_tuning_loss(nn.Module):
     r"""
-    Inherit from :class:`torch.nn.Module`, calculate the loss of Gprompt.
+    Inherited from :class:`torch.nn.Module`, calculates the loss of Gprompt.
     """
 
     def __init__(self, tau=0.1):
@@ -30,7 +30,15 @@ class Gprompt_tuning_loss(nn.Module):
 
 
 def Gprompt_link_loss(node_emb, pos_emb, neg_emb, temperature=0.2):
-    r"""Refer to GraphPrompt original codes"""
+    r"""Refers to GraphPrompt original codes.
+
+    Args:
+        node_emb (Tensor): The embedding for nodes.
+        pos_emb (Tensor): The embedding for positive samples.
+        neg_emb (Tensor): The embedding for negative samples.
+        temperature (float): Controls the parameter (default: :obj:`0.2`).
+
+    """
     x = torch.exp(F.cosine_similarity(node_emb, pos_emb, dim=-1) / temperature)
     y = torch.exp(F.cosine_similarity(node_emb, neg_emb, dim=-1) / temperature)
 

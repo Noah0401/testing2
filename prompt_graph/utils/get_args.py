@@ -1,7 +1,7 @@
 import argparse
 
 def get_args():
-    r"""Add and return the arguments.
+    r"""Adds and returns the arguments.
     The arguments include:
     :obj:`task`,
     :obj:`dataset_name`

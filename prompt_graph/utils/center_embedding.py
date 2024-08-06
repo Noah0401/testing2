@@ -6,8 +6,8 @@ def center_embedding(input, index, label_num):
     Calculates the average embedding vector for each class in the input feature.
 
     Args:
-        input (Tensor)
-        index (Tensor) :An index of the category to which each sample belongs.
+        input (Tensor): The input tensor.
+        index (Tensor) : An index of the category to which each sample belongs.
         label_num (int): The number of labels.
     """
     device=input.device
@@ -29,10 +29,11 @@ def center_embedding(input, index, label_num):
 
 def distance2center(input,center):
     r"""
-    Calculate the distance between each sample in the input feature and the class center embedding vector
+    Calculates the distance between each sample in the
+    input feature and the class center embedding vector.
 
     Args:
-        input (Tensor)
+        input (Tensor): The input tensor.
         center (Tensor): The average embedding vector of the class
     """
     n = input.size(0)

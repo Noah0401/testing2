@@ -20,6 +20,25 @@ act
     :members:
     :undoc-members:
 
+aug
+-------------------
+
+.. currentmodule:: prompt_graph.utils.aug
+
+
+.. autosummary::
+    :nosignatures:
+
+    aug_random_mask
+    aug_random_edge
+    aug_drop_node
+    aug_subgraph
+    delete_row_col
+
+.. automodule:: prompt_graph.utils.aug
+    :members:
+    :undoc-members:
+
 
 
 center_embedding
@@ -50,6 +69,43 @@ constraint
     constraint
 
 .. automodule:: prompt_graph.utils.constraint
+    :members:
+    :undoc-members:
+
+
+contrast
+-------------------
+
+.. currentmodule:: prompt_graph.utils.contrast
+
+
+.. autosummary::
+    :nosignatures:
+
+    contrastive_loss
+    generate_random_model_output
+    generate_corrupted_graph
+    generate_corrupted_graph_via_drop_node
+    generate_corrupted_graph_via_drop_edge
+    genereate_corrupted_graph_via_shuffle_X
+
+.. automodule:: prompt_graph.utils.contrast
+    :members:
+    :undoc-members:
+
+
+get_args
+-------------------
+
+.. currentmodule:: prompt_graph.utils.get_args
+
+
+.. autosummary::
+    :nosignatures:
+
+    get_args
+
+.. automodule:: prompt_graph.utils.get_args
     :members:
     :undoc-members:
 
@@ -161,6 +217,35 @@ print_para
     :members:
     :undoc-members:
 
+
+process
+-------------------
+
+.. currentmodule:: prompt_graph.utils.process
+
+
+.. autosummary::
+    :nosignatures:
+
+    parse_skipgram
+    process_tu
+    micro_f1
+    adj_to_bias
+    parse_index_file
+    sample_mask
+    load_data
+    sparse_to_tuple
+    standardize_data
+    preprocess_features
+    normalize_adj
+    preprocess_adj
+    sparse_mx_to_torch_sparse_tensor
+
+.. automodule:: prompt_graph.utils.process
+    :members:
+    :undoc-members:
+
+
 seed
 -------------------
 
@@ -177,3 +262,4 @@ seed
 .. automodule:: prompt_graph.utils.seed
     :members:
     :undoc-members:
+

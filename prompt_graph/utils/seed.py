@@ -7,7 +7,14 @@ from random import shuffle
 
 
 def seed_everything(seed):
-    r"""Use this seed value to set the seed of the random number generator"""
+    r"""Use the seed value to set the seed of the random number generator.
+
+    Args:
+        seed (int): Used to seed a random number generator.
+
+
+
+    """
     random.seed(seed)
     np.random.seed(seed)
     torch.manual_seed(seed)

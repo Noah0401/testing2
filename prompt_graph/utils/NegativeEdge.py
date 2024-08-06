@@ -4,7 +4,7 @@ import torch
 
 class NegativeEdge:
     r"""
-        Randomly sample negative edges
+        Randomly samples negative edges.
     """
     def __init__(self):
 

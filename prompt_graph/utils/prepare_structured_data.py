@@ -3,7 +3,8 @@ from torch_geometric.utils import structured_negative_sampling
 from torch_geometric.data import Data
 
 def prepare_structured_data(graph_data: Data):
-    r"""Prepare structured <i,k,j> format link prediction data"""
+    r"""Prepares structured <i,k,j> format link prediction data.
+    """
 
     node_idx = torch.LongTensor([i for i in range(graph_data.num_nodes)])
     self_loop = torch.stack([node_idx, node_idx], dim=0)

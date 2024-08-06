@@ -3,6 +3,10 @@ import torch
 def constraint(device,prompt):
     r"""
     Calculates the value of the constraint term.
+
+    Args:
+        device (Device): The device for training.
+        prompt (model): The chosen training prompt.
     """
 
     if isinstance(prompt,list):

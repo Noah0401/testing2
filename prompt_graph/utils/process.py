@@ -11,7 +11,11 @@ import torch.nn as nn
 
 
 def parse_skipgram(fname):
-    r"""Parses a text file and converts it into a NumPy array containing node features."""
+    r"""Parses a text file and converts it into a NumPy array containing node features.
+
+    Args:
+        fname (str): The name of the file.
+    """
     with open(fname) as f:
         toks = list(f.read().split())
     nb_nodes = int(toks[0])
@@ -30,7 +34,12 @@ def parse_skipgram(fname):
 
 # Process a (subset of) a TU dataset into standard form
 def process_tu(data, nb_nodes):
-    r""" Process a (subset of) a TU dataset into standard form"""
+    r""" Processes a (subset of) a TU dataset into standard form.
+
+    Args:
+        data (Data): The input graph.
+        nb_nodes (int): The number of nodes.
+    """
     nb_graphs = len(data)
     ft_size = data.num_features
 
@@ -53,7 +62,13 @@ def process_tu(data, nb_nodes):
 
 
 def micro_f1(logits, labels):
-    r"""Calculate the microscopic F1 score"""
+    r"""Calculates the microscopic F1 score.
+
+    Args:
+        logits (Tensor): The original output.
+        labels (Tensor): The label of graphs.
+
+    """
     # Compute predictions
     preds = torch.round(nn.Sigmoid()(logits))
 
@@ -75,10 +90,17 @@ def micro_f1(logits, labels):
 
 
 def adj_to_bias(adj, sizes, nhood=1):
-    r"""Prepare adjacency matrix by expanding up to a given neighbourhood.
-    This will insert loops on every node.
-    Finally, the matrix is converted to bias vectors.
-    Expected shape: [graph, nodes, nodes]"""
+    r"""Prepare adjacency matrix by expanding up to a given neighbourhood;
+    This will insert loops on every node;
+    Finally, the matrix is converted to bias vectors;
+    Expected shape: [graph, nodes, nodes].
+
+    Args:
+        adj (Tensor): The adjacent matrix.
+        sizes (int): The size of graphs.
+        nhood (int): Neighborhood.
+
+    """
     nb_graphs = adj.shape[0]
     mt = np.empty(adj.shape)
     for g in range(nb_graphs):
@@ -97,7 +119,7 @@ def adj_to_bias(adj, sizes, nhood=1):
 ###############################################
 
 def parse_index_file(filename):
-    r"""Parse index file."""
+    r"""Parses index file."""
     index = []
     for line in open(filename):
         index.append(int(line.strip()))
@@ -105,14 +127,14 @@ def parse_index_file(filename):
 
 
 def sample_mask(idx, l):
-    r"""Create mask."""
+    r"""Creates mask."""
     mask = np.zeros(l)
     mask[idx] = 1
     return np.array(mask, dtype=np.bool)
 
 
 def load_data(dataset_str):  # {'pubmed', 'citeseer', 'cora'}
-    r"""Load data."""
+    r"""Loads data."""
     current_path = os.path.dirname(__file__)
     names = ['x', 'y', 'tx', 'ty', 'allx', 'ally', 'graph']
     objects = []
@@ -150,7 +172,7 @@ def load_data(dataset_str):  # {'pubmed', 'citeseer', 'cora'}
 
 
 def sparse_to_tuple(sparse_mx, insert_batch=False):
-    r"""Convert sparse matrix to tuple representation.
+    r"""Converts sparse matrix to tuple representation;
     Set :obj:`insert_batch`=:obj:`TRUE` if you want to insert a batch dimension."""
 
     def to_tuple(mx):
@@ -176,7 +198,7 @@ def sparse_to_tuple(sparse_mx, insert_batch=False):
 
 
 def standardize_data(f, train_mask):
-    r"""Standardize feature matrix and convert to tuple representation"""
+    r"""Standardizes feature matrix and convert to tuple representation."""
     # standardize data
     f = f.todense()
     mu = f[train_mask == True, :].mean(axis=0)
@@ -189,7 +211,7 @@ def standardize_data(f, train_mask):
 
 
 def preprocess_features(features):
-    r"""Row-normalize feature matrix and convert to tuple representation"""
+    r"""Row-normalize feature matrix and convert to tuple representation."""
     rowsum = np.array(features.sum(1))
     r_inv = np.power(rowsum, -1).flatten()
     r_inv[np.isinf(r_inv)] = 0.
@@ -215,7 +237,7 @@ def preprocess_adj(adj):
 
 
 def sparse_mx_to_torch_sparse_tensor(sparse_mx):
-    r"""Convert a scipy sparse matrix to a torch sparse tensor."""
+    r"""Converts a scipy sparse matrix to a torch sparse tensor."""
     sparse_mx = sparse_mx.tocoo().astype(np.float32)
     indices = torch.from_numpy(
         np.vstack((sparse_mx.row, sparse_mx.col)).astype(np.int64))
