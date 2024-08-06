@@ -44,17 +44,17 @@ class GraphCL(PreTrain):
         which are used to load the graph data after different data enhancement operations.
         There are 3 types of data enhancement methods.
         :obj:`dropN`: randomly delete some nodes of from the graph;
-        :obj:`permE`: randomly permutate some edges in the graph
-        :obj:`maskN`: randomly mask some node features in the graph
+        :obj:`permE`: randomly permutate some edges in the graph;
+        :obj:`maskN`: randomly mask some node features in the graph.
 
-            Args:
-                graph_list (list): The original graph list.
-                batch_size (int): The size of one batch.
-                aug1 (str): The type of the first data enhancement operation can be selected as :obj:`dropN`, :obj:`permE`, or :obj:`maskN`
+        Args:
+            graph_list (list): The original graph list.
+            batch_size (int): The size of one batch.
+            aug1 (str): The type of the first data enhancement operation can be selected as :obj:`dropN`, :obj:`permE`, or :obj:`maskN`
                  (default: :obj:`None`).
-                aug2 (str): The type of the second data enhancement operation can be selected as :obj:`dropN`, :obj:`permE`, or :obj:`maskN`
+            aug2 (str): The type of the second data enhancement operation can be selected as :obj:`dropN`, :obj:`permE`, or :obj:`maskN`
                  (default: :obj:`None`).
-                aug_ratio (float): Scale factor of the data enhancement operation. The value ranges from :obj:`0.1`, :obj:`0.2`, or :obj:`0.3`
+            aug_ratio (float): Scale factor of the data enhancement operation. The value ranges from :obj:`0.1`, :obj:`0.2`, or :obj:`0.3`
                  (default: :obj:`None`).
         """
 
