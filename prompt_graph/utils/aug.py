@@ -152,7 +152,7 @@ def delete_row_col(input_matrix, drop_list, only_row=False):
         Args:
             input_matrix (Tensor)
             drop_list (list): An index list of rows and columns to delete.
-            only_row (bool): Whether only delete rows. (default: :obj:`FALSE`)
+            only_row (bool): Whether only delete rows (default: :obj:`FALSE`).
         """
 
     remain_list = [i for i in range(input_matrix.shape[0]) if i not in drop_list]

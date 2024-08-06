@@ -1,5 +1,5 @@
-Downstream
-============
+Downstream Tasks
+==================
 We summarized all the tasks into 3 kind.
 ::
 
@@ -9,13 +9,13 @@ We summarized all the tasks into 3 kind.
 
 - To build a task, you just need to
 
-+ Pretrain a model and save it in appropriate path.
+    - Pretrain a model and save it in appropriate path.
 
-+ Use the same dataset and parameters of your model.
+    - Use the same dataset and parameters of your model.
 
-+ Determine the prompt type you want to use.
+    - Determine the prompt type you want to use.
 
-+ Build the tasker.
+    - Build the tasker.
 
 - The examples are shown below:
 
@@ -107,7 +107,7 @@ We summarized all the tasks into 3 kind.
                         shot_num = args.shot_num, device=args.device, lr = args.lr, wd = args.decay,
                         batch_size = args.batch_size, dataset = dataset, input_dim = input_dim, output_dim = output_dim)
 
-+ Getting the results.
++ Get the results.
 
 .. code-block:: python
 

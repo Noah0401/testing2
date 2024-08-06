@@ -62,7 +62,7 @@ PreTrain
 
 A pretrain object is used to build the pre-trained model on which the graph prompting project is based.
 All you need to do is pretraining first and save the model under the relevant path. After that, you can reuse this pre-trained model.
-A single pretain object in :pyg:`ProG` is described by an instance of class **prompt_graph.pretain.preTainType**, which holds the following attributes by default:
+A single pretain object in `ProG` is described by an instance of class **prompt_graph.pretain.preTainType**, which holds the following attributes by default:
 
 - preTainType: This indicate the type of preTain you want to perform (e.g. DGI, GraphCL, SimGRACE, etc. ).
 - preTainType.gnn_type: This is the graph neural network object of the model you have chosen (e.g. GIN, GAT, GCN, etc.), whose arguments will be saved.
