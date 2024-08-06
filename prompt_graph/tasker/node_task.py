@@ -17,7 +17,7 @@ warnings.filterwarnings("ignore")
 
 class NodeTask(BaseTask):
       r"""
-        Inherit from :obj:`BaseTask`, realize the node task implementation.
+        Inherited from :obj:`BaseTask`, realizes the node task implementation.
 
         Args:
             *args: Additional attributes.
@@ -40,7 +40,7 @@ class NodeTask(BaseTask):
             self.initialize_optimizer()
 
       def create_few_data_folder(self):
-            r"""Create a folder and save data."""
+            r"""Creates a folder and save data."""
             for k in range(1, 11):
                   k_shot_folder = './Experiment/sample_data/Node/Node/' + self.dataset_name + '/' + str(k) + '_shot'
                   os.makedirs(k_shot_folder, exist_ok=True)
@@ -53,7 +53,7 @@ class NodeTask(BaseTask):
 
       def load_multigprompt_data(self):
             r"""
-            Load training data for multiple GPT models from the dataset.
+            Loads training data for multiple GPT models from the dataset.
             """
             adj, features, labels, idx_train, idx_val, idx_test = process.load_data(self.dataset_name)
             self.input_dim = features.shape[1]
@@ -89,7 +89,7 @@ class NodeTask(BaseTask):
 
       def load_data(self):
             r"""
-            Load data.
+            Loads data.
             """
             self.data, self.dataset = load4node(self.dataset_name, shot_num=self.shot_num)
             self.data.to(self.device)
@@ -98,7 +98,7 @@ class NodeTask(BaseTask):
 
       def train(self, data, train_idx):
             r"""
-            Train the model with corresponding data and train index, return the loss.
+            Trains the model with corresponding data and train index, and returns the loss.
             """
             self.gnn.train()
             self.optimizer.zero_grad()
@@ -110,7 +110,7 @@ class NodeTask(BaseTask):
             return loss.item()
 
       def GPPTtrain(self, data, train_idx):
-            r""" Train GPPT model, return the loss."""
+            r""" Trains GPPT model, return the loss."""
             self.prompt.train()
             node_embedding = self.gnn(data.x, data.edge_index)
             out = self.prompt(node_embedding, data.edge_index)
@@ -123,7 +123,7 @@ class NodeTask(BaseTask):
             return loss.item()
 
       def MultiGpromptTrain(self, pretrain_embs, train_lbls, train_idx):
-            r""" Train MultiGprompt model, return the loss."""
+            r""" Trains MultiGprompt model, and returns the loss."""
             self.DownPrompt.train()
             self.optimizer.zero_grad()
             prompt_feature = self.feature_prompt(self.features)
@@ -138,7 +138,7 @@ class NodeTask(BaseTask):
             return loss.item()
 
       def SUPTtrain(self, data):
-            r"""Train SUPT model, return the loss"""
+            r"""Trains SUPT model, and returns the loss"""
             self.gnn.train()
             self.optimizer.zero_grad()
             data.x = self.prompt.add(data.x)
@@ -170,7 +170,7 @@ class NodeTask(BaseTask):
 
       def AllInOneTrain(self, train_loader):
             # we update answering and prompt alternately.
-            r""" Train all in one model, return the loss of prompt"""
+            r""" Trains all in one model, returns the loss of prompt."""
 
             answer_epoch = 1  # 50
             prompt_epoch = 1  # 50
@@ -199,7 +199,7 @@ class NodeTask(BaseTask):
 
       def GpromptTrain(self, train_loader):
             r"""
-            Train Gprompt model, return the average loss and mean centers.
+            Trains Gprompt model, and returns the average loss and mean centers.
             """
             self.prompt.train()
             total_loss = 0.0

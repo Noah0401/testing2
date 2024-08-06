@@ -4,6 +4,23 @@ tasker
 .. contents:: Contents
     :local:
 
+
+task
+-------------------
+
+.. currentmodule:: prompt_graph.tasker.task
+
+.. autosummary::
+    :nosignatures:
+
+    BaseTask
+
+.. automodule:: prompt_graph.tasker.task
+    :members:
+    :undoc-members:
+
+
+
 graph_task
 -------------------
 
@@ -12,10 +29,13 @@ graph_task
 
 .. autosummary::
     :nosignatures:
-    :toctree: ../generated
-    :template: autosummary/inherited_class.rst
 
     GraphTask
+
+.. automodule:: prompt_graph.tasker.graph_task
+    :members:
+    :undoc-members:
+
 
 
 link_task
@@ -25,10 +45,13 @@ link_task
 
 .. autosummary::
     :nosignatures:
-    :toctree: ../generated
-    :template: autosummary/inherited_class.rst
 
     LinkTask
+
+.. automodule:: prompt_graph.tasker.link_task
+    :members:
+    :undoc-members:
+
 
 node_task
 -------------------
@@ -38,24 +61,17 @@ node_task
 
 .. autosummary::
     :nosignatures:
-    :toctree: ../generated
-    :template: autosummary/inherited_class.rst
 
 
     NodeTask
 
+.. automodule:: prompt_graph.tasker.node_task
+    :members:
+    :undoc-members:
 
-task
--------------------
 
-.. currentmodule:: prompt_graph.tasker.task
 
-.. autosummary::
-    :nosignatures:
-    :toctree: ../generated
-    :template: autosummary/inherited_class.rst
 
-    BaseTask
 
 
 

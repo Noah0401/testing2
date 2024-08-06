@@ -18,15 +18,15 @@ class GPF(torch.nn.Module):
         self.reset_parameters()
 
     def reset_parameters(self):
-        r"""Initialize :obj:`self.global_emb`."""
+        r"""Initializes :obj:`self.global_emb`."""
         glorot(self.global_emb)
 
     def add(self, x: torch.Tensor):
-        r"""Add up :obj:`self.global_emb` and :obj:`x`."""
+        r"""Adds up :obj:`self.global_emb` and :obj:`x`."""
         return x + self.global_emb
 
 class GPF_plus(torch.nn.Module):
-    r"""Inherit from :class:`torch.nn.Module`;
+    r"""Inherited from :class:`torch.nn.Module`;
         GPF-plus uses different prompt features on different nodes in the graph;
         See `here <https://arxiv.org/pdf/2209.15240>`__ for more information.
 
@@ -42,14 +42,14 @@ class GPF_plus(torch.nn.Module):
 
     def reset_parameters(self):
         r"""
-        Initialize the parameters: :obj:`self.p_list` and :obj:`self.a`.
+        Initializes the parameters: :obj:`self.p_list` and :obj:`self.a`.
         """
         glorot(self.p_list)
         self.a.reset_parameters()
 
     def add(self, x: torch.Tensor):
         r"""
-        Add up :obj:`x` and :obj:`self.p_list`
+        Adds up :obj:`x` and :obj:`self.p_list`
         """
         score = self.a(x)
         # weight = torch.exp(score) / torch.sum(torch.exp(score), dim=1).view(-1, 1)

@@ -9,7 +9,7 @@ from .task import BaseTask
 
 class LinkTask(BaseTask):
     r"""
-        Inherit from :obj:`BaseTask`, realize the link task implementation.
+        Inherited from :obj:`BaseTask`, realizes the link task implementation.
 
         Args:
             *args: Additional attributes.
@@ -25,7 +25,7 @@ class LinkTask(BaseTask):
 
     def load_data(self):
         r"""
-        Load the data(Cora) and then split the dataset into test data, validate data and train data.
+        Loads the data(Cora) and then split the dataset into test data, validate data and train data.
         """
         transform = T.Compose([
             T.NormalizeFeatures(),
@@ -40,7 +40,7 @@ class LinkTask(BaseTask):
 
     def train(self, train_data):
         r"""
-        Perform a new round of negative sampling for every training epoch,
+        Performs a new round of negative sampling for every training epoch,
         The cross entropy loss (loss) between the predicted result and the true label is calculated,
         and backpropagation and parameter updating are performed.
         Finally, the loss value is returned.
@@ -72,7 +72,10 @@ class LinkTask(BaseTask):
     @torch.no_grad()
     def test(self, data):
         r"""
-        Return the ROC AUC level.
+        Returns the ROC AUC level.
+
+        Args:
+            data (Data): The information of graphs.
         """
         self.gnn.eval()
         z = self.gnn(data.x, data.edge_index)
@@ -81,8 +84,8 @@ class LinkTask(BaseTask):
 
     def run(self):
         r"""
-        Perform 100 training epochs.
-        Return the final test set ROC AUC score.
+        Performs 100 training epochs.
+        Returns the final test set ROC AUC score.
         """
 
         train_data, val_data, test_data = self.dataset[0]

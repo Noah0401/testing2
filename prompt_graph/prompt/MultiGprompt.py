@@ -716,8 +716,8 @@ class Lp(nn.Module):
 class Lpprompt(nn.Module):
     r"""
         Inherited from :class:`torch.nn.Module`,
-         accepts input sequences and adjacency matrices and generates hidden layer features
-         through parametric multiplication and graph convolution operations.
+        accepts input sequences and adjacency matrices and generates hidden layer features
+        through parametric multiplication and graph convolution operations.
 
         Args:
             n_in (int): The dimension of the input.

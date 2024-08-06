@@ -12,7 +12,7 @@ import numpy as np
 
 class GraphTask(BaseTask):
     r"""
-    Inherit from :obj:`BaseTask`, realize the graph task implementation.
+    Inherited from :obj:`BaseTask`, realizes the graph task implementation.
 
     Args:
         *args: Additional attributes.
@@ -31,7 +31,7 @@ class GraphTask(BaseTask):
         self.initialize_optimizer()
 
     def create_few_data_folder(self):
-        r"""Create a folder and save data."""
+        r"""Creates a folder and save data."""
         for k in range(1, 11):
             k_shot_folder = './Experiment/sample_data/Graph/' + self.dataset_name + '/' + str(k) + '_shot'
             os.makedirs(k_shot_folder, exist_ok=True)
@@ -43,15 +43,15 @@ class GraphTask(BaseTask):
                 print(str(k) + ' shot ' + str(i) + ' th is saved!!')
 
     def load_data(self):
-        r"""Load the data according to the dataset name."""
+        r"""Loads the data according to the dataset name."""
         if self.dataset_name in ['MUTAG', 'ENZYMES', 'COLLAB', 'PROTEINS', 'IMDB-BINARY', 'REDDIT-BINARY', 'COX2',
                                  'BZR', 'PTC_MR']:
             self.input_dim, self.output_dim, self.dataset = load4graph(self.dataset_name, self.shot_num)
 
     def Train(self, train_loader) -> float:
         r"""
-        Iterate over each batch for training in the given train_loader
-        and return the average loss/
+        Iterates over each batch for training in the given train_loader
+        and returns the average loss.
         """
         self.gnn.train()
         total_loss = 0.0
@@ -101,9 +101,9 @@ class GraphTask(BaseTask):
 
     def GPFTrain(self, train_loader):
         r"""
-        Iterate over each batch in the training data set,
-        train GPF prompt,
-        return the average loss.
+        Iterates over each batch in the training data set,
+        trains GPF prompt, and
+        returns the average loss.
         """
         self.prompt.train()
         total_loss = 0.0
@@ -121,9 +121,9 @@ class GraphTask(BaseTask):
 
     def GpromptTrain(self, train_loader):
         r"""
-            Iterate over each batch in the training data set,
-            train Gprompt prompt,
-            return the average loss and weighted average center vector.
+            Iterates over each batch in the training data set,
+            trains Gprompt prompt,
+            and returns the average loss and weighted average center vector.
             """
         self.prompt.train()
         total_loss = 0.0
@@ -159,9 +159,9 @@ class GraphTask(BaseTask):
 
     def GPPTtrain(self, train_loader):
         r"""
-            Iterate over each batch in the training data set,
-            train GPPT prompt,
-            return the loss.
+            Iterates over each batch in the training data set,
+            trains GPPT prompt,
+            and returns the loss.
             """
         self.prompt.train()
         for batch in train_loader:
@@ -182,7 +182,7 @@ class GraphTask(BaseTask):
 
     def run(self):
         r"""
-        Train and evaluate graph data using different cue-based methods,
+        Trains and evaluates graph data using different cue-based methods,
         such as GPPT, GPF, and Gprompt, and report average test accuracy and standard deviation.
         """
         test_accs = []

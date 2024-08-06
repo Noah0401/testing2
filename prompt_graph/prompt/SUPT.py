@@ -34,7 +34,7 @@ from torch_geometric.utils import (
 class SAGPoolPrompt(nn.Module):
     r"""
         Inherited from :class:`torch.nn.Module`, it defines a SAGPoolPrompt model,
-        which is a graph pooling method based on self-attention. More information can
+        which is a graph pooling method based on self-attention; More information can
         be viewed `here <https://arxiv.org/abs/2302.08043>`__.
 
         Args:
@@ -124,10 +124,10 @@ class SAGPoolPrompt(nn.Module):
 class DiffPoolPrompt(nn.Module):
     r"""
         Inherited from :class:`torch.nn.Module`, it defines a DiffPoolPrompt model;
-         DiffPool learns a differentiable soft cluster assignment for nodes at each layer
-         of a deep GNN, mapping nodes to a set of clusters,
-         which then form the coarsened input for the next GNN layer;
-         See `here <https://arxiv.org/abs/1806.08804>`__ for more information.
+        DiffPool learns a differentiable soft cluster assignment for nodes at each layer
+        of a deep GNN, mapping nodes to a set of clusters,
+        which then form the coarsened input for the next GNN layer;
+        See `here <https://arxiv.org/abs/1806.08804>`__ for more information.
 
         Args:
             in_channels (int): The number of input channels.

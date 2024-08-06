@@ -11,7 +11,7 @@ import numpy as np
 
 class BaseTask:
     r"""
-    Being the base class for graph, link, node tasks.
+    Being the base class for graph, link, node tasks;
     Initialize the optimizer, loss function, prompt, and GNN.
 
     Args:
@@ -70,7 +70,7 @@ class BaseTask:
 
     def initialize_lossfn(self):
         r"""
-            Initializes the loss function based on the prompt type
+            Initializes the loss function based on the prompt type.
             The loss function is set to the cross-entropy loss by default, but for the :obj:`Gprompt` prompt type,
             a custom loss function called :obj:`Gprompt_tuning_loss` is used.
         """
@@ -128,7 +128,7 @@ class BaseTask:
 
     def initialize_gnn(self):
         r"""
-        Initialize GNN based on the specified GNN type.
+        Initializes GNN based on the specified GNN type.
         """
         if self.gnn_type == 'GAT':
             self.gnn = GAT(input_dim=self.input_dim, hid_dim=self.hid_dim, num_layer=self.num_layer)
