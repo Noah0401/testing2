@@ -8,23 +8,24 @@ from torch_geometric.nn.inits import glorot
 
 
 class LightPrompt(torch.nn.Module):
-    def __init__(self, token_dim, token_num_per_group, group_num=1, inner_prune=None):
-        r"""
-        Inherit from :class:`torch.nn.Module`,
-        Initialize all the tokens and
-        generate the initial prompt graph by combining all the tokens.
+    r"""
+    Inherit from :class:`torch.nn.Module`;
+    Initialize all the tokens and
+    generate the initial prompt graph by combining all the tokens.
 
-        Args:
-            token_dim (int): The dimension of the token.
-            token_num_per_group (int): The number of tokens in one group.
-            group_num (int):  The total token number = token_num_per_group*group_num, in most cases, we let group_num=:obj:`1`.
-                        In :obj:`prompt_w_o_h` mode for classification, we can let each class correspond to one group.
-                        You can also assign each group as a prompt batch in some cases.
-                        (default: :obj:`1`)
-            inner_prune (int/float): The threshold of pruning operations to determine which connections should be cut.
-            If :obj:`inner_prune` is not :obj:`None`, then cross prune adopt :obj:`prune_thre` whereas inner prune adopt :obj:`inner_prune`.
-            (default: :obj:`None`)
-        """
+    Args:
+        token_dim (int): The dimension of the token.
+        token_num_per_group (int): The number of tokens in one group.
+        group_num (int):  The total token number = token_num_per_group*group_num, in most cases, we let group_num=:obj:`1`.
+                    In :obj:`prompt_w_o_h` mode for classification, we can let each class correspond to one group.
+                    You can also assign each group as a prompt batch in some cases
+                    (default: :obj:`1`).
+        inner_prune (int/float): The threshold of pruning operations to determine which connections should be cut.
+                    If :obj:`inner_prune` is not :obj:`None`, then cross prune adopt :obj:`prune_thre` whereas inner prune adopt :obj:`inner_prune`
+                    (default: :obj:`None`).
+    """
+    def __init__(self, token_dim, token_num_per_group, group_num=1, inner_prune=None):
+
         super(LightPrompt, self).__init__()
 
         self.inner_prune = inner_prune
@@ -35,7 +36,7 @@ class LightPrompt(torch.nn.Module):
         self.token_init(init_method="kaiming_uniform")
 
     def token_init(self, init_method="kaiming_uniform"):
-        r"""Use :obj:`Kaiming uniform` method to initialize token"""
+        r"""Use :obj:`Kaiming uniform` method to initialize token."""
         if init_method == "kaiming_uniform":
             for token in self.token_list:
                 torch.nn.init.kaiming_uniform_(token, nonlinearity='leaky_relu', mode='fan_in', a=0.01)
