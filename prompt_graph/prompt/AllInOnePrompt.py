@@ -8,10 +8,11 @@ from torch_geometric.nn.inits import glorot
 
 
 class LightPrompt(torch.nn.Module):
+
     r"""
-    Inherit from :class:`torch.nn.Module`;
-    Initialize all the tokens and
-    generate the initial prompt graph by combining all the tokens.
+    Inherited from :class:`torch.nn.Module`;
+    Initializes all the tokens and
+    generates the initial prompt graph by combining all the tokens.
 
     Args:
         token_dim (int): The dimension of the token.
@@ -36,7 +37,15 @@ class LightPrompt(torch.nn.Module):
         self.token_init(init_method="kaiming_uniform")
 
     def token_init(self, init_method="kaiming_uniform"):
-        r"""Use :obj:`Kaiming uniform` method to initialize token."""
+        r"""Uses :obj:`Kaiming uniform` method to initialize token;
+        It is a method that initializes the weights of a neural network layer with
+        values drawn from a uniform distribution;
+        This initialization is specifically designed for layers that use rectified
+        linear units (ReLU) as activation functions.
+
+        Args:
+            init_method (str): They way been chosen (default: :obj:`kaiming_uniform`).
+        """
         if init_method == "kaiming_uniform":
             for token in self.token_list:
                 torch.nn.init.kaiming_uniform_(token, nonlinearity='leaky_relu', mode='fan_in', a=0.01)
@@ -44,13 +53,13 @@ class LightPrompt(torch.nn.Module):
             raise ValueError("only support kaiming_uniform init, more init methods will be included soon")
 
     def inner_structure_update(self) -> Batch:
-        r"""Return the batch of prompt graphs"""
+        r"""Returns the batch of prompt graphs."""
         return self.token_view()
 
     def token_view(self, ) -> Batch:
         r"""
-        Each token group is viewed as a prompt sub-graph.
-        turn the all groups of tokens as a batch of prompt graphs.
+        Each token group is viewed as a prompt sub-graph, and
+        turns all groups of tokens as a batch of prompt graphs.
         """
         pg_list = []
         for i, tokens in enumerate(self.token_list):
@@ -69,8 +78,8 @@ class LightPrompt(torch.nn.Module):
 
 class HeavyPrompt(LightPrompt):
     r"""
-    Inherit from :class:`LightPrompt`, forming Prompt from tokens
-    using Cross-group pruning and internal pruning methods.
+    Inherited from :class:`LightPrompt`, forming a prompt from tokens
+    using cross-group pruning and internal pruning methods.
 
     Args:
         token_dim (int): The dimension of the tokne.
@@ -116,6 +125,14 @@ class HeavyPrompt(LightPrompt):
     def Tune(self, train_loader, gnn, answering, lossfn, opi, device):
         r"""
         Doing fine-tune of the Prompt. Using :obj:`answering` to calculate the loss.
+
+        Args:
+            train_loader (DataLoader): The chosen training dataloader.
+            gnn (model): The chosen GNN model.
+            answering (model): The predicted answer.
+            lossfn (function): The chosen loss function.
+            opi (Optimizer): The chosen optimizer.
+            device (Device): The used device.
         """
         running_loss = 0.
         for batch_id, train_batch in enumerate(train_loader):
@@ -138,6 +155,14 @@ class HeavyPrompt(LightPrompt):
     def TuneWithoutAnswering(self, train_loader, gnn, answering, lossfn, opi, device):
         r"""
             Doing fine-tune of the Prompt. Without Using :obj:`answering` to calculate the loss.
+
+            Args:
+            train_loader (DataLoader): The chosen training dataloader.
+            gnn (model): The chosen GNN model.
+            answering (model,Optional): The predicted answer.
+            lossfn (function): The chosen loss function.
+            opi (Optimizer,Optional): The chosen optimizer.
+            device (Device,Optional): The used device.
         """
         total_loss = 0.0
         for batch in train_loader:
@@ -158,10 +183,10 @@ class HeavyPrompt(LightPrompt):
 
 
 class FrontAndHead(torch.nn.Module):
-    r""" Inherit from :class:`torch.nn.Module`.
+    r""" Inherit from :class:`torch.nn.Module`;
     After the input graph data is prompted by :class:`HeavyPrompt`,
     the GNN model is used to extract the feature of the prompted graph data,
-    and finally the prediction is carried out by the full connection layer and softmax function.
+    and finally the prediction is carried out by the full connection layer and softmax function;
     This class is used in multi-label classification tasks
     and provides an example of building front-end and header models in a context that uses :class:`HeavyPrompt`.
 

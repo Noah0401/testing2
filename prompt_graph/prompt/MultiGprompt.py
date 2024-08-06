@@ -89,7 +89,7 @@ class downprompt(nn.Module):
 
 def averageemb(labels, rawret, nb_class) -> torch.Tensor:
     r"""
-    Calculate the average embedding vector for each class
+    Calculates the average embedding vector for each class.
 
     Args:
         labels (Tensor): Contains the information of labels.
@@ -133,7 +133,7 @@ def averageemb(labels, rawret, nb_class) -> torch.Tensor:
 
 class weighted_prompt(nn.Module):
     r"""
-    Inherit from :class:`torch.nn.Module`, it defines a weighted prompt model.
+    Inherited from :class:`torch.nn.Module`, it defines a weighted prompt model;
     The input graph is being weighted.
 
     Args:
@@ -149,7 +149,7 @@ class weighted_prompt(nn.Module):
     def reset_parameters(self):
         # torch.nn.init.xavier_uniform_(self.weight)
         r"""
-        Fill the different positions of self.weight with the specified values:
+        Fills the different positions of :obj:`self.weight` with the specified values:
         :obj:`self.weight[0][0]` is :obj:`0.5`,
         :obj:`self.weight[0][1]` is :obj:`0.4` and
         :obj:`self.weight[0][2]` is :obj:`0.3`.
@@ -166,7 +166,7 @@ class weighted_prompt(nn.Module):
 
 class weighted_feature(nn.Module):
     r"""
-    Inherit from :class:`torch.nn.Module`.
+    Inherit fromed :class:`torch.nn.Module`;
     The graph embeddings of the two inputs are weighted and the activation function is applied.
 
     Args:
@@ -182,9 +182,9 @@ class weighted_feature(nn.Module):
     def reset_parameters(self):
         # torch.nn.init.xavier_uniform_(self.weight)
         r"""
-            Fill the different positions of self.weight with the specified values:
+            Fills the different positions of :obj:`self.weight` with the specified values:
             :obj:`self.weight[0][0]` is :obj:`0`,
-            :obj:`self.weight[0][1]` is :obj:`1`
+            :obj:`self.weight[0][1]` is :obj:`1`.
                 """
         self.weight[0][0].data.fill_(0)
         self.weight[0][1].data.fill_(1)
@@ -197,7 +197,7 @@ class weighted_feature(nn.Module):
 
 class downstreamprompt(nn.Module):
     r"""
-    Inherit from :class:`torch.nn.Module`.
+    Inherited from :class:`torch.nn.Module`;
     The graph embedding is weighted by weight parameters,
     and the importance of different features can be controlled by adjusting the value of weight parameters,
     thus affecting the output of the model.
@@ -213,7 +213,7 @@ class downstreamprompt(nn.Module):
         self.reset_parameters()
 
     def reset_parameters(self):
-        r"""Initialize the parameters."""
+        r"""Initializes the parameters."""
         torch.nn.init.xavier_uniform_(self.weight)
 
         # self.weight[0][0].data.fill_(0.3)
@@ -228,7 +228,7 @@ class downstreamprompt(nn.Module):
 
 class featureprompt(nn.Module):
     r"""
-        Inherit from :class:`torch.nn.Module`.
+        Inherited from :class:`torch.nn.Module`;
         The input features are weighted.
 
         Args:
@@ -249,8 +249,9 @@ class featureprompt(nn.Module):
 
 class GCN(nn.Module):
     r"""
-        Inherit from :class:`torch.nn.Module`.
-        Defines a GCN model, which contains a linear mapping layer and an activation function.
+        Inherited from :class:`torch.nn.Module`;
+        Defines a GCN model, which contains a linear mapping layer and an activation function;
+        More information about GCN can be found in the previous module.
             """
 
     def __init__(self, in_ft, out_ft, act=None, bias=True):
@@ -269,7 +270,10 @@ class GCN(nn.Module):
 
     def weights_init(self, m):
         r"""
-        Initialize the weight
+        Initializes the weight.
+
+        Args:
+            m (object): Check whether module m is a linear layer.
         """
         if isinstance(m, nn.Linear):
             torch.nn.init.xavier_uniform_(m.weight.data)
@@ -294,14 +298,14 @@ class GCN(nn.Module):
 
 class GcnLayers(torch.nn.Module):
     r"""
-    Inherit from :class:`torch.nn.Module`.
-    Forward propagation of convolutional network layers containing multiple graphs is realized
+    Inherited from :class:`torch.nn.Module`;
+    Forward propagation of convolutional network layers containing multiple graphs is realized.
 
     Args:
         n_in (int): The dimension of input.
         n_h (int): The dimension of hidden layers.
         num_layers_num (int): The number of GCN layers.
-        dropout (float): Dropout rate
+        dropout (float): Dropout rate.
     """
 
     def __init__(self, n_in, n_h, num_layers_num, dropout):
@@ -315,7 +319,7 @@ class GcnLayers(torch.nn.Module):
 
     def create_net(self, input_dim, hidden_dim, num_layers):
         r"""
-        Create graph convolution layer and batch normalization layer
+        Creates graph convolution layer and batch normalization layer.
         """
         self.convs = torch.nn.ModuleList()
         self.bns = torch.nn.ModuleList()
@@ -351,7 +355,7 @@ class GcnLayers(torch.nn.Module):
 
 class Discriminator(nn.Module):
     r"""
-       Inherit from :class:`torch.nn.Module`,
+       Inherited from :class:`torch.nn.Module`,
        discriminating generate graphs and real graphs.
 
        Args:
@@ -366,7 +370,10 @@ class Discriminator(nn.Module):
             self.weights_init(m)
 
     def weights_init(self, m):
-        r"""Initialize the weight."""
+        r"""Initializes the weight.
+
+            Args:
+                m (object): Check whether module m is a linear layer."""
         if isinstance(m, nn.Bilinear):
             torch.nn.init.xavier_uniform_(m.weight.data)
             if m.bias is not None:
@@ -393,7 +400,7 @@ class Discriminator(nn.Module):
 # While taking into account the masking of msk
 class AvgReadout(nn.Module):
     r"""
-        Inherit from :class:`torch.nn.Module`.
+        Inherited from :class:`torch.nn.Module`;
         Applies an average on seq, of shape (:obj:`batch, nodes, features`)
         While taking into account the masking of :obj:`msk`.
         """
@@ -411,8 +418,8 @@ class AvgReadout(nn.Module):
 
 class DGI(nn.Module):
     r"""
-    Inherit from :class:`torch.nn.Module`, creating DGI model.
-    The graph convolution operation is followed by feature multiplication
+    Inherited from :class:`torch.nn.Module`, creating DGI model;
+    The graph convolution operation is followed by feature multiplication.
 
     Args:
         n_h: The dimension of hidden features.
@@ -451,14 +458,14 @@ class DGI(nn.Module):
         return ret
 
     def reset_parameters(self):
-        r"""Reset the parameters"""
+        r"""Resets the parameters."""
         torch.nn.init.xavier_uniform_(self.prompt)
 
 
 class DGIprompt(nn.Module):
     r"""
-    Inherit from :class:`torch.nn.Module`, creating DGIprompt model.
-    The graph convolution operation is done before feature multiplication
+    Inherited from :class:`torch.nn.Module`, creating DGIprompt model;
+    The graph convolution operation is done before feature multiplication.
 
     Args:
         n_in: The dimension of input features.
@@ -496,13 +503,13 @@ class DGIprompt(nn.Module):
         return ret
 
     def reset_parameters(self):
-        r"""Reset the parameters"""
+        r"""Resets the parameters."""
         torch.nn.init.xavier_uniform_(self.prompt)
 
 
 class GraphCL(nn.Module):
     r"""
-        Inherit from :class:`torch.nn.Module`, creating GraphCL model.
+        Inherited from :class:`torch.nn.Module`, creating GraphCL model.
 
         Args:
             n_h: The dimension of hidden features.
@@ -563,14 +570,14 @@ class GraphCL(nn.Module):
 
     def reset_parameters(self):
         r"""
-        Reset the parameters.
+        Resets the parameters.
         """
         torch.nn.init.xavier_uniform_(self.prompt)
 
 
 class GraphCLprompt(nn.Module):
     r"""
-        Inherit from :class:`torch.nn.Module`, creating GraphCLprompt model.
+        Inherited from :class:`torch.nn.Module`, creating GraphCLprompt model.
 
         Args:
             n_in: The dimension of input features.
@@ -630,15 +637,15 @@ class GraphCLprompt(nn.Module):
 
     def reset_parameters(self):
         r"""
-        Reset the parameters.
+        Resets the parameters.
         """
         torch.nn.init.xavier_uniform_(self.prompt)
 
 
 class LogReg(nn.Module):
     r"""
-        Inherit from :class:`torch.nn.Module`,
-        creating a logistic regression model for mapping input features to categories of classification
+        Inherited from :class:`torch.nn.Module`,
+        creating a logistic regression model for mapping input features to categories of classification.
 
         Args:
             ft_in: The number of input features.
@@ -654,7 +661,7 @@ class LogReg(nn.Module):
 
     def weights_init(self, m):
         """
-        Initialize the weight.
+        Initialize the weight;
         Use the Xavier uniformly distributed initialization method (:obj:`Torch.nn.inin.xavier_Uniform_`)
         to initialize the weights and set the bias to :obj:`0`.
         """
@@ -670,7 +677,7 @@ class LogReg(nn.Module):
 
 class Lp(nn.Module):
     r"""
-        Inherit from :class:`torch.nn.Module`,
+        Inherited from :class:`torch.nn.Module`,
         The input sequence and adjacency matrix are generated by graph convolution operation
         and parameter multiplication,
         and then activated by activation function.
@@ -701,14 +708,14 @@ class Lp(nn.Module):
 
     def reset_parameters(self):
         r"""
-        Reset the parameters.
+        Resets the parameters.
         """
         torch.nn.init.xavier_uniform_(self.prompt)
 
 
 class Lpprompt(nn.Module):
     r"""
-        Inherit from :class:`torch.nn.Module`,
+        Inherited from :class:`torch.nn.Module`,
          accepts input sequences and adjacency matrices and generates hidden layer features
          through parametric multiplication and graph convolution operations.
 
@@ -738,5 +745,5 @@ class Lpprompt(nn.Module):
         return ret
 
     def reset_parameters(self):
-        r"""Reset the parameters."""
+        r"""Resets the parameters."""
         torch.nn.init.xavier_uniform_(self.prompt)

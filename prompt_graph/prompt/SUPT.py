@@ -33,7 +33,9 @@ from torch_geometric.utils import (
 
 class SAGPoolPrompt(nn.Module):
     r"""
-        Inherit from :class:`torch.nn.Module`, it defines a SAGPoolPrompt model.
+        Inherited from :class:`torch.nn.Module`, it defines a SAGPoolPrompt model,
+        which is a graph pooling method based on self-attention. More information can
+        be viewed `here <https://arxiv.org/abs/2302.08043>`__.
 
         Args:
             in_channels (int): The number of input channels.
@@ -71,7 +73,7 @@ class SAGPoolPrompt(nn.Module):
 
     def reset_parameters(self):
         r"""
-        Reset the parameters of GNN and pool embedding.
+        Resets the parameters of GNN and pool embedding.
         """
         self.gnn.reset_parameters()
         # self.linear.reset_parameters()
@@ -84,12 +86,13 @@ class SAGPoolPrompt(nn.Module):
         # normal(self.global_emb)
 
     def orthogonal_loss(self):
+        r"""Returns the orthogonal loss."""
         return torch.norm(torch.mm(self.pools_emb, self.pools_emb.t()) - self.eye, p=2)
 
     def add(self, x: Tensor, edge_index: Tensor, batch: Tensor) -> Tensor:
         r"""
-        Calculate the score of GNN. Based on the scores and the ratio,
-        complete pooling and return the update tensor.
+        Calculates the score of GNN; Based on the scores and the ratio,
+        completes pooling and returns the update tensor.
 
         Args:
             x (Tensor): The node features.
@@ -120,7 +123,11 @@ class SAGPoolPrompt(nn.Module):
 
 class DiffPoolPrompt(nn.Module):
     r"""
-        Inherit from :class:`torch.nn.Module`, it defines a DiffPoolPrompt model.
+        Inherited from :class:`torch.nn.Module`, it defines a DiffPoolPrompt model;
+         DiffPool learns a differentiable soft cluster assignment for nodes at each layer
+         of a deep GNN, mapping nodes to a set of clusters,
+         which then form the coarsened input for the next GNN layer;
+         See `here <https://arxiv.org/abs/1806.08804>`__ for more information.
 
         Args:
             in_channels (int): The number of input channels.
@@ -156,7 +163,7 @@ class DiffPoolPrompt(nn.Module):
 
     def reset_parameters(self):
         r"""
-            Reset the parameters of GNN and cluster embedding.
+            Resets the parameters of GNN and cluster embedding.
         """
         self.gnn_pool.reset_parameters()
         # self.linear.reset_parameters()
@@ -168,11 +175,12 @@ class DiffPoolPrompt(nn.Module):
             glorot(self.cluster_emb)
 
     def orthogonal_loss(self):
+        r"""Calculates and returns the orthogonal loss."""
         return torch.norm(torch.mm(self.cluster_emb, self.cluster_emb.t()) - self.eye, p=2)
 
     def add(self, x: Tensor, edge_index: Tensor, batch: Tensor):
         r"""
-            Add up the original feature and the pooling feature.
+            Adds up the original feature and the pooling feature.
 
             Args:
                 x (Tensor): The node features.
@@ -210,8 +218,8 @@ def topk(
         tol: float = 1e-7,
 ) -> Tensor:
     r"""
-    Top-K pooling. Select the first k nodes with highest score,
-    return the features of after-pooling nodes.
+    Top-K pooling; Selects the first k nodes with highest score,
+    and returns the features of after-pooling nodes.
 
     Args:
         x (Tensor): The score feature of the nodes.

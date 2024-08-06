@@ -4,9 +4,9 @@ import torch.nn.functional as F
 
 
 class GPF(torch.nn.Module):
-    r"""Inherit from :class:`torch.nn.Module`.
+    r"""Inherit from :class:`torch.nn.Module`;
     GPF can make adjustments to the features of the input graph to introduce additional cues
-    or to influence the features globally.
+    or to influence the features globally;
     See `here <https://arxiv.org/pdf/2209.15240>`__ for more information.
 
     Argus:
@@ -18,16 +18,16 @@ class GPF(torch.nn.Module):
         self.reset_parameters()
 
     def reset_parameters(self):
-        r"""Initialize :obj:`self.global_emb`"""
+        r"""Initialize :obj:`self.global_emb`."""
         glorot(self.global_emb)
 
     def add(self, x: torch.Tensor):
-        r"""Add up :obj:`self.global_emb` and :obj:`x`"""
+        r"""Add up :obj:`self.global_emb` and :obj:`x`."""
         return x + self.global_emb
 
 class GPF_plus(torch.nn.Module):
-    r"""Inherit from :class:`torch.nn.Module`.
-        GPF-plus uses different prompt features on different nodes in the graph.
+    r"""Inherit from :class:`torch.nn.Module`;
+        GPF-plus uses different prompt features on different nodes in the graph;
         See `here <https://arxiv.org/pdf/2209.15240>`__ for more information.
 
         Argus:

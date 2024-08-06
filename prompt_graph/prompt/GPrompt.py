@@ -2,7 +2,11 @@ import torch
 
 class Gprompt(torch.nn.Module):
     r"""
-    Inherit from :class:`torch.nn.Module`, it defines a GPrompt model.
+    Inherit from :class:`torch.nn.Module`, it defines a GPrompt model, which hinges on a learnable
+    prompt to actively guide downstream tasks using task-specific
+    aggregation in :obj:`ReadOut`, in order to drive the downstream tasks
+    to exploit the pre-trained model in a task-specific manner;
+    See `here <https://arxiv.org/abs/2302.08043>`__ for more information.
 
     Args:
         input_dim (int): The dimension of the input.
@@ -14,7 +18,7 @@ class Gprompt(torch.nn.Module):
         self.reset_parameters()
     def reset_parameters(self):
         r"""
-        Initialize the parameter :obj:`self.weight`
+        Initializes the parameter :obj:`self.weight.`
         """
         torch.nn.init.xavier_uniform_(self.weight)
     def forward(self, node_embeddings):

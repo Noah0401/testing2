@@ -24,16 +24,20 @@ class SimpleMeanConv(MessagePassing):
         return self.propagate(edge_index, size=(x.size(0), x.size(0)), x=x)
 
     def message(self, x_j):
-        r"""return the feature of neighbor node"""
+        r"""Returns the feature of neighbor node.
+
+        Args:
+            x_j (Tensor): Features of the neighbor nodes.
+        """
         # x_j 表示邻居节点的特征，这里直接返回，因为我们使用的是 'mean' 聚合
         return x_j
 
 
 class GPPTPrompt(torch.nn.Module):
     r"""
-    Inherit from :class:`torch.nn.Module`, it defines a GPPTPrompt model.
-    GPPT convert the node to a token pair.
-    A Token pair contains a task tag (to represent the node label) and a structure tag (to describe the node)
+    Inherited from :class:`torch.nn.Module`, it defines a GPPTPrompt model;
+    GPPT converts the node to a token pair;
+    A Token pair contains a task tag (to represent the node label) and a structure tag (to describe the node);
     See `here <https://dl.acm.org/doi/pdf/10.1145/3534678.3539249>`__ for more information.
 
     Args:
@@ -57,7 +61,15 @@ class GPPTPrompt(torch.nn.Module):
 
     def weigth_init(self, h, edge_index, label, index):
         r"""Initialize the weights of structure tokens
-         by Aggregate operation and K-Means algorithm. """
+         by aggregating operation and K-Means algorithm.
+
+         Args:
+             h (Tensor): The feature of a node in the graph.
+             edge_index (Tensor): The index of edges.
+             label (Tensor): The label of the graph.
+             index (Tensor): Used to select a specific node from node feature.
+
+         """
         # 对于图中的每一个节点，将其特征（'h'）发送给所有邻居节点，然后每个节点会计算所有收到的邻居特征的平均值，并将这个平均值存储为自己的新特征在'neighbor'下
 
         conv = SimpleMeanConv()
@@ -81,13 +93,16 @@ class GPPTPrompt(torch.nn.Module):
     def update_StructureToken_weight(self, h):
         r"""
         Update the weights of structure tokens by K-Means algorithm.
+
+        Args:
+             h (Tensor): The feature of a node in the graph.
         """
         cluster = KMeans(n_clusters=self.center_num, random_state=0).fit(h.detach().cpu())
         temp = torch.FloatTensor(cluster.cluster_centers_).to(self.device)
         self.StructureToken.weight.data = temp.clone().detach()
 
     def get_TaskToken(self):
-        r"""Return the task tokens."""
+        r"""Returns the task tokens."""
         pros = []
         for name, param in self.named_parameters():
             if name.startswith('TaskToken.'):
@@ -95,14 +110,14 @@ class GPPTPrompt(torch.nn.Module):
         return pros
 
     def get_StructureToken(self):
-        r"""Return the task tokens."""
+        r"""Returns the task tokens."""
         for name, param in self.named_parameters():
             if name.startswith('StructureToken.weight'):
                 pro = param
         return pro
 
     def get_mid_h(self):
-        r"""Return the node feature."""
+        r"""Returns the node feature."""
         return self.fea
 
     def forward(self, h, edge_index):
