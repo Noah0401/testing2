@@ -12,13 +12,14 @@ AllInOnePrompt
 
 .. autosummary::
     :nosignatures:
-    :toctree: ../generated
-    :template: autosummary/inherited_class.rst
 
     LightPrompt
     HeavyPrompt
     FrontAndHead
 
+.. automodule:: prompt_graph.prompt.AllInOnePrompt
+    :members:
+    :undoc-members:
 
 GPF
 -------------------
@@ -27,11 +28,13 @@ GPF
 
 .. autosummary::
     :nosignatures:
-    :toctree: ../generated
-    :template: autosummary/inherited_class.rst
 
     GPF
     GPF_plus
+
+.. automodule:: prompt_graph.prompt.GPF
+    :members:
+    :undoc-members:
 
 GPPTPrompt
 -------------------
@@ -41,11 +44,13 @@ GPPTPrompt
 
 .. autosummary::
     :nosignatures:
-    :toctree: ../generated
-    :template: autosummary/inherited_class.rst
 
     GPPTPrompt
     SimpleMeanConv
+
+.. automodule:: prompt_graph.prompt.GPPTPrompt
+    :members:
+    :undoc-members:
 
 
 GPrompt
@@ -55,10 +60,63 @@ GPrompt
 
 .. autosummary::
     :nosignatures:
-    :toctree: ../generated
-    :template: autosummary/inherited_class.rst
 
     Gprompt
+
+.. automodule:: prompt_graph.prompt.GPrompt
+    :members:
+    :undoc-members:
+
+
+MultiGprompt
+-------------------
+
+.. currentmodule:: prompt_graph.prompt.MultiGprompt
+
+.. autosummary::
+    :nosignatures:
+
+    downprompt
+    averageemb
+    weighted_prompt
+    weighted_feature
+    downstreamprompt
+    featureprompt
+    GCN
+    GcnLayers
+    Discriminator
+    AvgReadout
+    DGI
+    DGIprompt
+    GraphCL
+    GraphCLprompt
+    LogReg
+    Lp
+    Lpprompt
+
+.. automodule:: prompt_graph.prompt.MultiGprompt
+    :members:
+    :undoc-members:
+
+
+SUPT
+-------------------
+
+.. currentmodule:: prompt_graph.prompt.SUPT
+
+.. autosummary::
+    :nosignatures:
+
+    SAGPoolPrompt
+    DiffPoolPrompt
+    topk
+
+.. automodule:: prompt_graph.prompt.SUPT
+    :members:
+    :undoc-members:
+
+
+
 
 
 
