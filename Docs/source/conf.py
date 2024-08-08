@@ -56,7 +56,7 @@ extensions = [
 ]
 
 html_theme = 'sphinx_rtd_theme'
-html_logo = ('https://github.com/Noah0401/testing2/blob/main/Logo__1_-removebg-preview.png?raw=true')
+html_logo = ('https://github.com/Noah0401/testing2/blob/main/Logo.jpg?raw=true')
 html_favicon = ('https://github.com/Noah0401/testing2/blob/main/Logo.jpg?raw=true')
 html_static_path = ['_static']
 templates_path = ['_templates']
