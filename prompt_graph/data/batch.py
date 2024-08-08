@@ -5,11 +5,12 @@ class BatchFinetune(Data):
     r"""Inherited from :class:`torch_geometric.data.Data`,
     it can create a :obj:`batch` for fine-tuning; A :obj:`batch` is a combination of several graphs in a dataset, and is
     represented by a tensor which maps each node to its respective graph;
-    :obj:`Fine-tune` is a process after pre-train, and completing fine-tuning process with the help of batches could enhance the efficiency.
+    :obj:`Fine-tune` is a process after pre-train, and completing fine-tuning process with the help of
+    batches could enhance the efficiency.
 
-        Args:
-            batch (torch.Tensor): The created batch tensor.
-            **kwargs (dict): Additional attributes of :class:`torch_geometric.data.Data`.
+    Args:
+        batch (torch.Tensor): The created batch tensor.
+        **kwargs (dict): Additional attributes of :class:`torch_geometric.data.Data`.
         """
 
     def __init__(self, batch=None, **kwargs):
